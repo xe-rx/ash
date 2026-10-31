@@ -12,6 +12,7 @@ scripts/run-local.sh   # live window; Esc closes it
 scripts/run-local.sh --at "2026-06-21 04:00" --speed 60   # start at that time, 60 simulated minutes per second
 scripts/screenshot.sh --at "2026-06-21 13:00"             # no window: PNG in ~/ash-data/screens
 ```
+- Not yet confirmed: the live window, including Esc to close it, has not been run on a real display. Only offscreen rendering (`scripts/screenshot.sh`) has been run.
 - `--at "YYYY-MM-DD HH:MM"` freezes the clock at that local time. With `--speed N` it starts there and runs N simulated minutes per real second. `--speed` needs `--at`.
 - `run-local.sh` needs a display (`DISPLAY` or `WAYLAND_DISPLAY`). Without one it says so and exits. On WSL2 use WSLg or an X server.
 - The time zone is forced to Europe/Amsterdam.
@@ -27,7 +28,9 @@ cp config/ash.example.json config/ash.json   # then edit place, lat, lon, hijriO
 ```bash
 npm ci
 REQUIRE_QT=1 scripts/test.sh
+uv run --with-requirements requirements-test.txt python -m pytest -q tests
 ```
+`REQUIRE_QT=1` needs the Qt toolchain, so run `scripts/setup-qt.sh` first.
 
 ## How the prayer times are calculated
 Ash calculates the times on the device from your latitude, longitude and the date. Method: MWL (Fajr 18 degrees, Isha 17 degrees), standard Asr, and an angle-based rule in summer when the sun does not get low enough ([ADR 0002](docs/adr/0002-prayer-calculation-method.md)). These are calculated times, not a published timetable. Compare them with your household's mosque.
