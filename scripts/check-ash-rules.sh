@@ -2,6 +2,12 @@
 # Ash privacy and offline rules (ADR 0003). Fails (exit 1) on any violation:
 #  (a) network/dynamic-code APIs in app/        (b) tracked real config / extra JSON in config/
 #  (c) non-public latitude/longitude values in app/, config/, tests/
+# Limits of (c): only numbers with a fractional part next to a NAMED key (lat, lon, latitude,
+# longitude, lng and case variants) are seen, as "key: 51.44" or "key = 51.44". Not caught: coordinates
+# in arrays or tuples without keys, strings like "51.44,5.47", whole degrees, DMS or geohash forms,
+# values built at run time, untracked files, files outside app/ config/ tests/, or the git history.
+# Public places are allowed (dev/coord_check.py PUBLIC). It is a tripwire, not proof of no leaks.
+# Same for (a): a grep over tracked app/ files; obfuscated or computed calls are not detected.
 # Usage: scripts/check-ash-rules.sh   (tracked files only; run from anywhere in the repo)
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
@@ -22,6 +28,7 @@ PATTERNS=(
   'QtNetwork|QtNetwork'
   'eval|(^|[^A-Za-z0-9_.])eval[[:space:]]*\('
   'new-Function|new[[:space:]]+Function'
+  'dyn-code|Qt\.createQmlObject|Qt\.include|createComponent|(^|[^A-Za-z0-9_.])Function[[:space:]]*\(|WorkerScript|EventSource|sendBeacon'
   'node-net|(require[[:space:]]*\(|from)[[:space:]]*.(node:)?(http|https|http2|net|dgram|tls|dns|child_process).'
 )
 # Allowlist, one entry per line: 'path-ERE|label|reason (mandatory)'. Keep it empty if you can.
