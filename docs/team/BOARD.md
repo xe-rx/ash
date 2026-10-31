@@ -12,7 +12,7 @@ Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead:
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-- [ ] Open the live window (`scripts/run-local.sh`): does it open, and how does the look land?
+- [ ] Open the live window (`scripts/run-local.sh`): does it display correctly, does Esc close it, and how does the look land? (WSLg logs the window; nobody on the team has seen it)
 - [ ] Should the Hijri date change at Maghrib or at midnight? (currently midnight)
 
 Device access is on hold (PO, 2026-10-31).
@@ -37,11 +37,10 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| run-local finds the WSLg X socket | devops-engineer | devops-engineer/wslg-display | .worktrees/devops-engineer-wslg-display | building |
 
 ## In review
 
 ## Done
-- PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README
+- PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README; PR 0008 WSLg display
 - PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run; PR 0004 scene follow-ups
 - Kickoff: all phases; proposal approved by the PO 2026-10-31
