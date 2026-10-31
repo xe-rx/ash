@@ -15,7 +15,7 @@ var RISING = [
   [-90, NIGHT],
   [-20, { top: "#050a1c", hor: "#0e2250", sand: "#111a30", sun: "#6a6f8c" }],
   [-12, { top: "#0a1c52", hor: "#2569ad", sand: "#1b2b4d", sun: "#9fb8e8" }],
-  [-6, { top: "#2a3f8c", hor: "#e8869b", sand: "#7e5a7c", sun: "#ffb48a" }],
+  [-6, { top: "#5671c0", hor: "#e07a98", sand: "#7e5a7c", sun: "#ffb48a" }],
   [-1, { top: "#6a9ee0", hor: "#ffc47e", sand: "#d98e68", sun: "#ffd98a" }],
   [4, { top: "#58aaea", hor: "#ffe4a6", sand: "#e8a45f", sun: "#ffe08a" }],
   [20, { top: "#52b0ec", hor: "#cbeefa", sand: "#ebb05f", sun: "#ffe066" }],
