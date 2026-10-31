@@ -27,6 +27,7 @@ PATTERNS=(
 # Allowlist, one entry per line: 'path-ERE|label|reason (mandatory)'. Keep it empty if you can.
 # Example: 'app/ash/vendor/x\.js|url|licence header link inside a comment only'
 ALLOW=(
+  'app/ash/fonts/OFL\.txt|url|SIL Open Font License text of the bundled font; prose, not code'
 )
 allowed() { # $1 file, $2 label
   local e path label
