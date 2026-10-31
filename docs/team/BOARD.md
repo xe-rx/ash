@@ -37,6 +37,7 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| run-local finds the WSLg X socket | devops-engineer | devops-engineer/wslg-display | .worktrees/devops-engineer-wslg-display | building |
 
 ## In review
 
