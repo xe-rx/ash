@@ -12,7 +12,10 @@ Round: 1 (local build; device work on hold) · PO: the user · Tech lead: main s
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-Nothing right now. Device access is on hold (PO, 2026-10-31).
+- [ ] Open the live window (`scripts/run-local.sh`): does it open, and how does the look land?
+- [ ] Should the Hijri date change at Maghrib or at midnight? (currently midnight)
+
+Device access is on hold (PO, 2026-10-31).
 
 ## Running jobs and servers
 | What | PID file | Log | Restart with | Done when |
@@ -20,9 +23,6 @@ Nothing right now. Device access is on hold (PO, 2026-10-31).
 
 ## Backlog
 PO change 2026-10-31: "can't get into toon yet, for now, focus on running it locally here and perfecting it". Rounds below replace the approved round order; the milestone in the brief is unchanged and can't be met until device access returns.
-
-### Round 1, wave 2 (after wave 1 merges)
-- [ ] **Scene, view, live run (frontend-engineer).** Full desert scene, all readouts, palette through the day and night, burn-in shift, tap handling. `scripts/run-local.sh` opens a live 1024x600 window, with options for a chosen time and a fast-forward. Done when: screenshots at dawn, noon, sunset and night are checked, and the PO approves the look.
 
 ### Toolchain follow-ups (from PR 0001, non-blocking)
 - [ ] Network check: add `Qt.createQmlObject`, `Qt.include`, `createComponent`, `Function(`, `WorkerScript`, `EventSource`, `sendBeacon`. Done when: planted violations fail.
@@ -40,10 +40,10 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Scene, view, live run | frontend-engineer | frontend-engineer/scene | .worktrees/frontend-engineer-scene | building |
+| Scene follow-ups from PR 0003 | frontend-engineer | frontend-engineer/polish | .worktrees/frontend-engineer-polish | building |
 
 ## In review
 
 ## Done
-- PR 0001 Qt toolchain and checks; PR 0002 calculation core
+- PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run
 - Kickoff: all phases; proposal approved by the PO 2026-10-31
