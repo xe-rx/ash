@@ -221,3 +221,17 @@ test('the full-year golden: scene prayers equal adhan-js to the minute, with Ams
   });
   t.diagnostic('scene max deviation vs adhan-js (ms): ' + JSON.stringify(max));
 });
+
+test('near the polar limit the error is about the sun, never the time zone', function () {
+  var sunErrors = 0;
+  for (var day = 120; day < 260; day++) {
+    var ms = Date.UTC(2026, 0, 1) + day * H.DAY + 12 * 3600000;
+    var r = Scene.sceneAt(ms, function () { return 60; }, { lat: 66, lon: 10, hijriOffsetDays: 0 });
+    if (!r.ok) {
+      sunErrors++;
+      assert.ok(/no sunrise or sunset/.test(r.error), 'day ' + day + ': ' + r.error);
+      assert.ok(!/time zone/.test(r.error), 'day ' + day + ': ' + r.error);
+    }
+  }
+  assert.ok(sunErrors > 0, 'the sweep never reached the polar limit');
+});
