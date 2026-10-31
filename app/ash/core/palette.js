@@ -4,8 +4,8 @@
 // paletteAt(altitudeDeg, rising): every colour of the scene as hex strings, a pure function of the
 // sun's altitude and whether it is rising or setting. A dusty, warm, restrained desert light:
 // neighbouring hues and small lightness steps. The colours of every moment of the day are authored in
-// core/script.js (the colour script) and mixed in OKLab by altitude; this file assembles them. Text colours are derived from the final backgrounds so every
-// ink has at least 4.5:1 contrast against everything it can sit on (checked in tests).
+// core/script.js (the colour script) and mixed in OKLab by altitude; this file assembles them. Text
+// colours are derived from the final backgrounds so every ink has at least 4.5:1 contrast against everything it can sit on (checked in tests).
 
 var SAFE = 4.62; // margin over 4.5:1, for hex rounding
 

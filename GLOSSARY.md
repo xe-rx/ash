@@ -18,7 +18,7 @@
 - **Sun arc**: the invisible arc the sun follows through the open sky, from the east horizon over the top to the west horizon. Nothing is drawn along it.
 - **Colour script**: `core/script.js`, the hand-authored colours of keyed moments of light (night, first light, dawn, sunrise, morning, midday, golden hour, sunset, dusk), rising and setting apart, mixed in OKLab by altitude. Sky, silhouettes, dunes and figures of one moment share one light.
 - **Silhouettes**: the two far layers (`farTwo`, `farOne`) behind the dunes, low and long, lighter and closer to the horizon sky the farther they are.
-- **Sky A / sky B**: A is nine flat poster bands; B is one smooth gradient through the same colours with a faint paper grain tile. One line in `view/Sky.qml` switches them.
+- **Sky mode (bands / gradient)**: "bands" (sky A) is nine flat poster bands; "gradient" (sky B) is one smooth gradient through the same colours with a faint paper grain tile. Dev only: `--sky bands|gradient` on `scripts/run-local.sh`, default bands.
 - **Glow**: the stepped halos of the sun (five: three tight, two very large and faint that warm the sky around a low sun). In twilight the sun is under the horizon and only its glow rises above the dunes, fading out by -12 degrees.
 - **Prayer table**: the flat panel on the right with the Hijri date as header and the five prayers. The next prayer's row has the accent fill.
 - **Rail**: the thin vertical line on the table's left edge; its dot shows where now falls between the prayer rows (it holds on the first row before Fajr and jumps back at the Isha rollover).

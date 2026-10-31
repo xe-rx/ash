@@ -13,6 +13,8 @@ Art-direction experiment (docs/product/ART-DIRECTION.md): colour script, depth, 
 
 - Tech lead round 2: pill mesas removed (Silhouettes.qml now 4 soft domes), grain opacity 0.045 -> 0.02 (B2 reads clean, no banding seen by eye at night or dawn), dev flag `--sky bands|gradient` on scripts/run-local.sh, scripts/screenshot.sh and dev/harness.py (default bands; tested in tests/test_run_local.sh). Renders: ~/ash-data/screens-artdir/{A,B2}.
 
+- Packaging note: if the gradient sky is chosen, device packaging must include app/ash/assets/ (grain.png, 22.7 KB); the app loads it as ../assets/grain.png from view/Sky.qml.
+
 ## Next steps
 1. Tech lead review, PO eyes on A vs B and on the colour script.
 2. Remaining ideas (not started): shadow as figure-shaped silhouette shapes, lit crest, per-moment panel colours in the script, higher silhouettes at midday, an even stronger dusk land/sky split.

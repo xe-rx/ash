@@ -3,7 +3,7 @@
 // Usage: node tools/gen-grain.js [outfile]
 // A 128 x 128 tile (a power of two, so it also repeats on GLES2) of paper grain for sky B: each pixel is
 // white or black with a random alpha, mixing fine noise with a softer 3 x 3 noise so it reads as
-// fibres rather than static. White and black are balanced, so laid over the sky at 3-6% opacity it
+// fibres rather than static. White and black are balanced, so laid over the sky at about 2% opacity (the shipped value) it
 // shifts neither its lightness nor its colour on average. Grey + alpha, 8 bit; deterministic.
 var fs = require('fs');
 var zlib = require('zlib');

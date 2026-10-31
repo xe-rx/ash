@@ -3,9 +3,9 @@ import "../core/geometry.js" as Geo
 import "../core/skygrad.js" as Grad
 
 // The sky, drawn 16 px past every edge so the burn-in shift never shows a gap, then stars and a moon.
-// Two versions with the same colours, switched by `mode` (default "bands"; only the dev harness sets it):
-//   A (false): nine flat poster bands;
-//   B (true): one smooth vertical gradient through the same colours (stops in core/skygrad.js), with
+// Two versions with the same colours, switched by `mode` (default "bands"; only the dev harness sets it, via `--sky`):
+//   mode "bands" (A): nine flat poster bands;
+//   mode "gradient" (B): one smooth vertical gradient through the same colours (stops in core/skygrad.js), with
 //   a very faint paper grain over it (a 128 px tile at 2% opacity, tools/gen-grain.js), which also
 //   hides the 8-bit steps of a smooth gradient.
 Item {

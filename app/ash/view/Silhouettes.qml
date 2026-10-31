@@ -1,6 +1,6 @@
 import QtQuick 2.1
 
-// Two far layers on the horizon, behind the dunes: very low, long mesas and swells, lighter, cooler
+// Two far layers on the horizon, behind the dunes: very low, long domes, lighter, cooler
 // and closer to the horizon sky than anything in front (colours: core/script.js). Their tops stay
 // at y >= 352, below the countdown text. Flat fills only.
 Item {

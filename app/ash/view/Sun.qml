@@ -1,6 +1,7 @@
 import QtQuick 2.1
 
-// The sun: five stepped, flat halos of falling opacity (the two largest are very faint and warm the sky around a low sun), the disc and a lighter core. Lives under
+// The sun: five stepped, flat halos of falling opacity (the two largest are very faint and warm the
+// sky around a low sun), the disc and a lighter core. Lives under
 // the dunes, so the horizon cuts it; in twilight only the halos rise above the dunes (a glow).
 // Sizes and opacities come from core/sunlook.js by altitude.
 Item {
