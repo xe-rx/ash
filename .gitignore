@@ -39,6 +39,10 @@ __pycache__/
 data/raw/
 data/build/
 
+# Qt compiled caches
+*.jsc
+*.qmlc
+
 # Ash: real (private) config never in git; only config/ash.example.json is tracked (ADR 0003)
 ash.json
 ash.*.json
