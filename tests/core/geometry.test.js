@@ -62,6 +62,14 @@ test('layout is a pure function of the scene', function () {
   assert.strictEqual(JSON.stringify(G.layout(s)), JSON.stringify(G.layout(JSON.parse(JSON.stringify(s)))));
 });
 
+test('clock cells are wider than the widest digit and fit between the labels', function () {
+  var cells = G.clockCells('00:00');
+  assert.strictEqual(cells.length, 5);
+  assert.ok(G.DIGIT_CELL >= 0.66 * G.CLOCK_PX + 2, 'digit cell narrower than a zero');
+  assert.ok(cells.reduce(function (a, b) { return a + b; }, 0) <= G.OBSTACLES[1].w);
+  assert.strictEqual(G.clockCells('08:08')[2], G.COLON_CELL);
+});
+
 test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes', function () {
   var a = G.shiftAt(H.ams(2026, 6, 21, 12, 0)), b = G.shiftAt(H.ams(2026, 6, 21, 12, 9));
   assert.strictEqual(JSON.stringify(a), JSON.stringify(b));

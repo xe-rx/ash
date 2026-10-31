@@ -15,11 +15,4 @@ Item {
             color: modelData.below ? path.pal.dotsBelow : path.pal.dots
         }
     }
-    // the sun under the horizon: a ring (the ground shows through) at its real place on the path
-    Rectangle {
-        visible: !path.isUp
-        x: path.layout.sun.x - 15; y: path.layout.sun.y - 15; width: 30; height: 30; radius: 15
-        color: path.pal.sunBelow
-        Rectangle { x: 5; y: 5; width: 20; height: 20; radius: 10; color: path.pal.duneMid }
-    }
 }

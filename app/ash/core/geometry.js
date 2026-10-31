@@ -101,6 +101,15 @@ function layout(scene) {
   return { labels: boxes, sun: { x: sun.x, y: sun.y, p: sunP }, sunBox: sunBox, dots: dots };
 }
 
+// Clock: Poppins digits are proportional, so each character gets a fixed cell. The widest digit
+// advance measured in Qt 5.11 at 140 px (Poppins SemiBold, what Font.Medium resolves to) is 93 px.
+var CLOCK_PX = 140, DIGIT_CELL = 96, COLON_CELL = 40;
+function clockCells(text) {
+  var out = [];
+  for (var i = 0; i < text.length; i++) { out.push(text.charAt(i) === ":" ? COLON_CELL : DIGIT_CELL); }
+  return out;
+}
+
 // Burn-in: the whole scene moves by up to 4 px every 10 minutes, deterministically.
 var SHIFTS = [[0, 0], [3, -2], [-2, 4], [4, 3], [-4, -1], [1, 4], [-3, -4], [2, -4], [-1, 2], [4, -3], [-4, 3], [3, 1]];
 function shiftAt(nowMs) {

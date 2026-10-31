@@ -1,4 +1,5 @@
 import QtQuick 2.1
+import "../core/geometry.js" as Geo
 
 // The 24h time (largest, in fixed digit cells so it never shifts), the next prayer with its
 // countdown, and the quiet Hijri date. All on the sky, inside the sun's arc.
@@ -20,14 +21,14 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         y: 176
         Repeater {
-            model: scene.clockText.split("")
+            model: Geo.clockCells(scene.clockText)
             Item {
-                width: modelData === ":" ? 40 : 82; height: 130
+                width: modelData; height: 130
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    y: modelData === ":" ? -22 : -14
-                    text: modelData; color: pal.inkSky; font.family: face
-                    font.pixelSize: 150; font.weight: Font.Medium
+                    y: modelData === Geo.COLON_CELL ? -22 : -14
+                    text: scene.clockText.charAt(index); color: pal.inkSky; font.family: face
+                    font.pixelSize: Geo.CLOCK_PX; font.weight: Font.Medium
                 }
             }
         }

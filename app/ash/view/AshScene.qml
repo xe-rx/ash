@@ -13,6 +13,7 @@ Item {
     Dunes { pal: stage.pal }
     SunPath { pal: stage.pal; layout: stage.geo; isUp: stage.scene.sun.isUp }
     Family { pal: stage.pal; x: 590; y: 556 }
+    SunRing { pal: stage.pal; layout: stage.geo; isUp: stage.scene.sun.isUp }
     PrayerLabels { pal: stage.pal; layout: stage.geo; prayers: stage.scene.prayers; face: stage.face }
     Readouts { pal: stage.pal; scene: stage.scene; face: stage.face }
 }
