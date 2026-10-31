@@ -5,16 +5,16 @@ Updated: 2026-10-31 · Branch: main · Status: waiting on PO feedback (live wind
 Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 
 ## Done
-- Round 2, first batch merged (PRs 0005-0009): clock spacing, toolchain follow-ups, README, WSLg display, atmosphere redesign from PO feedback. Round 1 merged locally (PRs 0001-0004). Kickoff complete and merged: brief, ADRs 0001-0003, risks, glossary, coding rules, proposal (approved by the PO 2026-10-31, no changes), board.
+- Round 2, first batch merged (PRs 0005-0010): clock spacing, toolchain follow-ups, README, WSLg display, atmosphere redesign and art direction experiment from PO feedback. Round 1 merged locally (PRs 0001-0004). Kickoff complete and merged: brief, ADRs 0001-0003, risks, glossary, coding rules, proposal (approved by the PO 2026-10-31, no changes), board.
 
 ## Next steps
-1. The PO confirmed the live window works. Get their reaction to the redesign, PR 0009.
-2. Run the next polish from that feedback; weak spots are listed in PR 0009.
+1. The PO confirmed the live window works. Get their sky choice and reaction to PR 0010; then remove the losing sky and the `--sky` flag.
+2. Run the next polish from that feedback; weak spots are listed in PRs 0009 and 0010.
 3. Apply the PO's answer on the Hijri date change (Maghrib recommended, midnight today).
 4. Device work is on hold until the PO has Toon access (board). Toolchain follow-ups from PR 0001 are on the board.
 
 ## Open questions / blockers
-- PO: reaction to the redesign; Hijri date change time.
+- PO: sky choice (bands or gradient) and reaction to PR 0010; Hijri date change time.
 
 ## Gotchas learned
 - "Touchplay" matches no product we could find; the PO confirmed the device is a rooted Toon 2.

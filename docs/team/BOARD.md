@@ -12,7 +12,7 @@ Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead:
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-- [ ] How does the redesign (PR 0009) look live? Known weak spots are in the PR record.
+- [ ] Compare the skies live (`scripts/run-local.sh --sky bands|gradient`) and pick one; then remove the loser and the flag, and if gradient wins, include `app/ash/assets/` in device packaging. Tech lead recommends gradient.
 - [ ] Should the Hijri date change at Maghrib or at midnight? (currently midnight)
 
 Device access is on hold (PO, 2026-10-31).
@@ -38,11 +38,10 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Atmosphere experiment from research (docs/product/ART-DIRECTION.md) | frontend-engineer | frontend-engineer/art-direction | .worktrees/frontend-engineer-art-direction | building |
 
 ## In review
 
 ## Done
-- PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README; PR 0008 WSLg display; PR 0009 atmosphere redesign
+- PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README; PR 0008 WSLg display; PR 0009 atmosphere redesign; PR 0010 art direction experiment
 - PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run; PR 0004 scene follow-ups
 - Kickoff: all phases; proposal approved by the PO 2026-10-31
