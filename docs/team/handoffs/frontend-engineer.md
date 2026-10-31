@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 21:02 · Branch: frontend-engineer/atmosphere · Status: done
+Updated: 2026-10-31 21:11 · Branch: frontend-engineer/atmosphere · Status: done
 
 ## Task
 PO redesign: no sun path/labels; prayer table panel (Hijri header, rail dot); altitude-driven sun with halos and twilight glow; dusty 7-band palette; clock/countdown under the arc with a real sun clearance test.
@@ -16,3 +16,7 @@ PO redesign: no sun path/labels; prayer table panel (Hijri header, rail dot); al
 ## Gotchas learned
 - node --test tests/core/*.test.js (dir form fails); npm ci --offline in a new worktree.
 - Ink toning only on bands 3..5 (behind clock/countdown); geometry BANDS and clock layout are tied.
+
+## Art review fixes (done)
+- 9 sky bands (steps halved: mean 0.044 -> 0.023, max 0.141 -> 0.064), whole-sky lightness shift for ink instead of per-band toning, monotonic top to horizon; day tops violet-blue, mids pinkish, no green (test: OKLab hue 100..200, chroma >= 0.015, alt 8..90).
+- Panel: tinted warm paper to plum to indigo (chroma >= 0.02 tested), row fill from panel luminance, rail dot with ring; sun core only a 14% lift, halos tighter by day; family dusk shadow warm; mother lighter; table insets 20 px equal.

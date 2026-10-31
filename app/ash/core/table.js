@@ -5,10 +5,13 @@
 // the rows. Times sit in fixed digit cells so the columns line up although the digits are proportional.
 
 var PANEL = { x: 724, y: 28, w: 276, h: 344 };
-var HEADER_H = 64, ROW_H = 52, ROWS_Y = PANEL.y + 76;
-var RAIL_X = PANEL.x + 16;
-var FILL_X = PANEL.x + 30, FILL_W = PANEL.w - 30 - 12;
-var NAME_X = PANEL.x + 44, TIME_RIGHT = PANEL.x + PANEL.w - 26;
+// One inset (20 px) from the panel on the left, right and bottom of the highlighted row, and the
+// same above the header; the rail runs in the margin to the left of the rows.
+var INSET = 20, ROW_H = 52, ROW_PAD = 3;
+var ROWS_Y = PANEL.y + PANEL.h - INSET + ROW_PAD - 5 * ROW_H;   // last row's fill ends INSET above the bottom
+var RAIL_X = PANEL.x + 9;
+var FILL_X = PANEL.x + INSET, FILL_W = PANEL.w - 2 * INSET, FILL_H = ROW_H - 2 * ROW_PAD;
+var NAME_X = FILL_X + 16, TIME_RIGHT = FILL_X + FILL_W - 16;
 var TIME_PX = 27;
 
 // widest digit advance at TIME_PX: every digit gets a cell this wide, ink centred in it
@@ -38,6 +41,6 @@ function tableLayout(scene) {
     rows.push({ y: rowTop(i), name: p.name, isNext: p.isNext, glyphs: timeGlyphs(p.timeText) });
   }
   var first = rowTop(0) + ROW_H / 2, last = rowTop(4) + ROW_H / 2;
-  return { panel: PANEL, rows: rows, header: { x: PANEL.x + 30, y: PANEL.y + 14, w: PANEL.w - 42 },
-    rail: { x: RAIL_X, y1: first, y2: last, dotY: first + scene.railRow * ROW_H } };
+  return { panel: PANEL, rows: rows, header: { x: NAME_X, y: PANEL.y + INSET - 2, w: PANEL.w - 2 * INSET - 16 },
+    rail: { x: RAIL_X, y1: rowTop(0) + ROW_PAD, y2: rowTop(4) + ROW_H - ROW_PAD, dotY: first + scene.railRow * ROW_H } };
 }

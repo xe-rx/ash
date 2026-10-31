@@ -1,14 +1,14 @@
 import QtQuick 2.1
 import "../core/geometry.js" as Geo
 
-// Seven flat bands, then stars and a crescent at night. Drawn 16 px past every edge so the
+// Nine flat bands, then stars and a crescent at night. Drawn 16 px past every edge so the
 // burn-in shift never shows a gap. Bands are stepped on purpose: no gradient.
 Item {
     id: sky
     property var pal
 
     Repeater {
-        model: 7
+        model: 9
         Rectangle {
             x: -16; width: 1056
             y: Geo.BANDS[index]; height: Geo.BANDS[index + 1] - Geo.BANDS[index] + 1

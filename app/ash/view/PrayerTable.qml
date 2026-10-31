@@ -21,7 +21,10 @@ Item {
         color: pal.panelSoft; font.family: face; font.pixelSize: 21; font.weight: Font.Normal
     }
     Rectangle { x: layout.rail.x - 1; y: layout.rail.y1; width: 2; height: layout.rail.y2 - layout.rail.y1; color: pal.railLine }
-    Rectangle { x: layout.rail.x - 6; y: layout.rail.dotY - 6; width: 12; height: 12; radius: 6; color: pal.railDot; antialiasing: true }
+    Rectangle {
+        x: layout.rail.x - 7; y: layout.rail.dotY - 7; width: 14; height: 14; radius: 7
+        color: pal.railDot; border.width: 2; border.color: pal.railRing; antialiasing: true
+    }
 
     Repeater {
         model: layout.rows
@@ -30,7 +33,7 @@ Item {
             property color ink: modelData.isNext ? pal.rowInk : pal.panelInk
             Rectangle {
                 visible: modelData.isNext
-                x: Table.FILL_X; y: modelData.y + 3; width: Table.FILL_W; height: Table.ROW_H - 6
+                x: Table.FILL_X; y: modelData.y + Table.ROW_PAD; width: Table.FILL_W; height: Table.FILL_H
                 radius: 12; color: pal.rowFill; antialiasing: true
             }
             Text {

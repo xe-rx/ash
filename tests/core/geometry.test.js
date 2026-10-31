@@ -112,3 +112,14 @@ test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes'
   }
   assert.ok(Object.keys(seen).length > 10);
 });
+
+test('table padding is even: the highlighted row sits the same inset from the panel left, right and bottom; the rail ends level with the rows', function () {
+  var P = Table.PANEL, L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
+  var left = Table.FILL_X - P.x, right = P.x + P.w - (Table.FILL_X + Table.FILL_W);
+  var bottom = P.y + P.h - (L.rows[4].y + Table.ROW_PAD + Table.FILL_H);
+  assert.strictEqual(left, right);
+  assert.strictEqual(bottom, left);
+  assert.strictEqual(L.rail.y1, L.rows[0].y + Table.ROW_PAD);
+  assert.strictEqual(L.rail.y2, L.rows[4].y + Table.ROW_PAD + Table.FILL_H);
+  assert.ok(L.header.y - P.y <= left && L.rows[0].y + Table.ROW_PAD - (L.header.y + 32) >= 14, 'header rhythm');
+});
