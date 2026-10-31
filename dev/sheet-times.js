@@ -1,6 +1,8 @@
 'use strict';
-// Prints the shot list (JSON) for the contact sheet: 8 moments on 21 June and 21 December.
-// usage: node sheet-times.js CONFIG.json OUTDIR [sheet|sunrise|sunset]  (the last two: a 10 frame strip on 21 March)   (dev tooling; reuses the test helpers)
+// Prints the shot list (JSON), reusing the test helpers (dev tooling).
+// usage: node sheet-times.js CONFIG.json OUTDIR [sheet|sunrise|sunset]
+//   sheet (default): 8 moments on 21 June and 21 December
+//   sunrise, sunset: a strip of 10 frames around that moment on 21 March
 var fs = require('fs');
 var path = require('path');
 var load = require('../tests/core/load-core').load;

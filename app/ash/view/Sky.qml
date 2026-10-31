@@ -25,7 +25,8 @@ Item {
     }
 
     // The moon is a fixed crescent symbol, not the astronomical phase: a disc with a disc of sky
-    // cut out of it, inside the top band.
-    Rectangle { visible: sky.pal.moon; opacity: sky.pal.moonAlpha; x: 120; y: 40; width: 44; height: 44; radius: 22; color: sky.pal.moonColor }
-    Rectangle { visible: sky.pal.moon; x: 136; y: 34; width: 40; height: 40; radius: 20; color: sky.pal.skyBands[0] }
+    // cut out of it. Both lie wholly inside band 1 (y 40..90), so the cut-out has exactly the
+    // band's colour. (While it fades in, the cut-out is drawn at the same opacity over the band.)
+    Rectangle { visible: sky.pal.moon; opacity: sky.pal.moonAlpha; x: 120; y: 44; width: 44; height: 44; radius: 22; color: sky.pal.moonColor }
+    Rectangle { visible: sky.pal.moon; x: 134; y: 42; width: 38; height: 38; radius: 19; color: sky.pal.skyBands[1] }
 }

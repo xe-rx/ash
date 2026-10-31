@@ -49,7 +49,8 @@ function chroma(hex) { var l = toLab(hex); return Math.sqrt(l[1] * l[1] + l[2] *
 function smooth(t) { return t * t * (3 - 2 * t); }
 
 // Mix along the hue circle (OKLCH, shortest way round): in-between colours keep their chroma
-// instead of passing through grey.
+// instead of passing through grey. For nearly opposite hues the way round is ambiguous (and flips
+// with the slightest change), so the mix fades into plain OKLab there: continuous everywhere.
 function mixLch(hexA, hexB, t) {
   var a = toLab(hexA), b = toLab(hexB);
   var ca = Math.sqrt(a[1] * a[1] + a[2] * a[2]), cb = Math.sqrt(b[1] * b[1] + b[2] * b[2]);
@@ -58,5 +59,7 @@ function mixLch(hexA, hexB, t) {
   var dh = hb - ha;
   if (dh > Math.PI) { dh -= 2 * Math.PI; } else if (dh < -Math.PI) { dh += 2 * Math.PI; }
   var c = ca + (cb - ca) * t, h = ha + dh * t;
-  return fromLab([a[0] + (b[0] - a[0]) * t, c * Math.cos(h), c * Math.sin(h)]);
+  var w = smooth(clamp((Math.abs(dh) - 2.3) / 0.84, 0, 1)); // 0 below about 132 degrees, 1 at 180
+  var lab = mixLab(a, b, t);
+  return fromLab([lab[0], lab[1] * w + c * Math.cos(h) * (1 - w), lab[2] * w + c * Math.sin(h) * (1 - w)]);
 }

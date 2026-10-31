@@ -2,12 +2,11 @@
 .import "colour.js" as C
 // paletteAt(altitudeDeg, rising): every colour of the scene as hex strings, a pure function of the
 // sun's altitude and whether it is rising or setting. A dusty, warm, restrained desert light:
-// neighbouring hues and small lightness steps, in seven flat bands (no gradients). Stops are
+// neighbouring hues and small lightness steps, in nine flat bands (no gradients). Stops are
 // authored in sRGB and mixed in OKLab. Text colours are derived from the final backgrounds so every
 // ink has at least 4.5:1 contrast against everything it can sit on (checked in tests).
 
-var SAFE = 4.62;
-var INK_BANDS_NOTE = 0; // margin over 4.5:1, for hex rounding
+var SAFE = 4.62; // margin over 4.5:1, for hex rounding
 
 // Authored stops, ascending altitude. top/mid/hor: sky at the zenith, in between and at the
 // horizon; sand: the middle dune; sun: the disc. Rising and setting differ between about -20 and +30.
@@ -17,9 +16,9 @@ var RISING = [
   [-90, NIGHT],
   [-20, { top: "#0a0f2a", mid: "#121a3c", hor: "#1c2548", sand: "#1f2340", sun: "#6a6f8c" }],
   [-12, { top: "#1a2250", mid: "#2d3868", hor: "#4a5486", sand: "#2d2f52", sun: "#8f9ac8" }],
-  [-6, { top: "#3f4f80", mid: "#8a7f9c", hor: "#e0a892", sand: "#8c6c76", sun: "#e98558" }],
+  [-7, { top: "#37457a", mid: "#6d729e", hor: "#916a83", sand: "#7a6272", sun: "#e98558" }],
   [-1, { top: "#5f80a6", mid: "#c6a3a6", hor: "#f0b98e", sand: "#c98c68", sun: "#f0a255" }],
-  [4, { top: "#6c9ac0", mid: "#d4b9a4", hor: "#f4d19c", sand: "#d6a26b", sun: "#f4bd62" }],
+  [4, { top: "#6c9ac0", mid: "#d8b4ae", hor: "#f4d19c", sand: "#d6a26b", sun: "#f4bd62" }],
   [10, { top: "#6c9ac2", mid: "#d2c6cc", hor: "#f2dcb0", sand: "#d8a468", sun: "#f6cc72" }],
   [20, { top: "#6c9ac2", mid: "#cec6d0", hor: "#efe1c8", sand: "#d9a566", sun: "#f8d986" }],
   [90, DAY]
@@ -28,10 +27,10 @@ var SETTING = [
   [-90, NIGHT],
   [-20, { top: "#0a0d26", mid: "#131431", hor: "#1b1a3e", sand: "#1e1e3b", sun: "#6a6f8c" }],
   [-10, { top: "#1c2050", mid: "#38305e", hor: "#563d6c", sand: "#34304f", sun: "#d08a8c" }],
-  [-4, { top: "#2d3068", mid: "#5f4378", hor: "#c0644c", sand: "#6e4658", sun: "#e8774c" }],
-  [0, { top: "#3b4078", mid: "#7c4c72", hor: "#d97848", sand: "#b25a4a", sun: "#ee8049" }],
-  [6, { top: "#5f84a8", mid: "#c8977f", hor: "#f2b46e", sand: "#d9954e", sun: "#f4b85c" }],
-  [15, { top: "#6c96bc", mid: "#d6bfb6", hor: "#f3d08e", sand: "#d8a05a", sun: "#f5c468" }],
+  [-4, { top: "#2d3068", mid: "#5f4378", hor: "#9b4e50", sand: "#6e4658", sun: "#e8774c" }],
+  [0, { top: "#3b4078", mid: "#966594", hor: "#b25e44", sand: "#b25a4a", sun: "#ee8049" }],
+  [6, { top: "#5f84a8", mid: "#cc9486", hor: "#f2b46e", sand: "#d9954e", sun: "#f4b85c" }],
+  [15, { top: "#6c96bc", mid: "#dcb8b4", hor: "#f3d08e", sand: "#d8a05a", sun: "#f5c468" }],
   [30, { top: "#6c9ac2", mid: "#ccc6d0", hor: "#f0e2ca", sand: "#d9a566", sun: "#f8d886" }],
   [55, DAY],
   [90, DAY]
@@ -97,34 +96,22 @@ function bandsOf(top, mid, hor, alt) {
   return out;
 }
 
-// The clock and countdown sit on bands 4..7 (core/clock.js, geometry BANDS). Those four must all
-// be on one side of the luminance gap where no ink can read. The whole sky is moved together
-// (same lightness shift on every band), so the steps and their order never change; the shift is
-// the smaller of "dark enough for light ink" and "light enough for dark ink".
+// The clock and countdown sit on bands 4..7 (core/clock.js, geometry BANDS), which only use the
+// middle and horizon colours. No ink reads on a background whose relative luminance is between
+// about 0.165 and 0.205, so the stops are authored so that the sky passes that gap at one altitude
+// on each side (FLIP_RISING, FLIP_SETTING): there the middle and horizon colours both have a
+// luminance of 0.179, where pure white and pure black both reach 4.5:1. Below the flip every band
+// behind the text is darker than that and the ink is light; above it every one is lighter and the
+// ink is dark. So the sky never needs a lightness shift, and only the ink flips, once.
 var INK_FROM = 4, INK_TO = 7;
-function shiftSky(bands, light) {
-  var labs = [], i, n = 0;
-  for (i = 0; i < bands.length; i++) { labs.push(C.toLab(bands[i])); }
-  function ok() {
-    for (var k = INK_FROM; k <= INK_TO; k++) {
-      var l = C.luminance(C.fromLab(labs[k]));
-      if (light ? l > DARK_MAX : l < LIGHT_MIN) { return false; }
-    }
-    return true;
-  }
-  while (n < 200 && !ok()) { for (i = 0; i < labs.length; i++) { labs[i][0] += light ? -0.005 : 0.005; } n++; }
-  var out = [];
-  for (i = 0; i < labs.length; i++) { out.push(C.fromLab(labs[i])); }
-  return { bands: out, steps: n };
-}
+var FLIP_RISING = -7, FLIP_SETTING = 0;
 
 function paletteAt(altDeg, rising) {
   var alt = typeof altDeg === "number" && isFinite(altDeg) ? clamp(altDeg, -90, 90) : -90;
   var s = stopAt(rising ? RISING : SETTING, alt);
   var raw = bandsOf(s.top, s.mid, s.hor, alt);
-  var withLight = shiftSky(raw, true), withDark = shiftSky(raw, false);
-  var skyLight = withLight.steps <= withDark.steps;
-  var sky = (skyLight ? withLight : withDark).bands;
+  var skyLight = alt < (rising ? FLIP_RISING : FLIP_SETTING);
+  var sky = raw;
   var inkBands = sky.slice(INK_FROM, INK_TO + 1);
   var lit = smooth(clamp((alt + 10) / 24, 0, 1)); // 0 in the dark, 1 in full daylight
   var land = [mix(mix(s.sand, s.hor, 0.5), "#e2ab94", 0.16 * lit), s.sand, mix(s.sand, "#7a4038", 0.45 * lit)];
@@ -142,7 +129,7 @@ function paletteAt(altDeg, rising) {
   var panel = tone([inkPanel], panelLight)[0];
   var panelInk = ensureContrast(panelLight ? "#f3eee6" : "#2a1d12", [panel], panelLight);
   var deep = smooth(clamp((C.luminance(panel) - 0.1) / 0.22, 0, 1)); // 0 on a dark panel, 1 on paper
-  var rowFill = mix("#f4bd6a", "#c8742a", deep);
+  var rowFill = mix("#f4bd6a", "#e39a38", deep);
   return {
     skyBands: sky, duneFar: land[0], duneMid: land[1], duneNear: land[2], land: land,
     sun: s.sun, sunCore: mix(s.sun, "#fff3d6", 0.14), halo: mix(s.sun, s.hor, 0.3),

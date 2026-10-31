@@ -158,3 +158,33 @@ test('family: the mother keeps her distance from the dunes at night, and nobody 
   var lab = C.toLab(dusk.father);
   assert.ok(lab[1] > 0 && lab[2] > 0.01, 'father ' + dusk.father + ' is not warm at dusk');
 });
+
+test('no band moves more than 0.02 OKLab in a 0.05 degree step, any of the nine, rising and setting (only the ink may flip)', function () {
+  var worst = 0, at = '';
+  [true, false].forEach(function (rising) {
+    var prev = pal(-30, rising);
+    for (var alt = -29.95; alt <= 60; alt += 0.05) {
+      var p = pal(alt, rising);
+      for (var i = 0; i < 9; i++) {
+        var d = C.distance(prev.skyBands[i], p.skyBands[i]);
+        if (d > worst) { worst = d; at = 'band ' + i + ' at ' + alt.toFixed(2) + (rising ? ' rising' : ' setting'); }
+      }
+      prev = p;
+    }
+  });
+  console.log('# largest band step per 0.05 deg ' + worst.toFixed(4) + ' (' + at + ')');
+  assert.ok(worst <= 0.02, 'sky pops: ' + worst.toFixed(3) + ' ' + at);
+});
+
+test('the ink flips once on each side and has 4.5:1 on both sides of the flip', function () {
+  [true, false].forEach(function (rising) {
+    var flips = 0, prev = null;
+    for (var alt = -30; alt <= 60; alt += 0.05) {
+      var p = pal(alt, rising);
+      if (prev && prev.inkSky !== p.inkSky && Math.abs(C.luminance(prev.inkSky) - C.luminance(p.inkSky)) > 0.4) { flips++; }
+      p.skyBands.slice(4, 8).forEach(function (b) { assert.ok(C.contrast(p.inkSky, b) >= 4.5 && C.contrast(p.accentSky, b) >= 4.5, 'text on ' + b + ' at ' + alt.toFixed(2)); });
+      prev = p;
+    }
+    assert.strictEqual(flips, 1, 'ink flips ' + flips + ' times ' + (rising ? 'rising' : 'setting'));
+  });
+});

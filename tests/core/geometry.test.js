@@ -39,7 +39,7 @@ test('the sun never jumps more than 12 px in a minute while any of it can be see
   });
 });
 
-test('the sun never touches the clock or the countdown: clearance over the year (every 12 minutes, every 5th day, 3 places)', function () {
+test('the sun disc keeps 16 px from the clock and the countdown over the year (disc only; halo contrast is in halo-contrast.test.js) (every 12 minutes, every 5th day, 3 places)', function () {
   var worst = 1e9, where = '';
   [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
     for (var day = 0; day < 365; day += 5) {
