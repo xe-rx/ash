@@ -19,6 +19,8 @@ var MAX_MS = 4102444800000;  // 2100-01-01
 var NAMES = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
 var KEYS = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
 
+var NO_SUN = "There is no sunrise or sunset at this location around today. Check lat and lon in ash.json.";
+
 function fail(message) { return { ok: false, error: message }; }
 
 function offsetFor(offsetAt, ms) {
@@ -68,6 +70,8 @@ function sceneAt(nowMs, offsetAt, config) {
   try {
     return build(nowMs, offsetAt, cfg);
   } catch (e) {
+    // A polar day within the days Ash looks at (yesterday to three days ahead) is a sun problem.
+    if (e === "polar") { return fail(NO_SUN); }
     return fail("Ash could not read the local time zone offset.");
   }
 }
@@ -81,7 +85,6 @@ function build(nowMs, offsetAt, cfg) {
     if (cache[day] === null) { throw "polar"; }
     return cache[day];
   }
-  var noSun = fail("There is no sunrise or sunset at this location today. Check lat and lon in ash.json.");
 
   var prayerDay = null;
   var t;
@@ -92,7 +95,7 @@ function build(nowMs, offsetAt, cfg) {
     t = times(today);
     times(today - 1); times(today + 1);
   } catch (e) {
-    if (e === "polar") { return noSun; }
+    if (e === "polar") { return fail(NO_SUN); }
     throw e;
   }
   if (prayerDay === null) { return fail("Ash could not work out the next prayer."); }

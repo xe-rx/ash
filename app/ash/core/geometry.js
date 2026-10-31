@@ -95,12 +95,42 @@ function layout(scene) {
 // A label box wholly on the ground (below the horizon) rather than on the sky.
 function onLand(box) { return box.y >= LAND_TOP; }
 
-// Clock: Poppins digits are proportional, so each character gets a fixed cell. The widest digit
-// advance measured in Qt 5.11 at 140 px (Poppins SemiBold, what Font.Medium resolves to) is 93 px.
-var CLOCK_PX = 140, DIGIT_CELL = 96, COLON_CELL = 40;
-function clockCells(text) {
-  var out = [];
-  for (var i = 0; i < text.length; i++) { out.push(text.charAt(i) === ":" ? COLON_CELL : DIGIT_CELL); }
+// Clock: Poppins digits are proportional, and Qt 5.11 cannot switch on tabular figures. Each
+// character is placed by its ink so every visible gap is the same (a "1" gets no extra air), and
+// the colon stays at the horizontal centre, so it never moves between minutes. The metrics are
+// the advance and the left/right ink bearings at 140 px of Poppins SemiBold (what Font.Medium
+// resolves to), read in Qt 5.11 with QFontMetricsF.advance and tightBoundingRect.
+var CLOCK_PX = 140, CLOCK_GAP = 15;
+var GLYPH_METRICS = {
+  "0": [90.4, 7, 6.4], "1": [50.7, 5, 11.7], "2": [80.4, 6, 4.4], "3": [83.9, 6, 7.9], "4": [92.5, 6, 4.5],
+  "5": [90.2, 11, 7.2], "6": [89.6, 9, 7.6], "7": [76.7, 4, 3.7], "8": [90.0, 8, 8.0], "9": [87.6, 9, 7.6],
+  ":": [36.8, 6, 5.8]
+};
+function glyphMetrics(ch) { return GLYPH_METRICS[ch] || GLYPH_METRICS["0"]; }
+
+// One entry per character: ch, x of the Text item (its glyph origin), colon flag, and the ink
+// extent inkLeft..inkRight, all in screen pixels. The colon's ink is centred on CX.
+function clockGlyphs(text) {
+  var n = text.length, colonAt = text.indexOf(":");
+  if (colonAt < 0) { colonAt = n; }
+  var out = [], i, m, ink;
+  for (i = 0; i < n; i++) { m = glyphMetrics(text.charAt(i)); out.push({ ch: text.charAt(i), colon: i === colonAt, x: 0, inkLeft: 0, inkRight: m[0] - m[1] - m[2] }); }
+  if (colonAt < n) {
+    m = glyphMetrics(":");
+    ink = m[0] - m[1] - m[2];
+    out[colonAt].inkLeft = CX - ink / 2; out[colonAt].inkRight = CX + ink / 2;
+  }
+  var edge = colonAt < n ? out[colonAt].inkLeft : CX;
+  for (i = colonAt - 1; i >= 0; i--) { // hours grow leftwards from the colon
+    ink = out[i].inkRight;
+    out[i].inkRight = edge - CLOCK_GAP; out[i].inkLeft = out[i].inkRight - ink; edge = out[i].inkLeft;
+  }
+  edge = colonAt < n ? out[colonAt].inkRight : CX;
+  for (i = colonAt + 1; i < n; i++) { // minutes grow rightwards
+    ink = out[i].inkRight;
+    out[i].inkLeft = edge + CLOCK_GAP; out[i].inkRight = out[i].inkLeft + ink; edge = out[i].inkRight;
+  }
+  for (i = 0; i < n; i++) { out[i].x = out[i].inkLeft - glyphMetrics(out[i].ch)[1]; }
   return out;
 }
 

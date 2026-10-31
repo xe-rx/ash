@@ -64,11 +64,18 @@ t_offline() { need_qt || return 0; mk_tmp_var D
   assert_rc 0 "offline render"
   assert_file "$D/ash-2026-06-21-14-30.png"
 }
+t_font_metrics() { need_qt || return 0
+  local table; table=$(node -e "console.log(JSON.stringify(require('$REPO_ROOT/tests/core/load-core').load('geometry.js').GLYPH_METRICS))")
+  local px; px=$(node -e "console.log(require('$REPO_ROOT/tests/core/load-core').load('geometry.js').CLOCK_PX)")
+  run env QT_QPA_PLATFORM=offscreen "$VENV/bin/python" -I "$REPO_ROOT/tests/qt/font_metrics.py" "$REPO_ROOT/app/ash/fonts" "$px" "$table"
+  assert_rc 0 "glyph table vs Qt ($OUT $ERR)"
+}
 
 t "renders at midday with a clean log and a real picture" t_render
 t "renders at night with a clean log" t_night
 t "a bad config shows the error screen, not a time" t_error_screen
 t "no error screen before the first real tick" t_first_frame
 t "the 8+8 contact sheet renders" t_sheet
+t "the clock glyph table matches Poppins in Qt 5.11 (SemiBold)" t_font_metrics
 t "renders with no network (unshare -rn)" t_offline
 summary
