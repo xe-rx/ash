@@ -19,9 +19,9 @@ function bandAt(pal, y) {
 }
 function backgroundAt(pal, view, x, y) {
   var bg = bandAt(pal, y);
-  for (var k = 2; k >= 0; k--) {
+  for (var k = 4; k >= 0; k--) {
     var dx = x - view.x, dy = y - view.y;
-    if (view.look.glowVisible && dx * dx + dy * dy <= view.look.haloR[k] * view.look.haloR[k]) { bg = blend(bg, pal.halo, view.look.haloAlpha[k]); }
+    if (view.look.glowVisible && dx * dx + dy * dy <= view.look.haloR[k] * view.look.haloR[k]) { bg = blend(bg, k >= 3 ? pal.glow : pal.halo, view.look.haloAlpha[k]); }
   }
   return bg;
 }

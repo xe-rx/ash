@@ -32,6 +32,21 @@ function tone(bands, light) {
   return out;
 }
 
+// A tint (the hue and chroma of `hex`) that leaves the luminance of `under` unchanged when laid over
+// it at alpha a the way the renderer does (a plain blend of the sRGB values): bisection on lightness.
+function blendedLuminance(under, over, a) {
+  var u = C.hexToRgb(under), o = C.hexToRgb(over);
+  return C.luminance(C.rgbToHex([u[0] + (o[0] - u[0]) * a, u[1] + (o[1] - u[1]) * a, u[2] + (o[2] - u[2]) * a]));
+}
+function tintKeepingLuminance(hex, under, a) {
+  var lab = C.toLab(hex), lo = 0, hi = 1, target = C.luminance(under), i;
+  for (i = 0; i < 24; i++) {
+    lab[0] = (lo + hi) / 2;
+    if (blendedLuminance(under, C.fromLab(lab), a) < target) { lo = lab[0]; } else { hi = lab[0]; }
+  }
+  return C.fromLab(lab);
+}
+
 function ensureContrast(hex, bgs, toward) { // lightness walks toward white or black until readable
   var lab = C.toLab(hex), n = 0;
   function ok(h) { for (var i = 0; i < bgs.length; i++) { if (C.contrast(h, bgs[i]) < SAFE) { return false; } } return true; }
@@ -75,6 +90,9 @@ function paletteAt(altDeg, rising) {
   var land = [s.duneFar, s.duneMid, s.duneNear];
   // Figures take the light of the moment (tint), then sink into its shade (warm at dusk, cool at night).
   var dim = function (hex) { return mix(mix(hex, s.tint, s.lit), s.shade, s.sink); };
+  // The very large faint halos only tint: their colour is chosen so that, laid over the sky
+  // behind the clock, the luminance stays the same: the text keeps its contrast on top of them (the three tight halos use `halo`).
+  var glow = tintKeepingLuminance(mix(s.sun, s.hor, 0.2), sky[5], 0.26);
   var inkS = skyLight ? "#f3eee6" : "#14233a";
   var accS = skyLight ? "#f3c47c" : "#8a3a1e";
   // The panel: warm paper (tinted by the horizon light) by day, then a short crossing through a
@@ -88,7 +106,7 @@ function paletteAt(altDeg, rising) {
   var rowFill = mix("#f4bd6a", "#e39a38", deep);
   return {
     skyBands: sky, farTwo: s.farTwo, farOne: s.farOne, duneFar: land[0], duneMid: land[1], duneNear: land[2], land: land,
-    sun: s.sun, sunCore: mix(s.sun, "#fff3d6", 0.14), halo: mix(s.sun, s.hor, 0.3),
+    sun: s.sun, sunCore: mix(s.sun, "#fff3d6", 0.14), halo: mix(s.sun, s.hor, 0.3), glow: glow,
     moon: alt < -3, stars: alt < -9, moonAlpha: clamp((-alt - 3) / 6, 0, 1), starAlpha: clamp((-alt - 8) / 6, 0, 1),
     moonColor: "#e9e6d8", starColor: "#cfd3f0",
     inkSky: ensureContrast(inkS, inkBands, skyLight), accentSky: ensureContrast(accS, inkBands, skyLight),
