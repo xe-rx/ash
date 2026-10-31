@@ -18,6 +18,21 @@ while (($#)); do
   esac
 done
 export QT_QPA_PLATFORM=${QT_QPA_PLATFORM:-xcb} QT_QUICK_BACKEND=software TZ=Europe/Amsterdam
+# Local displays (:N or :N.M) live at $x11/XN. WSLg keeps the real socket in /wslg/.X11-unix while
+# /tmp/.X11-unix is empty, so point DISPLAY there. With no socket at all, warn and carry on: the server
+# may use an abstract socket (e.g. --net=host without the mount), so let Qt connect or report its error.
+# ASH_X11_DIR and ASH_WSLG_X11_DIR override the two directories (used by the tests).
+x11=${ASH_X11_DIR:-/tmp/.X11-unix} wslg=${ASH_WSLG_X11_DIR:-/wslg/.X11-unix}
+if [[ $QT_QPA_PLATFORM == xcb && ${DISPLAY:-} =~ ^:([0-9]+)(\.[0-9]+)?$ ]]; then
+  n=${BASH_REMATCH[1]}
+  if [[ -S $x11/X$n ]]; then :
+  elif [[ -S $wslg/X$n ]]; then export DISPLAY=$wslg/X$n
+  else
+    echo "run-local: warning: no X server socket found for DISPLAY=$DISPLAY, trying anyway." >&2
+    echo "  Run this from a desktop terminal (on WSL2: use WSLg, or start an X server and export DISPLAY)." >&2
+    echo "  To render without a window use scripts/screenshot.sh instead." >&2
+  fi
+fi
 need=""
 case $QT_QPA_PLATFORM in
   xcb) [[ -n ${DISPLAY:-} ]] || need=DISPLAY ;;
