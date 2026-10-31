@@ -40,8 +40,10 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| Scene, view, live run | frontend-engineer | frontend-engineer/scene | .worktrees/frontend-engineer-scene | building |
 
 ## In review
 
 ## Done
+- PR 0001 Qt toolchain and checks; PR 0002 calculation core
 - Kickoff: all phases; proposal approved by the PO 2026-10-31
