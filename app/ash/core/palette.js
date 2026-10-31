@@ -90,9 +90,11 @@ function paletteAt(altDeg, rising) {
   var land = [s.duneFar, s.duneMid, s.duneNear];
   // Figures take the light of the moment (tint), then sink into its shade (warm at dusk, cool at night).
   var dim = function (hex) { return mix(mix(hex, s.tint, s.lit), s.shade, s.sink); };
-  // The very large faint halos only tint: their colour is chosen so that, laid over the sky
-  // behind the clock, the luminance stays the same: the text keeps its contrast on top of them (the three tight halos use `halo`).
-  var glow = tintKeepingLuminance(mix(s.sun, s.hor, 0.2), sky[5], 0.26);
+  // The very large faint halos only warm the sky. Near the ink flip (sky luminance about 0.179) their
+  // colour is chosen so that, laid over the sky behind the clock, the luminance stays the same: the
+  // text keeps its contrast on top of them. Away from the flip they are the plain light of the sun.
+  var free = mix(s.sun, s.hor, 0.35), freeW = smooth(clamp((Math.abs(C.luminance(sky[5]) - 0.179) - 0.1) / 0.1, 0, 1));
+  var glow = mix(tintKeepingLuminance(mix(s.sun, s.hor, 0.2), sky[5], 0.26), free, freeW);
   var inkS = skyLight ? "#f3eee6" : "#14233a";
   var accS = skyLight ? "#f3c47c" : "#8a3a1e";
   // The panel: warm paper (tinted by the horizon light) by day, then a short crossing through a

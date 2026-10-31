@@ -17,7 +17,7 @@ function sunLook(altDeg) {
   var glow = alt >= 0 ? 1 : clamp((alt - GLOW_END_DEG) / -GLOW_END_DEG, 0, 1);
   var boost = 1 + 0.7 * smooth(clamp(-alt / 4, 0, 1)); // twilight glow reads a little stronger
   var r = lerp(46, 30, high);
-  var reach = [lerp(1.75, 1.4, high), lerp(2.6, 1.9, high), lerp(3.6, 2.45, high), 4.8, 7.6];
+  var reach = [lerp(1.75, 1.4, high), lerp(2.6, 1.9, high), lerp(3.6, 2.45, high), 3.9, 5.8];
   var low = 1 - smooth(clamp(alt / WIDE_END_DEG, 0, 1)); // 1 at the horizon, 0 from 25 degrees up
   var alpha = [lerp(0.3, 0.22, high) * glow * boost, lerp(0.19, 0.14, high) * glow * boost, lerp(0.1, 0.08, high) * glow * boost,
     0.16 * low * glow * boost, 0.12 * low * glow * boost];

@@ -10,7 +10,7 @@ test('five halos: three tight ones and two very large faint discs that warm the 
   assert.strictEqual(l.haloR.length, 5);
   assert.strictEqual(l.haloAlpha.length, 5);
   for (var i = 1; i < 5; i++) { assert.ok(l.haloR[i] > l.haloR[i - 1], 'radii grow'); }
-  assert.ok(l.haloR[3] >= 4.5 * l.r && l.haloR[4] >= 7 * l.r, 'the wide discs are very large: ' + l.haloR);
+  assert.ok(l.haloR[3] >= 3.5 * l.r && l.haloR[4] >= 5.5 * l.r, 'the wide discs are very large: ' + l.haloR);
   assert.ok(l.haloAlpha[3] > 0 && l.haloAlpha[4] > 0 && l.haloAlpha[3] <= 0.28 && l.haloAlpha[4] <= 0.28, 'faint: ' + l.haloAlpha);
 });
 
