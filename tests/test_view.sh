@@ -64,6 +64,13 @@ t_offline() { need_qt || return 0; mk_tmp_var D
   assert_rc 0 "offline render"
   assert_file "$D/ash-2026-06-21-14-30.png"
 }
+t_strip() { need_qt || return 0; mk_tmp_var D
+  run "$SHOT" --strip sunset --out "$D"; clean
+  assert_rc 0 "strip exit"
+  assert_file "$D/strip-sunset.png"; assert_file "$D/sunset-m60.png"; assert_file "$D/sunset-p100.png"
+  run "$SHOT" --strip noon --out "$D"
+  assert_rc 2 "bad strip name"
+}
 t_font_metrics() { need_qt || return 0
   local core="$REPO_ROOT/tests/core/load-core" args
   args=$(node -e "var L=require('$core').load,C=L('clock.js'),T=L('table.js');console.log(JSON.stringify(C.GLYPH_METRICS) + '\n' + C.CLOCK_PX + ' ' + T.TIME_PX)")
@@ -79,5 +86,6 @@ t "a bad config shows the error screen, not a time" t_error_screen
 t "no error screen before the first real tick" t_first_frame
 t "the 8+8 contact sheet renders" t_sheet
 t "the clock glyph table matches Poppins in Qt 5.11 (SemiBold)" t_font_metrics
+t "a sunset strip of 10 frames renders" t_strip
 t "renders with no network (unshare -rn)" t_offline
 summary

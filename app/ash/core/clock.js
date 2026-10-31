@@ -6,7 +6,7 @@
 // bearings at 140 px of Poppins SemiBold (what Font.Medium resolves to), read in Qt 5.11 with
 // QFontMetricsF; they scale linearly with the size (tests/qt/font_metrics.py checks the sizes in use).
 
-var CLOCK_CX = 360;
+var CLOCK_CX = 365;
 var CLOCK_PX = 108, CLOCK_GAP_EM = 0.1;
 var CLOCK_INK_TOP = 198;                 // y of the top of the digits
 var INK_TOP_EM = 0.30, INK_BOTTOM_EM = 1.07; // digit ink relative to the Text item's top, per px

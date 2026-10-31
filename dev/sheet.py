@@ -5,7 +5,7 @@ from PyQt5.QtGui import QImage, QPainter, QColor, QFont, QGuiApplication
 
 app = QGuiApplication(sys.argv[:1])
 shots = json.load(open(sys.argv[1]))
-tw, th, cols = 512, 300, 4
+tw, th, cols = 512, 300, (5 if len(shots) == 10 else 4)
 rows = (len(shots) + cols - 1) // cols
 sheet = QImage(tw * cols, (th + 26) * rows, QImage.Format_RGB32)
 sheet.fill(QColor("#101014"))

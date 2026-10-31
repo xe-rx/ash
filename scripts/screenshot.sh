@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 # Renders Ash offscreen (software backend) to PNG with item.grabToImage.
 # Usage: scripts/screenshot.sh [--at "YYYY-MM-DD HH:MM"] [--out DIR] [--config FILE]
+#        scripts/screenshot.sh --strip sunrise|sunset [--out DIR]   (10 frames around that moment, 21 March,
+#                                                     single PNGs plus strip-<name>.png)
 #        scripts/screenshot.sh --sheet [--out DIR]   (21 June and 21 December, 8 moments each,
 #                                                     single PNGs plus sheet.png)
 # Output defaults to $PROJECT_DATA/screens (PROJECT_DATA defaults to ~/ash-data). TZ is Europe/Amsterdam.
 set -euo pipefail
 root=$(cd "$(dirname "$0")/.." && pwd -P)
 data=${PROJECT_DATA:-$HOME/ash-data}
-out=$data/screens; at=""; sheet=0; config=""
+out=$data/screens; at=""; sheet=0; strip=""; config=""
 while (($#)); do
   case $1 in
     --at) at=${2:?--at needs a value}; shift 2 ;;
     --out) out=${2:?--out needs a dir}; shift 2 ;;
     --config) config=${2:?}; shift 2 ;;
     --sheet) sheet=1; shift ;;
-    -h|--help) sed -n '2,7p' "$0"; exit 0 ;;
+    --strip) strip=${2:?--strip needs sunrise or sunset}; [[ $strip == sunrise || $strip == sunset ]] || { echo "screenshot: --strip takes sunrise or sunset" >&2; exit 2; }; shift 2 ;;
+    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
     *) echo "screenshot: unknown option $1" >&2; exit 2 ;;
   esac
 done
@@ -32,7 +35,13 @@ cleanup() { rm -f "$root"/app/ash/core/*.jsc "$root"/app/ash/*.qmlc "$root"/app/
 trap cleanup EXIT
 run() { "$venv/bin/python" -I "$root/dev/harness.py" --config "$config" "$@"; }
 
-if ((sheet)); then
+if [[ -n $strip ]]; then
+  shots=$(mktemp); trap 'rm -f "$shots"; cleanup' EXIT
+  node "$root/dev/sheet-times.js" "$config" "$out" "$strip" > "$shots"
+  run --shots "$shots"
+  "$venv/bin/python" -I "$root/dev/sheet.py" "$shots" "$out/strip-$strip.png"
+  echo "strip: $out/strip-$strip.png"
+elif ((sheet)); then
   shots=$(mktemp); trap 'rm -f "$shots"; cleanup' EXIT
   node "$root/dev/sheet-times.js" "$config" "$out" > "$shots"
   run --shots "$shots"

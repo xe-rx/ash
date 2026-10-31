@@ -108,7 +108,7 @@ function paletteAt(altDeg, rising) {
   var dim = function (hex) { return mix(mix(hex, s.hor, 0.12), "#262d52", 0.68 * (1 - lit)); };
   var inkS = skyLight ? "#f3eee6" : "#14233a";
   var accS = skyLight ? "#f3c47c" : "#8a3a1e";
-  var panelFlat = mix(mix(INK_NIGHT_PANEL, s.hor, 0.1), PAPER, smooth(clamp((alt + 7) / 9, 0, 1)));
+  var panelFlat = C.mixLch(mix(INK_NIGHT_PANEL, s.hor, 0.1), PAPER, smooth(clamp((alt + 7) / 9, 0, 1)));
   var panelLight = inkIsLight([panelFlat]);
   var panel = tone([panelFlat], panelLight)[0];
   var panelInk = ensureContrast(panelLight ? "#f3eee6" : "#2a1d12", [panel], panelLight);

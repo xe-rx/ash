@@ -1,19 +1,18 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 20:58 · Branch: frontend-engineer/atmosphere · Status: in-progress
+Updated: 2026-10-31 21:02 · Branch: frontend-engineer/atmosphere · Status: done
 
 ## Task
-PO redesign: remove sun path/ring/labels; prayer table panel right (Hijri header, rail dot); prettier altitude-driven sun (3 halos + disc + core, glow under horizon); dusty 7-band palette; clock under the arc with real sun-vs-clock clearance test. Baseline QML items before: 192-213 total (179-200 visible).
+PO redesign: no sun path/labels; prayer table panel (Hijri header, rail dot); altitude-driven sun with halos and twilight glow; dusty 7-band palette; clock/countdown under the arc with a real sun clearance test.
 
 ## Done
-- core: colour.js (maths + mixLch), palette.js (7 bands, panel colours), sunlook.js, geometry.js (arc, sunPlace/sunView, shift, family), clock.js, table.js; scene.js railRow (pathProgress removed).
-- view: Sky(7 bands), Sun, PrayerTable, Readouts, AshScene; old SunPath/SunRing/PrayerLabels/SunDisc removed.
-- tests: rail, geometry (arc anchors, clearance min 35 px, panel), clock, palette updated; qt font_metrics checks sizes 108 and 27.
+- core: colour.js, palette.js, sunlook.js, geometry.js (arc, sunView, family), clock.js, table.js, scene.js railRow. view: Sky, Sun, PrayerTable, Readouts, AshScene. Old path/ring/labels removed.
+- tests: rail, geometry (arc anchors, clearance min 32.9 px, panel clear), clock, palette (7 bands, contrast vs real backgrounds), qt font_metrics at 108 and 27 px, strip test in test_view.sh. screenshot.sh --strip sunrise|sunset.
+- Screens: ~/ash-data/screens-atmosphere/ (sheet.png, strip-sunrise.png, strip-sunset.png). Items 130-146 total (was 192-213).
 
 ## Next steps
-1. Sheet + sunrise/sunset strips (>=8 frames) to ~/ash-data/screens-atmosphere/, look critically, tune colours/family x.
-2. Element count after; contrast minima; docs/GLOSSARY update (sun path mentions); dev/sheet-times unchanged.
-3. Full checks: REQUIRE_QT=1 scripts/test.sh, check-file-length, check-pii, check-ash-rules, check-qml.
+1. Tech lead review/merge. PO to judge on the wall; live window untested by me.
+2. Possible polish: panel colour flips quickly at dusk (single step, mauve -> navy); glow after sunset is subtle behind the panel.
 
 ## Gotchas learned
 - node --test tests/core/*.test.js (dir form fails); npm ci --offline in a new worktree.
-- Ink tone only on bands 3..5 (those behind clock/countdown); palette test derives bands from geometry.
+- Ink toning only on bands 3..5 (behind clock/countdown); geometry BANDS and clock layout are tied.

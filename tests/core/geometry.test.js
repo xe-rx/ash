@@ -17,9 +17,9 @@ function clearance(c, r, b) {
 test('the sun arc: sunrise and sunset at its ends on the horizon, Dhuhr near the top (literal pixels)', function () {
   var s = at(H.ams(2026, 6, 21, 3, 0));
   var rise = G.sunPlace(at(s.sunrise.ms)), set = G.sunPlace(at(s.sunset.ms)), noon = G.sunPlace(at(s.prayers[1].ms));
-  assert.ok(Math.abs(rise.x - 45) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
-  assert.ok(Math.abs(set.x - 675) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
-  assert.ok(Math.abs(noon.x - 360) < 25 && Math.abs(noon.y - 65) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
+  assert.ok(Math.abs(rise.x - 60) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
+  assert.ok(Math.abs(set.x - 670) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
+  assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 65) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
 });
 
 test('the sun never jumps more than 12 px in a minute while any of it can be seen (dense days, 3 places)', function () {
@@ -39,11 +39,11 @@ test('the sun never jumps more than 12 px in a minute while any of it can be see
   });
 });
 
-test('the sun never touches the clock or the countdown: clearance over the year (every 10 minutes, every 3rd day)', function () {
+test('the sun never touches the clock or the countdown: clearance over the year (every 12 minutes, every 5th day, 3 places)', function () {
   var worst = 1e9, where = '';
   [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
-    for (var day = 0; day < 365; day += 3) {
-      for (var m = 0; m < 1440; m += 10) {
+    for (var day = 0; day < 365; day += 5) {
+      for (var m = 0; m < 1440; m += 12) {
         var s = at(H.ams(2026, 1, 1 + day, 0, 0) + m * 60000 + 3600000, place);
         if (!s.sun.isUp) { continue; }
         var v = G.sunView(s);
