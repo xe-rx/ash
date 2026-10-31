@@ -29,9 +29,9 @@ var RISING = [
   // first light: cool blue, the faintest rose along the horizon
   [-12, m("#1a2250", "#2d3868", "#4a5486", "#424c7c", "#394272", "#2e3560", "#232848", "#191d38", "#8f9ac8", "#2c3460", 0.62, "#7a86c0", 0.04)],
   // dawn: violet sky over a mauve horizon, the land still in blue shade
-  [-7, m("#37457a", "#6d729e", "#916a83", "#85667f", "#745a76", "#66506b", "#523f5a", "#3e304c", "#e98558", "#4a4268", 0.55, "#e0a090", 0.1)],
+  [-7, m("#37457a", "#6d729e", "#916a83", "#8a6a8e", "#755a7e", "#66506b", "#523f5a", "#3e304c", "#e98558", "#4a4268", 0.55, "#e0a090", 0.1)],
   // sunrise: low orange light, cool plum shadows
-  [-1, m("#5f80a6", "#c6a3a6", "#f0b98e", "#c6a492", "#cb9b87", "#c98270", "#b87060", "#8f5048", "#f0a255", "#6a4868", 0.35, "#f4b890", 0.16)],
+  [-1, m("#5f80a6", "#c6a3a6", "#f0b98e", "#d6a2a2", "#c58c92", "#c98270", "#b87060", "#8f5048", "#f0a255", "#6a4868", 0.35, "#f4b890", 0.16)],
   [4, m("#6c9ac0", "#d8b4ae", "#f4d19c", "#d2c4c0", "#d8b39b", "#dc9c78", "#c98a62", "#a05c38", "#f4bd62", "#7a5a70", 0.15, "#f6cc98", 0.12)],
   [10, m("#6c9ac2", HAZE, "#f2dcb0", "#d6d4d2", "#d4c3ad", "#e0b48a", "#d8a468", "#b8723f", "#f6cc72", "#7e6074", 0.06, "#f8d8a0", 0.08)],
   [24, m("#6c9ac2", HAZE, "#efe1c8", "#d4d7dc", "#d2c5b5", "#e1b78e", "#d9a566", "#b9733f", "#f8d986", "#8a6a78", 0, "#fff0d0", 0.05)],
@@ -43,9 +43,9 @@ var SETTING = [
   // dusk: indigo over a plum horizon, the land a shade of the same plum, shadows turning cool
   [-10, m("#1c2050", "#38305e", "#563d6c", "#4e3b69", "#433360", "#392b54", "#2b2245", "#211a37", "#d08a8c", "#3c3158", 0.58, "#a0607a", 0.05)],
   // after sunset: the afterglow, warm rose shadows
-  [-4, m("#2d3068", "#5f4378", "#9b4e50", "#924d55", "#824a58", "#6e4258", "#5c3650", "#46293f", "#e8774c", "#7a4452", 0.45, "#d88070", 0.12)],
+  [-4, m("#2d3068", "#5f4378", "#9b4e50", "#a45a78", "#85486a", "#6e4258", "#5c3650", "#46293f", "#e8774c", "#7a4452", 0.45, "#d88070", 0.12)],
   // sunset: bright red-orange horizon, a violet band above, the ground a dark plum in its shade
-  [0, m("#3b4078", "#966594", "#b25e44", "#a65b48", "#985050", "#823f4f", "#6c3548", "#542a3e", "#ee8049", "#6a3e52", 0.3, "#f09060", 0.18)],
+  [0, m("#3b4078", "#966594", "#b25e44", "#b0627a", "#975171", "#7c4050", "#6c3548", "#542a3e", "#ee8049", "#6a3e52", 0.3, "#f09060", 0.18)],
   // golden hour: warm low light, pink-lilac distance, long violet shadows
   [6, m("#5f84a8", "#cc9486", "#f2b46e", "#e4b595", "#d9a07c", "#d4905a", "#c47c4c", "#96523a", "#f4b85c", "#7a4e66", 0.12, "#f8c070", 0.2)],
   [15, m("#6c96bc", "#dcb8b4", "#f3d08e", "#dcc9b0", "#d6b78e", "#dca66a", "#d8a05a", "#b06836", "#f5c468", "#805a6e", 0.05, "#f8cc80", 0.14)],
