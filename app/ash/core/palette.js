@@ -10,25 +10,26 @@ var SAFE = 4.62; // margin over the minimum, for hex rounding
 // Authored stops, ascending altitude. top/hor: sky at the zenith and horizon; sand: middle dune;
 // sun: the disc. Rising and setting differ between about -18 and +30 degrees.
 var NIGHT = { top: "#03050c", hor: "#0b1226", sand: "#0f1322", sun: "#6a6f8c" };
-var DAY = { top: "#4fb4ee", hor: "#c9edf9", sand: "#ebb561", sun: "#ffe066" };
+var DAY = { top: "#4fb4ee", hor: "#c9edf9", mid: "#8ccbf2", sand: "#ebb561", sun: "#ffe066" };
 var RISING = [
   [-90, NIGHT],
   [-20, { top: "#050a1c", hor: "#0e2250", sand: "#111a30", sun: "#6a6f8c" }],
   [-12, { top: "#0a1c52", hor: "#2569ad", sand: "#1b2b4d", sun: "#9fb8e8" }],
-  [-6, { top: "#5671c0", hor: "#e07a98", sand: "#7e5a7c", sun: "#ffb48a" }],
-  [-1, { top: "#6a9ee0", hor: "#ffc47e", sand: "#d98e68", sun: "#ffd98a" }],
-  [4, { top: "#58aaea", hor: "#ffe4a6", sand: "#e8a45f", sun: "#ffe08a" }],
-  [20, { top: "#52b0ec", hor: "#cbeefa", sand: "#ebb05f", sun: "#ffe066" }],
+  [-6, { top: "#5671c0", hor: "#e07a98", mid: "#a876c0", sand: "#7e5a7c", sun: "#ffb48a" }],
+  [-1, { top: "#6a9ee0", hor: "#ffc47e", mid: "#d9a8d0", sand: "#d98e68", sun: "#ffd98a" }],
+  [4, { top: "#58aaea", hor: "#ffe4a6", mid: "#e2b6d6", sand: "#e8a45f", sun: "#ffe08a" }],
+  [10, { top: "#54aeec", hor: "#fde9b0", mid: "#c2b8f2", sand: "#eaa95c", sun: "#ffe270" }],
+  [20, { top: "#52b0ec", hor: "#cbeefa", mid: "#8ccbf2", sand: "#ebb05f", sun: "#ffe066" }],
   [90, DAY]
 ];
 var SETTING = [
   [-90, NIGHT],
   [-20, { top: "#050818", hor: "#161a44", sand: "#13152b", sun: "#6a6f8c" }],
   [-10, { top: "#1a1d5c", hor: "#6f3a8a", sand: "#473358", sun: "#d9a0d0" }],
-  [-4, { top: "#2f2978", hor: "#c0406e", sand: "#8a4166", sun: "#ff9a7a" }],
-  [0, { top: "#43388f", hor: "#e85f55", sand: "#cb5e48", sun: "#ff9966" }],
-  [8, { top: "#5f8ed4", hor: "#ffbf66", sand: "#eda23f", sun: "#ffc94d" }],
-  [22, { top: "#56a8e6", hor: "#ffe5a3", sand: "#efb24a", sun: "#ffd23f" }],
+  [-4, { top: "#2f2978", hor: "#c0406e", mid: "#7a3a90", sand: "#8a4166", sun: "#ff9a7a" }],
+  [0, { top: "#43388f", hor: "#e85f55", mid: "#9a4a98", sand: "#cb5e48", sun: "#ff9966" }],
+  [8, { top: "#5f8ed4", hor: "#ffbf66", mid: "#d6a0b0", sand: "#eda23f", sun: "#ffc94d" }],
+  [22, { top: "#56a8e6", hor: "#ffe5a3", mid: "#a8d4f0", sand: "#efb24a", sun: "#ffd23f" }],
   [55, DAY],
   [90, DAY]
 ];
@@ -107,6 +108,14 @@ function ensureContrast(hex, bgs, toward) { // lightness walks toward white or b
 
 // ---- stops ----
 function smooth(t) { return t * t * (3 - 2 * t); }
+function withMid(list) {
+  for (var i = 0; i < list.length; i++) {
+    if (!list[i][1].mid) { var c = {}; for (var k in list[i][1]) { c[k] = list[i][1][k]; } c.mid = mix(c.top, c.hor, 0.5); list[i][1] = c; }
+  }
+  return list;
+}
+RISING = withMid(RISING); SETTING = withMid(SETTING);
+
 function stopAt(list, alt) {
   if (alt <= list[0][0]) { return list[0][1]; }
   for (var i = 1; i < list.length; i++) {
@@ -120,10 +129,12 @@ function stopAt(list, alt) {
   return list[list.length - 1][1];
 }
 
-function bandsOf(top, hor) {
-  var out = [];
-  for (var i = 0; i < 5; i++) { out.push(mix(top, hor, Math.pow(i / 4, 1.25))); }
-  return out;
+// a mix of two hues loses chroma midway; put some back so the in-between bands stay colourful
+function vivid(hex) { var l = toLab(hex); return fromLab([l[0], l[1] * 1.45, l[2] * 1.45]); }
+
+// top, a deliberate middle colour (so blue never melts into orange through grey), and the horizon
+function bandsOf(top, mid, hor) {
+  return [top, vivid(mix(top, mid, 0.55)), mid, vivid(mix(mid, hor, 0.6)), hor];
 }
 
 function shade(hex, f) { var l = toLab(hex); return fromLab([l[0] * f, l[1] * 1.15 + 0.012, l[2]]); }
@@ -131,8 +142,8 @@ function shade(hex, f) { var l = toLab(hex); return fromLab([l[0] * f, l[1] * 1.
 function paletteAt(altDeg, rising) {
   var alt = typeof altDeg === "number" && isFinite(altDeg) ? clamp(altDeg, -90, 90) : -90;
   var s = stopAt(rising ? RISING : SETTING, alt);
-  var skyLight = inkIsLight(bandsOf(s.top, s.hor));
-  var sky = tone(bandsOf(s.top, s.hor), skyLight);
+  var skyLight = inkIsLight(bandsOf(s.top, s.mid, s.hor));
+  var sky = tone(bandsOf(s.top, s.mid, s.hor), skyLight);
   var lit = smooth(clamp((alt + 10) / 24, 0, 1)); // 0 in the dark, 1 in full daylight
   var far = mix(mix(s.sand, s.hor, 0.5), "#f4a58f", 0.22 * lit), mid = s.sand, near = mix(s.sand, "#8f2f3a", 0.5 * lit);
   var land = [far, mid, near];
@@ -155,3 +166,5 @@ function paletteAt(altDeg, rising) {
     boy: dim("#2d5fa6"), skin: dim("#c98c60"), skinDark: dim("#8e5a3c"), hair: dim("#2a1a16")
   };
 }
+
+function chroma(hex) { var l = toLab(hex); return Math.sqrt(l[1] * l[1] + l[2] * l[2]); }

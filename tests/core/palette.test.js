@@ -62,3 +62,13 @@ test('moon and stars only at night, and the palette is defined for odd input', f
   var p = pal(NaN, true);
   assert.strictEqual(p.skyBands.length, 5);
 });
+
+test('sky bands stay colourful from sunrise to sunset: no grey midpoints between blue and orange', function () {
+  [true, false].forEach(function (rising) {
+    for (var alt = -3; alt <= 90; alt += 1) {
+      pal(alt, rising).skyBands.forEach(function (c, i) {
+        assert.ok(P.chroma(c) >= 0.02, 'band ' + i + ' ' + c + ' chroma ' + P.chroma(c).toFixed(3) + ' at ' + alt + (rising ? ' rising' : ' setting'));
+      });
+    }
+  });
+});
