@@ -28,7 +28,8 @@ var SETTING = [
   [-4, { top: "#2f2978", hor: "#c0406e", sand: "#8a4166", sun: "#ff9a7a" }],
   [0, { top: "#43388f", hor: "#e85f55", sand: "#cb5e48", sun: "#ff9966" }],
   [8, { top: "#5f8ed4", hor: "#ffbf66", sand: "#eda23f", sun: "#ffc94d" }],
-  [28, { top: "#56a8e6", hor: "#ffe5a3", sand: "#efb24a", sun: "#ffd23f" }],
+  [22, { top: "#56a8e6", hor: "#ffe5a3", sand: "#efb24a", sun: "#ffd23f" }],
+  [55, DAY],
   [90, DAY]
 ];
 
@@ -132,11 +133,11 @@ function paletteAt(altDeg, rising) {
   var s = stopAt(rising ? RISING : SETTING, alt);
   var skyLight = inkIsLight(bandsOf(s.top, s.hor));
   var sky = tone(bandsOf(s.top, s.hor), skyLight);
-  var far = mix(s.sand, s.hor, 0.55), mid = s.sand, near = shade(s.sand, 0.72);
+  var lit = smooth(clamp((alt + 10) / 24, 0, 1)); // 0 in the dark, 1 in full daylight
+  var far = mix(mix(s.sand, s.hor, 0.5), "#f4a58f", 0.22 * lit), mid = s.sand, near = mix(s.sand, "#8f2f3a", 0.55);
   var land = [far, mid];
   var landLight = inkIsLight(land);
   land = tone(land, landLight);
-  var lit = smooth(clamp((alt + 10) / 24, 0, 1)); // 0 in the dark, 1 in full daylight
   var dim = function (hex) { return mix(mix(hex, s.hor, 0.12), "#04060e", 0.72 * (1 - lit)); };
   var inkS = skyLight ? "#f2efff" : "#0b1c30", inkL = landLight ? "#f2efff" : "#0b1c30";
   var accS = skyLight ? "#ffc861" : "#a1123c", accL = landLight ? "#ffc861" : "#a1123c";
