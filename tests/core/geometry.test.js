@@ -81,3 +81,43 @@ test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes'
   }
   assert.ok(Object.keys(seen).length > 10);
 });
+
+// The night ring: one continuous journey sunset -> bottom at solar midnight -> next sunrise.
+[['Utrecht', H.PLACES.utrecht], ['Maastricht', H.PLACES.maastricht], ['Groningen', H.PLACES.groningen]].forEach(function (pl) {
+  test('the sun marker never jumps more than 12 px in a minute, every minute of the DST, solstice and 12 other days of 2026 in ' + pl[0], function () {
+    var start = H.ams(2026, 1, 1, 0, 0), prev = null, worst = 0, at = '', minutes = 0;
+    var dstDays = [[3, 29], [10, 25], [6, 21], [12, 21]];
+    function isDense(ms) { // every minute of the DST, solstice and equinox days, and one day in 30 otherwise
+      var d = new Date(ms + 3600000);
+      for (var i = 0; i < dstDays.length; i++) { if (d.getUTCMonth() + 1 === dstDays[i][0] && d.getUTCDate() === dstDays[i][1]) { return true; } }
+      return Math.floor((ms - start) / 86400000) % 30 === 0;
+    }
+    for (var ms = start; ms < start + 365 * 86400000; ms += 60000) {
+      if (!isDense(ms)) { prev = null; continue; }
+      var s = Scene.sceneAt(ms, H.amsterdamOffset, pl[1]);
+      var sun = G.sunPoint(s);
+      if (prev) {
+        var d = Math.hypot(sun.x - prev.x, sun.y - prev.y);
+        if (d > worst) { worst = d; at = new Date(ms).toISOString(); }
+      }
+      prev = sun; minutes++;
+    }
+    assert.ok(minutes > 20000);
+    assert.ok(worst <= 12, 'jump ' + worst.toFixed(1) + ' px at ' + at);
+  });
+});
+
+test('the ring reaches the bottom of the path around solar midnight, in June and December', function () {
+  [[6, 21], [12, 21]].forEach(function (md) {
+    var lowest = 0, lowAt = 0;
+    for (var m = 0; m < 24 * 60; m += 5) {
+      var ms = H.ams(2026, md[0], md[1], 0, 0) + m * 60000;
+      var s = Scene.sceneAt(ms, H.amsterdamOffset, H.PLACES.utrecht);
+      var pt = G.sunPoint(s);
+      if (!s.sun.isUp && pt.y > lowest) { lowest = pt.y; lowAt = ms; }
+    }
+    assert.ok(lowest > G.HORIZON + G.RY_DOWN * 0.95, 'ring never reaches the bottom ' + lowest);
+    var hrs = new Date(lowAt + 3600000).getUTCHours() + (md[0] === 6 ? 1 : 0);
+    assert.ok(hrs === 0 || hrs === 1 || hrs === 23 || hrs === 24, 'bottom at hour ' + hrs);
+  });
+});

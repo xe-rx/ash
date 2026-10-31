@@ -18,9 +18,11 @@ while (($#)); do
     *) echo "screenshot: unknown option $1" >&2; exit 2 ;;
   esac
 done
-case $(cd "$(dirname "$out")" 2>/dev/null && pwd -P || echo "$out")/$(basename "$out") in
-  "$root"/*) echo "screenshot: output must be outside the repo (got $out)" >&2; exit 2 ;;
-esac
+outabs=$(realpath -m -- "$out")
+if [[ $outabs == "$root" || $outabs == "$root"/* ]]; then
+  echo "screenshot: output must be outside the repo (got $out)" >&2; exit 2
+fi
+out=$outabs
 venv=$("$root/scripts/setup-qt.sh" --check 2>/dev/null) || {
   echo "screenshot: Qt 5.11 toolchain missing; run scripts/setup-qt.sh first" >&2; exit 1; }
 [[ -n $config ]] || { config=$root/config/ash.example.json; }   # screenshots use the example config

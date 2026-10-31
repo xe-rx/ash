@@ -9,7 +9,7 @@ var BANDS = [-16, 100, 190, 268, 330, 380]; // sky band edges, shared with Sky.q
 var CX = 512, HORIZON = 380, RX = 380, RY_UP = 232, RY_DOWN = 92;
 var MARGIN = 16;          // labels stay this far from the screen edge (burn-in shift is up to 4)
 var LAND_TOP = 420;       // a label below the horizon sits wholly below this line
-var P_MIN = -0.34, P_MAX = 1.34, DOT_MIN = -0.5, DOT_MAX = 1.5, DAY_MS = 86400000;
+var DOT_MIN = -0.5, DOT_MAX = 1.5;
 var LABEL_W = 100, LABEL_H = 52, SUN_R = 30;
 
 // Rectangles that labels must keep clear: hijri line, clock and next prayer, the family.
@@ -26,26 +26,17 @@ function pathPoint(p) {
   return { x: CX - RX * Math.cos(Math.PI * p), y: HORIZON - (s >= 0 ? RY_UP : RY_DOWN) * s };
 }
 
+function sunPoint(scene) { return pathPoint(scene.sun.pathProgress); }
+
 // Dotted path (the whole ellipse: the lower half runs behind the family), one entry per dot; dots under the sun disc are left out.
 function pathDots(sunP) {
-  var sun = pathPoint(clamp(sunP, DOT_MIN, DOT_MAX)), out = [];
+  var sun = pathPoint(sunP), out = [];
   for (var i = 0; ; i++) {
     var p = DOT_MIN + i * 0.02;
     if (p > DOT_MAX + 1e-9) { break; }
     var pt = pathPoint(p);
     var dx = pt.x - sun.x, dy = pt.y - sun.y;
     if (dx * dx + dy * dy > 34 * 34) { out.push({ x: pt.x, y: pt.y, below: pt.y > HORIZON + 0.5 }); }
-  }
-  return out;
-}
-
-// Progress of a prayer on the path of the day that holds its Dhuhr (the list may be tomorrow's).
-function prayerProgress(scene) {
-  var mid = (scene.sunrise.ms + scene.sunset.ms) / 2;
-  var k = Math.round((scene.prayers[1].ms - mid) / DAY_MS);
-  var out = [];
-  for (var i = 0; i < scene.prayers.length; i++) {
-    out.push(clamp((scene.prayers[i].ms - k * DAY_MS - scene.sunrise.ms) / (scene.sunset.ms - scene.sunrise.ms), P_MIN, P_MAX));
   }
   return out;
 }
@@ -87,19 +78,22 @@ function place(a, placed, sunBox, dots) {
 
 // Marker positions and label boxes for the five prayers; deterministic for a given scene.
 function layout(scene) {
-  var ps = prayerProgress(scene), sunP = clamp(scene.sun.dayProgress, P_MIN, P_MAX);
+  var sunP = scene.sun.pathProgress;
   var sun = pathPoint(sunP);
-  var sunBox = { x: sun.x - SUN_R - 8, y: sun.y - SUN_R - 8, w: 2 * SUN_R + 16, h: 2 * SUN_R + 16 };
+  var sunBox = scene.sun.isUp ? { x: sun.x - SUN_R - 8, y: sun.y - SUN_R - 8, w: 2 * SUN_R + 16, h: 2 * SUN_R + 16 } : { x: -99, y: -99, w: 0, h: 0 }; // the night ring never moves labels
   var dots = pathDots(sunP), order = [1, 3, 2, 0, 4], boxes = [], placed = [], i;
   for (i = 0; i < 5; i++) { boxes.push(null); }
   for (var k = 0; k < order.length; k++) {
-    var idx = order[k], a = pathPoint(ps[idx]);
+    var idx = order[k], a = pathPoint(scene.prayers[idx].pathProgress);
     var box = place(a, placed, sunBox, dots);
-    box.ax = a.x; box.ay = a.y; box.p = ps[idx];
+    box.ax = a.x; box.ay = a.y; box.p = scene.prayers[idx].pathProgress;
     boxes[idx] = box; placed.push(box);
   }
   return { labels: boxes, sun: { x: sun.x, y: sun.y, p: sunP }, sunBox: sunBox, dots: dots };
 }
+
+// A label box wholly on the ground (below the horizon) rather than on the sky.
+function onLand(box) { return box.y >= LAND_TOP; }
 
 // Clock: Poppins digits are proportional, so each character gets a fixed cell. The widest digit
 // advance measured in Qt 5.11 at 140 px (Poppins SemiBold, what Font.Medium resolves to) is 93 px.

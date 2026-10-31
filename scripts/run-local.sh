@@ -17,15 +17,20 @@ while (($#)); do
     *) echo "run-local: unknown option $1" >&2; exit 2 ;;
   esac
 done
-venv=$("$root/scripts/setup-qt.sh" --check 2>/dev/null) || {
-  echo "run-local: the Qt 5.11 toolchain is missing. Run scripts/setup-qt.sh once, then try again." >&2; exit 1; }
 export QT_QPA_PLATFORM=${QT_QPA_PLATFORM:-xcb} QT_QUICK_BACKEND=software TZ=Europe/Amsterdam
-if [[ $QT_QPA_PLATFORM == xcb || $QT_QPA_PLATFORM == wayland* ]] && [[ -z ${DISPLAY:-} && -z ${WAYLAND_DISPLAY:-} ]]; then
-  echo "run-local: no display found (DISPLAY and WAYLAND_DISPLAY are both empty)." >&2
+need=""
+case $QT_QPA_PLATFORM in
+  xcb) [[ -n ${DISPLAY:-} ]] || need=DISPLAY ;;
+  wayland*) [[ -n ${WAYLAND_DISPLAY:-} ]] || need=WAYLAND_DISPLAY ;;
+esac
+if [[ -n $need ]]; then
+  echo "run-local: no display found for the $QT_QPA_PLATFORM platform ($need is empty)." >&2
   echo "  Run this from a desktop terminal (on WSL2: use WSLg, or start an X server and export DISPLAY)." >&2
   echo "  To render without a window use scripts/screenshot.sh instead." >&2
   exit 1
 fi
+venv=$("$root/scripts/setup-qt.sh" --check 2>/dev/null) || {
+  echo "run-local: the Qt 5.11 toolchain is missing. Run scripts/setup-qt.sh once, then try again." >&2; exit 1; }
 config=$root/config/ash.json; [[ -f $config ]] || config=$root/config/ash.example.json
 trap 'rm -f "$root"/app/ash/core/*.jsc "$root"/app/ash/*.qmlc "$root"/app/ash/view/*.qmlc "$root"/dev/*.qmlc' EXIT
 "$venv/bin/python" -I "$root/dev/harness.py" --config "$config" ${args[@]+"${args[@]}"}
