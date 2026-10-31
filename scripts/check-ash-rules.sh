@@ -8,6 +8,8 @@
 # values built at run time, untracked files, files outside app/ config/ tests/, or the git history.
 # Public places are allowed (dev/coord_check.py PUBLIC). It is a tripwire, not proof of no leaks.
 # Same for (a): a grep over tracked app/ files; obfuscated or computed calls are not detected.
+# createComponent is deliberately strict: it also flags local-QML use (loading a bundled component);
+# such a legitimate use must be added to ALLOW below with a reason.
 # Usage: scripts/check-ash-rules.sh   (tracked files only; run from anywhere in the repo)
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"

@@ -67,7 +67,9 @@ h_ok()     { setup_repo; mkfile a.py 300; run_hook "$R/a.py"; assert_rc 0; asser
 h_noncode() { setup_repo; mkfile a.md 999; run_hook "$R/a.md"; assert_rc 0; }
 h_missing() { setup_repo; run_hook "$R/ghost.py"; assert_rc 0; }
 h_nofield() { setup_repo; run bash -c 'echo "{}" | "$1"' _ "$R/.claude/hooks/check-file-length.sh"; assert_rc 0; }
-h_nongit() { # a non-git dir that DOES hold an executable check script: only the git-root guard can exit 0
+h_nongit() { # outside a git repo the hook exits 0 silently. Two independent exits give this (the rev-parse
+  # `|| exit 0` and the later -x check on /scripts/...), so removing only the first is not observable;
+  # this catches a root fallback to the file's directory, where the check script would then run.
   local nd; mk_tmp_var nd; mkdir -p "$nd/scripts"; seq 1 999 > "$nd/big.py"
   cp "$REPO_ROOT/scripts/check-file-length.sh" "$nd/scripts/"
   ! git -C "$nd" rev-parse --show-toplevel >/dev/null 2>&1 || _fail "tmp dir is inside a git repo"
