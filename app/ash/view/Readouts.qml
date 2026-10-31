@@ -12,7 +12,7 @@ Item {
     Text {
         y: 14; width: 1024; horizontalAlignment: Text.AlignHCenter
         text: scene.hijri ? scene.hijri.text : ""
-        color: pal.softSky; font.family: face; font.pixelSize: 21; font.weight: Font.Normal
+        color: pal.softSky; font.family: face; font.pixelSize: 24; font.weight: Font.Normal
     }
 
     Row {
@@ -27,7 +27,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     y: modelData === ":" ? -22 : -14
                     text: modelData; color: pal.inkSky; font.family: face
-                    font.pixelSize: 150; font.weight: Font.Light
+                    font.pixelSize: 150; font.weight: Font.Medium
                 }
             }
         }

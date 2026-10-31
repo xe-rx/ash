@@ -7,13 +7,13 @@ Item {
     property var pal
     property real f: 1.2
 
-    Rectangle { x: -178 * f; y: -28 * f; width: 356 * f; height: 56 * f; radius: 28 * f; color: family.pal.clothBorder; antialiasing: true }
-    Rectangle { x: -170 * f; y: -22 * f; width: 340 * f; height: 44 * f; radius: 22 * f; color: family.pal.cloth; antialiasing: true }
-    Rectangle { x: -162 * f; y: -17 * f; width: 324 * f; height: 34 * f; radius: 17 * f; color: family.pal.clothStripe; antialiasing: true }
-    Rectangle { x: -158 * f; y: -13 * f; width: 316 * f; height: 26 * f; radius: 13 * f; color: family.pal.cloth; antialiasing: true }
+    Rectangle { x: -180 * f; y: -26 * f; width: 360 * f; height: 54 * f; radius: 4 * f; color: family.pal.clothBorder }
+    Rectangle { x: -172 * f; y: -19 * f; width: 344 * f; height: 40 * f; radius: 2 * f; color: family.pal.cloth }
+    Rectangle { x: -164 * f; y: -13 * f; width: 328 * f; height: 28 * f; color: family.pal.clothStripe }
+    Rectangle { x: -160 * f; y: -9 * f; width: 320 * f; height: 20 * f; color: family.pal.cloth }
 
-    Person { u: f; x: -104 * f; y: -2 * f; robe: family.pal.father; skin: family.pal.skin; hasCap: true; cap: family.pal.father }
-    Person { u: f; x: 104 * f; y: -2 * f; robe: family.pal.mother; skin: family.pal.skin; hasScarf: true; scarf: family.pal.hijab }
+    Person { u: 1.08 * f; x: -104 * f; y: -2 * f; robe: family.pal.father; skin: family.pal.skin; hasCap: true; cap: family.pal.father }
+    Person { u: 0.98 * f; x: 104 * f; y: -2 * f; robe: family.pal.mother; skin: family.pal.skin; hasScarf: true; scarf: family.pal.hijab }
     Person { u: 0.62 * f; x: -36 * f; y: 10 * f; robe: family.pal.boy
         skin: family.pal.skinDark; hasHair: true; hair: family.pal.hair }
     Person { u: 0.62 * f; x: 36 * f; y: 10 * f; robe: family.pal.girl

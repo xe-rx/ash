@@ -20,7 +20,7 @@ test('the sun path rises from the east horizon, peaks at Dhuhr time and sets on 
 
 test('dots skip the sun disc and stay on screen', function () {
   var dots = G.pathDots(0.5);
-  assert.ok(dots.length > 60 && dots.length < 100);
+  assert.ok(dots.length > 60 && dots.length < 110);
   var sun = G.pathPoint(0.5);
   dots.forEach(function (d) {
     assert.ok(d.x > 0 && d.x < G.W && d.y > 0 && d.y < G.H);

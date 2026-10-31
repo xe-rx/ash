@@ -9,7 +9,7 @@ var BANDS = [-16, 100, 190, 268, 330, 380]; // sky band edges, shared with Sky.q
 var CX = 512, HORIZON = 380, RX = 380, RY_UP = 232, RY_DOWN = 92;
 var MARGIN = 16;          // labels stay this far from the screen edge (burn-in shift is up to 4)
 var LAND_TOP = 420;       // a label below the horizon sits wholly below this line
-var P_MIN = -0.34, P_MAX = 1.34, DAY_MS = 86400000;
+var P_MIN = -0.34, P_MAX = 1.34, DOT_MIN = -0.5, DOT_MAX = 1.5, DAY_MS = 86400000;
 var LABEL_W = 100, LABEL_H = 52, SUN_R = 30;
 
 // Rectangles that labels must keep clear: hijri line, clock and next prayer, the family.
@@ -26,12 +26,12 @@ function pathPoint(p) {
   return { x: CX - RX * Math.cos(Math.PI * p), y: HORIZON - (s >= 0 ? RY_UP : RY_DOWN) * s };
 }
 
-// Dotted path, one entry per dot; dots under the sun disc are left out.
+// Dotted path (the whole ellipse: the lower half runs behind the family), one entry per dot; dots under the sun disc are left out.
 function pathDots(sunP) {
-  var sun = pathPoint(clamp(sunP, P_MIN, P_MAX)), out = [];
+  var sun = pathPoint(clamp(sunP, DOT_MIN, DOT_MAX)), out = [];
   for (var i = 0; ; i++) {
-    var p = P_MIN + i * 0.02;
-    if (p > P_MAX + 1e-9) { break; }
+    var p = DOT_MIN + i * 0.02;
+    if (p > DOT_MAX + 1e-9) { break; }
     var pt = pathPoint(p);
     var dx = pt.x - sun.x, dy = pt.y - sun.y;
     if (dx * dx + dy * dy > 34 * 34) { out.push({ x: pt.x, y: pt.y, below: pt.y > HORIZON + 0.5 }); }

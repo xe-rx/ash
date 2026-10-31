@@ -24,6 +24,7 @@ Item {
             radius: modelData[2] / 2; color: sky.pal.starColor }
     }
 
+    // The moon is a fixed crescent symbol, not the astronomical phase.
     // crescent: a disc with a disc of sky cut out of it, inside the top band
     Rectangle { visible: sky.pal.moon; x: 120; y: 40; width: 44; height: 44; radius: 22; color: sky.pal.moonColor }
     Rectangle { visible: sky.pal.moon; x: 136; y: 34; width: 40; height: 40; radius: 20; color: sky.pal.skyBands[0] }

@@ -20,6 +20,5 @@ Item {
     Rectangle { x: -15 * u; y: -104 * u; width: 30 * u; height: 30 * u; radius: 15 * u; color: person.skin; antialiasing: true }
     Rectangle { visible: person.hasHair; x: -16 * u; y: -106 * u; width: 32 * u; height: 20 * u; radius: 10 * u; color: person.hair; antialiasing: true }
     Rectangle { visible: person.hasCap; x: -14 * u; y: -108 * u; width: 28 * u; height: 14 * u; radius: 7 * u; color: person.cap; antialiasing: true }
-    Rectangle { visible: person.hasScarf; x: -25 * u; y: -112 * u; width: 50 * u; height: 66 * u; radius: 24 * u; color: person.scarf; antialiasing: true }
-    Rectangle { visible: person.hasScarf; x: -11 * u; y: -100 * u; width: 22 * u; height: 26 * u; radius: 11 * u; color: person.skin; antialiasing: true }
+    Rectangle { visible: person.hasScarf; x: -24 * u; y: -110 * u; width: 48 * u; height: 64 * u; radius: 24 * u; color: person.scarf; antialiasing: true }
 }

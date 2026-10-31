@@ -150,13 +150,13 @@ function paletteAt(altDeg, rising) {
   var land = [far, mid, near];
   var landLight = inkIsLight(land);
   land = tone(land, landLight);
-  var dim = function (hex) { return mix(mix(hex, s.hor, 0.12), "#04060e", 0.5 * (1 - lit)); };
+  var dim = function (hex) { return mix(mix(hex, s.hor, 0.12), "#262d52", 0.68 * (1 - lit)); };
   var inkS = skyLight ? "#f2efff" : "#0b1c30", inkL = landLight ? "#f2efff" : "#0b1c30";
   var accS = skyLight ? "#ffc861" : "#a1123c", accL = landLight ? "#ffc861" : "#a1123c";
   var mean = function (b) { return b[Math.floor(b.length / 2)]; };
   return {
     skyBands: sky, land: land, duneFar: land[0], duneMid: land[1], duneNear: land[2],
-    sun: s.sun, moon: alt < -3, stars: alt < -9, moonColor: "#e9e6d8", starColor: "#cfd3f0",
+    sun: s.sun, sunBelow: "#ffcf6a", moon: alt < -3, stars: alt < -9, moonColor: "#e9e6d8", starColor: "#cfd3f0",
     dots: mix(inkS, mean(sky), 0.35), dotsBelow: mix(inkS, mean(sky), 0.7),
     inkSky: ensureContrast(inkS, sky, skyLight), accentSky: ensureContrast(accS, sky, skyLight),
     softSky: ensureContrast(mix(inkS, mean(sky), 0.3), sky, skyLight),

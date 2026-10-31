@@ -24,12 +24,12 @@ Item {
             Text {
                 x: box.x; y: box.y - 1; width: box.w; horizontalAlignment: Text.AlignHCenter
                 text: modelData.name; color: soft; font.family: labels.face
-                font.pixelSize: 17; font.weight: modelData.isNext ? Font.DemiBold : Font.Normal
+                font.pixelSize: 20; font.weight: modelData.isNext ? Font.DemiBold : Font.Normal
             }
             Text {
-                x: box.x; y: box.y + 18; width: box.w; horizontalAlignment: Text.AlignHCenter
+                x: box.x; y: box.y + 21; width: box.w; horizontalAlignment: Text.AlignHCenter
                 text: modelData.timeText; color: ink; font.family: labels.face
-                font.pixelSize: 25; font.weight: modelData.isNext ? Font.Bold : Font.DemiBold
+                font.pixelSize: 27; font.weight: modelData.isNext ? Font.Bold : Font.DemiBold
             }
         }
     }
