@@ -15,3 +15,7 @@
 - **Probe**: the read-only device check in round 0.
 - **Guard**: the detached script that rolls back an install unless the PO confirms it.
 - **Soak**: the one-week run on the wall that makes up the first milestone.
+- **Sun arc**: the invisible arc the sun follows through the open sky, from the east horizon over the top to the west horizon. Nothing is drawn along it.
+- **Glow**: the stepped halos of the sun. In twilight the sun is under the horizon and only its glow rises above the dunes, fading out by -12 degrees.
+- **Prayer table**: the flat panel on the right with the Hijri date as header and the five prayers. The next prayer's row has the accent fill.
+- **Rail**: the thin vertical line on the table's left edge; its dot shows where now falls between the prayer rows (it holds on the first row before Fajr and jumps back at the Isha rollover).

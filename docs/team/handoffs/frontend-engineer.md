@@ -1,21 +1,26 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 15:23 · Branch: frontend-engineer/clock-spacing · Status: done
+Updated: 2026-10-31 21:25 · Branch: frontend-engineer/atmosphere · Status: done
 
 ## Task
-Clock spacing (even gaps around 1, colon stable <=12 px), polar message fix, marker-vs-ring test.
+PO redesign: no sun path/labels; prayer table panel (Hijri header, rail dot); altitude-driven sun with halos and twilight glow; dusty 7-band palette; clock/countdown under the arc with a real sun clearance test.
 
 ## Done
-- Polar: sceneAt maps a "polar" throw from any neighbouring day to a sun error (scene.js NO_SUN); test in scene.test.js (failed first: "time zone" message at lat 66).
-- Markers: tests/core/markers.test.js (5 dates, utrecht); fails when the prayer mapping is offset by 0.02.
-- Clock: geometry.clockGlyphs places each char by ink (metrics measured in Qt 5.11, 140 px SemiBold), colon fixed at CX (shift 0), gap 15 px; Readouts.qml uses it; tests/core/clock.test.js (1440 minutes: colon shift, equal gaps, fits in OBSTACLES[1]). Old clockCells/DIGIT_CELL removed.
-- Screens: ~/ash-data/screens-clock/ (sheet.png, 5 singles).
+- core: colour.js, palette.js, sunlook.js, geometry.js (arc, sunView, family), clock.js, table.js, scene.js railRow. view: Sky, Sun, PrayerTable, Readouts, AshScene. Old path/ring/labels removed.
+- tests: rail, geometry (arc anchors, clearance min 32.9 px, panel clear), clock, palette (7 bands, contrast vs real backgrounds), qt font_metrics at 108 and 27 px, strip test in test_view.sh. screenshot.sh --strip sunrise|sunset.
+- Screens: ~/ash-data/screens-atmosphere/ (sheet.png, strip-sunrise.png, strip-sunset.png). Items 130-146 total (was 192-213).
 
 ## Next steps
-1. Tech lead: review and merge. PO: check on device (live window untested).
+1. Tech lead review/merge. PO to judge on the wall; live window untested by me.
+2. Possible polish: panel colour flips quickly at dusk (single step, mauve -> navy); glow after sunset is subtle behind the panel.
 
 ## Gotchas learned
-- node --test tests/core/ (directory form) fails here; use tests/core/*.test.js. npm ci --offline needed in a new worktree.
-- Glyph metrics are hardcoded; if the font file changes, re-measure (QFontMetricsF).
+- node --test tests/core/*.test.js (dir form fails); npm ci --offline in a new worktree.
+- Ink toning only on bands 3..5 (behind clock/countdown); geometry BANDS and clock layout are tied.
 
-## Review fixes (done)
-- clock.test.js asserts colon shift === 0; unused var removed; markers.test.js has fixed ring anchors (sunrise 132,380; sunset 892,380; Dhuhr top 512,148); tests/qt/font_metrics.py + t_font_metrics in tests/test_view.sh check the glyph table vs QFontMetricsF (Font.Medium resolves to SemiBold; fails under REQUIRE_QT=1 if toolchain missing).
+## Art review fixes (done)
+- 9 sky bands (steps halved: mean 0.044 -> 0.023, max 0.141 -> 0.064), whole-sky lightness shift for ink instead of per-band toning, monotonic top to horizon; day tops violet-blue, mids pinkish, no green (test: OKLab hue 100..200, chroma >= 0.015, alt 8..90).
+- Panel: tinted warm paper to plum to indigo (chroma >= 0.02 tested), row fill from panel luminance, rail dot with ring; sun core only a 14% lift, halos tighter by day; family dusk shadow warm; mother lighter; table insets 20 px equal.
+
+## Code review fixes (done)
+- No sky lightness shift any more: stops are authored so mid and hor reach luminance 0.179 at FLIP_RISING (-7) and FLIP_SETTING (0); ink flips there only. mixLch fades to OKLab near opposite hues (no direction pop). Smoothness test: 9 bands, 0.05 deg, bound 0.02 (old code 0.177, new 0.0066).
+- Moon wholly in band 1; halo-contrast.test.js (composited, worst 4.53); row fill lighter amber (#e39a38); stale comments tidied.
