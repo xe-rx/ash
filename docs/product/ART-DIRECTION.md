@@ -18,7 +18,7 @@ Warm light with cool shadows and long cast shadows at a low sun are common paint
 ## What Ash takes from this
 1. **Colour script:** author complete colour moments (night, first light, dawn, morning, midday, golden hour, sunset, dusk) instead of deriving land and family from the sky by formula.
 2. **Depth through layers:** distant land is lighter, cooler and closer to the sky colour; near land is warmer and stronger.
-3. **One light source:** the sun tints the sky around it and the land and family, and casts one simple shadow.
+3. **One light source:** the sun tints the sky around it and the land and family. (A cast shadow was tried and dropped, see below.)
 4. **Restraint:** no decoration that doesn't carry light or depth.
 
 ## Limits
