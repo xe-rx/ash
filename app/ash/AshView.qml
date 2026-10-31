@@ -12,7 +12,8 @@ Item {
     width: 1024; height: 600
     clip: true
 
-    property double nowMs: 0
+    property double nowMs: 0             // 0 = no real tick yet: draw nothing, never a wrong time
+    property bool ticked: nowMs !== 0
     property var config: ({})
     property bool useClock: true          // the harness switches the real clock off and sets nowMs
     signal closed()
@@ -43,7 +44,8 @@ Item {
         }
     }
 
-    ErrorScreen { anchors.fill: parent; visible: !view.ok; message: view.ok ? "" : view.scene.error; face: view.face }
+    Rectangle { anchors.fill: parent; color: "#05070f"; visible: !view.ticked }   // before the first tick
+    ErrorScreen { anchors.fill: parent; visible: view.ticked && !view.ok; message: view.ok ? "" : view.scene.error; face: view.face }
 
     MouseArea { anchors.fill: parent; onClicked: view.closed() }
 }

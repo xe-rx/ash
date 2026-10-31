@@ -42,6 +42,13 @@ t_error_screen() { need_qt || return 0; mk_tmp_var D
   local s; s=$(stats "$D/ash-2026-06-21-14-30.png")
   assert_contains "$s" "#120d16" "error screen background"
 }
+t_first_frame() { need_qt || return 0; mk_tmp_var D
+  # 1970-01-01 01:00 in Europe/Amsterdam is epoch 0: the view has had no real tick yet.
+  run "$SHOT" --at "1970-01-01 01:00" --out "$D"; clean
+  assert_rc 0 "screenshot exit"
+  local s; s=$(stats "$D/ash-1970-01-01-01-00.png")
+  assert_not_contains "$s" "#120d16" "no error screen before the first tick"
+}
 t_sheet() { need_qt || return 0; mk_tmp_var D
   run "$SHOT" --sheet --out "$D"; clean
   assert_rc 0 "sheet exit"
@@ -61,6 +68,7 @@ t_offline() { need_qt || return 0; mk_tmp_var D
 t "renders at midday with a clean log and a real picture" t_render
 t "renders at night with a clean log" t_night
 t "a bad config shows the error screen, not a time" t_error_screen
+t "no error screen before the first real tick" t_first_frame
 t "the 8+8 contact sheet renders" t_sheet
 t "renders with no network (unshare -rn)" t_offline
 summary
