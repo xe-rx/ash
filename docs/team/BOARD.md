@@ -1,6 +1,6 @@
 # Team board: Ash
 
-Round: 1 (local build; device work on hold) · PO: the user · Tech lead: main session
+Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead: main session
 
 ## Roster
 | Role | Kind | Status |
@@ -29,6 +29,8 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 - [ ] `t_offline` must fail, not skip, under `REQUIRE_QT=1` if namespaces are unavailable; `check-qml.sh` resolves relative paths before `cd`; state the coordinate check's limits in its header; fix the vacuous `h_nongit` test in `tests/test_file_length.sh`.
 
 ### Round 2: perfecting
+- [ ] Clock: fixed-width digit cells leave wide gaps around a 1 (tech lead's review of the sheet). Tighten without the layout jumping between minutes.
+- [ ] Scene follow-ups from PR 0004: correct the error message near the polar limit in `scene.js`; add a compact test that each prayer marker sits at the ring's position at that prayer's time.
 - [ ] Polish from PO feedback on the live window.
 - [ ] README: how to run locally. PO compares a few dates with their mosque.
 
@@ -40,10 +42,9 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Scene follow-ups from PR 0003 | frontend-engineer | frontend-engineer/polish | .worktrees/frontend-engineer-polish | building |
 
 ## In review
 
 ## Done
-- PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run
+- PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run; PR 0004 scene follow-ups
 - Kickoff: all phases; proposal approved by the PO 2026-10-31
