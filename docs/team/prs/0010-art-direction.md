@@ -10,7 +10,7 @@ From the PO's request to research higher-quality atmosphere (`docs/product/ART-D
 - `REQUIRE_QT=1 scripts/test.sh`: all 12 test files passed, in the trial merge
 - check-pii, check-ash-rules, check-qml: pass (14 QML files, 0 errors)
 - Renders: `~/ash-data/screens-artdir/A` (bands), `B2` (gradient at 2% grain); viewed by the tech lead
-- Halo contrast sweep (`HALO_DAYS=2 HALO_MIN=6`, 10.8M samples per sky): worst 4.53 bands, 4.51 gradient, bound 4.5. A 3-minute sweep timed out and gave no result.
+- Halo contrast sweep (`HALO_DAYS=2 HALO_MIN=6`, 10.8M samples per sky): worst 4.53 bands, 4.51 gradient, bound 4.5. The reviewer's sweep (`HALO_DAYS=1 HALO_MIN=3`, 43.3M samples per sky) also passed on b97f891 with the same worst values: 4.53 and 4.51. The tech lead's own run of it timed out.
 - QML items, builder's estimate by counting, not measured: 136-152 bands, 129-145 gradient, limit 175
 - handoff updated on the branch
 
