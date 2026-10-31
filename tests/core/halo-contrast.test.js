@@ -6,7 +6,7 @@ var test = require('node:test');
 var assert = require('node:assert');
 var load = require('./load-core').load;
 var H = require('./helpers');
-var G = load('geometry.js'), K = load('clock.js'), P = load('palette.js'), C = load('colour.js'), Scene = load('scene.js');
+var G = load('geometry.js'), K = load('clock.js'), P = load('palette.js'), C = load('colour.js'), Scene = load('scene.js'), Grad = load('skygrad.js');
 
 var STEP_DAYS = +process.env.HALO_DAYS || 5, STEP_MIN = +process.env.HALO_MIN || 12;
 function blend(under, over, a) { // over at alpha a on under, in sRGB like the renderer
@@ -17,8 +17,9 @@ function bandAt(pal, y) {
   for (var i = 0; i < 9; i++) { if (y < G.BANDS[i + 1]) { return pal.skyBands[i]; } }
   return pal.skyBands[8];
 }
-function backgroundAt(pal, view, x, y) {
-  var bg = bandAt(pal, y);
+function gradientAt(pal, y) { return Grad.skyColorAt(pal.skyBands, y); }
+function backgroundAt(pal, view, x, y, skyAt) {
+  var bg = skyAt(pal, y);
   for (var k = 4; k >= 0; k--) {
     var dx = x - view.x, dy = y - view.y;
     if (view.look.glowVisible && dx * dx + dy * dy <= view.look.haloR[k] * view.look.haloR[k]) { bg = blend(bg, k >= 3 ? pal.glow : pal.halo, view.look.haloAlpha[k]); }
@@ -26,7 +27,8 @@ function backgroundAt(pal, view, x, y) {
   return bg;
 }
 
-test('clock and countdown keep 4.5:1 over the sun halos, every sample of the year in 3 places', function () {
+[['flat bands', bandAt], ['smooth gradient', gradientAt]].forEach(function (mode) {
+test('clock and countdown keep 4.5:1 over the sun halos on ' + mode[0] + ', every sample of the year in 3 places', function () {
   var worst = 99, where = '', n = 0;
   [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
     for (var day = 0; day < 365; day += STEP_DAYS) {
@@ -39,7 +41,7 @@ test('clock and countdown keep 4.5:1 over the sun halos, every sample of the yea
           var b = t[0];
           for (var i = 0; i <= 12; i++) {
             for (var j = 0; j <= 4; j++) {
-              var bg = backgroundAt(pal, view, b.x + b.w * i / 12, b.y + b.h * j / 4), c = C.contrast(t[1], bg);
+              var bg = backgroundAt(pal, view, b.x + b.w * i / 12, b.y + b.h * j / 4, mode[1]), c = C.contrast(t[1], bg);
               n++;
               if (c < worst) { worst = c; where = 'day ' + day + ' min ' + m + ' alt ' + s.sun.altitudeDeg.toFixed(1); }
             }
@@ -51,4 +53,5 @@ test('clock and countdown keep 4.5:1 over the sun halos, every sample of the yea
   console.log('# worst text contrast over halos ' + worst.toFixed(2) + ' (' + where + '), ' + n + ' samples');
   assert.ok(n > 10000);
   assert.ok(worst >= 4.5, 'contrast over a halo ' + worst.toFixed(2) + ' at ' + where);
+});
 });
