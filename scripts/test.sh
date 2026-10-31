@@ -8,6 +8,11 @@ export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null
 cd "$(dirname "$0")/.." || exit 1
 verbose=0; [[ ${1:-} == -v ]] && verbose=1
 command -v jq >/dev/null || { echo "jq is required" >&2; exit 1; }
+# Node core tests must never be skipped silently: with a package.json, Node and node_modules are mandatory.
+if [[ -f package.json ]]; then
+  command -v node >/dev/null || { echo "FAILED: node is required (package.json present)" >&2; exit 1; }
+  [[ -d node_modules ]] || { echo "FAILED: node_modules missing; run 'npm ci' first (package.json present)" >&2; exit 1; }
+fi
 
 failed=() total=0
 for f in tests/test_*.sh; do

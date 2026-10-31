@@ -1,0 +1,12 @@
+# Qt 5.11 test toolchain (scripts/setup-qt.sh). Python 3.8, hash-pinned; sha256 from PyPI.
+# Lives outside the repo at $PROJECT_DATA/toolchain/qt511. Not used by the python CI job.
+PyQt5==5.11.3 \
+    --hash=sha256:ac1eb5a114b6e7788e8be378be41c5e54b17d5158994504e85e43b5fca006a39 \
+    --hash=sha256:517e4339135c4874b799af0d484bc2e8c27b54850113a68eec40a0b56534f450 \
+    --hash=sha256:e85936bae1581bcb908847d2038e5b34237a5e6acc03130099a78930770e7ead \
+    --hash=sha256:d2309296a5a79d0a1c0e6c387c30f0398b65523a6dcc8a19cc172e46b949e00d
+PyQt5-sip==4.19.19 \
+    --hash=sha256:304acf771b6033cb4bafc415939d227c91265d30664ed643b298d7e95f509f81 \
+    --hash=sha256:39d2677f4de46ed4d7aa3b612f31c74c881975efe51c6a23fbb1d9382e4cc850 \
+    --hash=sha256:cfc21b1f80d4655ffa776c505a2576b4d148bbc52bb3e33fedbf6cfbdbc09d1b \
+    --hash=sha256:72be07a21b0f379987c4ec59bc86834a9719a2f9cfb49606a4d4e34dae9aa549
