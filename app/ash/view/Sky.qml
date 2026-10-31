@@ -6,7 +6,7 @@ import "../core/skygrad.js" as Grad
 // Two versions with the same colours, switched by `mode` (default "bands"; only the dev harness sets it):
 //   A (false): nine flat poster bands;
 //   B (true): one smooth vertical gradient through the same colours (stops in core/skygrad.js), with
-//   a very faint paper grain over it (a 128 px tile at 4.5% opacity, tools/gen-grain.js), which also
+//   a very faint paper grain over it (a 128 px tile at 2% opacity, tools/gen-grain.js), which also
 //   hides the 8-bit steps of a smooth gradient.
 Item {
     id: sky
@@ -34,7 +34,7 @@ Item {
     Image {
         visible: sky.gradientSky
         source: "../assets/grain.png"; fillMode: Image.Tile
-        x: -16; y: Grad.SKY_TOP; width: 1056; height: Grad.SKY_H; opacity: 0.045
+        x: -16; y: Grad.SKY_TOP; width: 1056; height: Grad.SKY_H; opacity: 0.02
     }
 
     Repeater {

@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 22:42 · Branch: frontend-engineer/art-direction · Status: done
+Updated: 2026-10-31 22:45 · Branch: frontend-engineer/art-direction · Status: done
 
 ## Task
 Art-direction experiment (docs/product/ART-DIRECTION.md): colour script, depth, one light, sky A vs B; honest result.
@@ -10,6 +10,8 @@ Art-direction experiment (docs/product/ART-DIRECTION.md): colour script, depth, 
 - Cast shadow dropped (three attempts looked like stray bars); lit crest not tried.
 - Tests: script, sunlook, skygrad, halo-contrast (flat and gradient), geometry updated (arc ends 70/660). REQUIRE_QT=1 scripts/test.sh: all 12 files pass.
 - Renders: ~/ash-data/screens-artdir/{A,B,step1,step2,step3}.
+
+- Tech lead round 2: pill mesas removed (Silhouettes.qml now 4 soft domes), grain opacity 0.045 -> 0.02 (B2 reads clean, no banding seen by eye at night or dawn), dev flag `--sky bands|gradient` on scripts/run-local.sh, scripts/screenshot.sh and dev/harness.py (default bands; tested in tests/test_run_local.sh). Renders: ~/ash-data/screens-artdir/{A,B2}.
 
 ## Next steps
 1. Tech lead review, PO eyes on A vs B and on the colour script.
