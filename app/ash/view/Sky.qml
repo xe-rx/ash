@@ -3,7 +3,7 @@ import "../core/geometry.js" as Geo
 import "../core/skygrad.js" as Grad
 
 // The sky, drawn 16 px past every edge so the burn-in shift never shows a gap, then stars and a moon.
-// Two versions with the same colours, switched by the one line below:
+// Two versions with the same colours, switched by `mode` (default "bands"; only the dev harness sets it):
 //   A (false): nine flat poster bands;
 //   B (true): one smooth vertical gradient through the same colours (stops in core/skygrad.js), with
 //   a very faint paper grain over it (a 128 px tile at 4.5% opacity, tools/gen-grain.js), which also
@@ -11,7 +11,8 @@ import "../core/skygrad.js" as Grad
 Item {
     id: sky
     property var pal
-    readonly property bool gradientSky: false  // THE SWITCH: false = flat bands (A), true = gradient + grain (B)
+    property string mode: "bands"             // THE SWITCH: "bands" = flat bands (A), "gradient" = gradient + grain (B); dev only, set by scripts/run-local.sh --sky
+    readonly property bool gradientSky: mode === "gradient"
     // what the moon's cut-out must match: the sky colour where it sits (band 1, or the gradient there)
     property color moonCut: gradientSky ? Grad.skyColorAt(pal.skyBands, 61) : pal.skyBands[1]
 

@@ -1,9 +1,10 @@
 """Dev harness: runs dev/Harness.qml (AshView) in a Qt 5.11 window or offscreen.
 Run with the toolchain python (see scripts/setup-qt.sh). Prints `closed` when the view is tapped.
 
-  harness.py [--config FILE] [--at "YYYY-MM-DD HH:MM"] [--speed N] [--shots FILE.json]
+  harness.py [--config FILE] [--at "YYYY-MM-DD HH:MM"] [--speed N] [--shots FILE.json] [--sky bands|gradient]
   --at     start (or freeze) at this local time (zone from TZ); without it: real time
   --speed  simulated minutes per real second, needs --at
+  --sky    sky version to compare: flat bands (default) or smooth gradient with grain (dev only)
   --shots  JSON list of {"ms": epoch milliseconds, "path": png}; grabs each, then exits
 """
 import argparse, json, os, sys, time
@@ -21,6 +22,7 @@ def main():
     ap.add_argument("--at")
     ap.add_argument("--speed", type=float, default=0)
     ap.add_argument("--shots")
+    ap.add_argument("--sky", choices=["bands", "gradient"], default="bands")
     a = ap.parse_args()
     if a.speed and not a.at:
         ap.error("--speed needs --at")
@@ -44,6 +46,7 @@ def main():
     root.setProperty("config", config)
     root.setProperty("shots", shots)
     root.setProperty("speed", a.speed)
+    root.setProperty("sky", a.sky)
     if a.at:
         root.setProperty("startMs", float(local_ms(a.at)))
     root.viewClosed.connect(lambda: print("closed", flush=True))
