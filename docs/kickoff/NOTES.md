@@ -25,6 +25,8 @@ Ambient background app for muslims, infographic style situated in the desert, wi
 | Q15 | What gives first? | Cut extras, keep quality: chime, then Hijri date, then countdown. No deadline, no budget. Non-negotiables: correct times for the chosen method, thermostat keeps working, location stays on the device | Cut extras, keep quality |
 | Q16 | First milestone? | One stable week on the wall as the idle screen: times within a minute of the chosen method, tap always returns to the thermostat | One stable week on the wall |
 
+| Q17 | (PO change after approval) Device access | "can't get into toon yet, for now, focus on running it locally here and perfecting it" | Device steps on hold; build and verify locally on Qt 5.11 |
+
 ## Role prep
 | Role | Question | Summary of findings | Link |
 |---|---|---|---|

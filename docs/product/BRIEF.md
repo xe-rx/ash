@@ -33,7 +33,7 @@ For a Muslim household who want prayer times present in their home without looki
 
 ## Solution sketch
 ```
-ash.json (on the Toon only) --> core/*.js: sceneAt(nowMs, utcOffsetMinutes, config)
+ash.json (on the Toon only) --> core/*.js: sceneAt(nowMs, offsetAt, config)
                                    | {clockText, sun, palette, prayers, next}
 minute Timer --> QML view (QtQuick shapes) <-- tile hook opens it when the Toon dims; tap closes it
 PO: ash-preflight, ash-install + guard, ash-confirm, ash-rollback over SSH

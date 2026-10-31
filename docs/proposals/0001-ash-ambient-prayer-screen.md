@@ -2,6 +2,8 @@
 
 Status: approved by the PO 2026-10-31, no changes · Author: tech lead
 
+**Change 2026-10-31 (PO):** no Toon access yet. Round 0 and all device work are on hold; the team builds and perfects Ash locally first. See `docs/team/BOARD.md`.
+
 ## Summary (5 lines the PO can read alone)
 Ash shows a simple desert scene with a faceless family on a cloth, the time, the sun's position and the prayer times on your rooted Toon 2.
 It runs offline, keeps your location on the Toon, and never changes Toon's firmware files.

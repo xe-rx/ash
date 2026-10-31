@@ -54,7 +54,7 @@ Rules every role follows. Reviewers check them; the hard limits are enforced by 
 | Logger | `console.warn` and `console.error` in QML only: app version and errors, never config values |
 
 ## Ash rules (ADR 0001, ADR 0003)
-- **Core:** ES5 only, no clock, no QML, no I/O: `sceneAt(nowMs, utcOffsetMinutes, config)`. Loops are bounded. Results are defined values, never NaN. Invalid config shows a visible error, never a wrong time.
+- **Core:** ES5 only, no clock, no QML, no I/O: `sceneAt(nowMs, offsetAt, config)`, where `offsetAt(ms)` returns the UTC offset in minutes at that moment, so a DST change between now and a later prayer is handled. Loops are bounded. Results are defined values, never NaN. Invalid config shows a visible error, never a wrong time.
 - **View:** QtQuick primitives only, one minute timer stopped when hidden, no animations.
 - **Network:** no network APIs in Ash, enforced by a static test and a run under `unshare -n` or `strace`. Failing these blocks the merge.
 - **Privacy:** the real config is never committed; `config/ash.example.json` uses a public landmark; a check rejects other precise coordinates in `app/`, `docs/` and `tests/`. Screenshots use the example config.
