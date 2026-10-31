@@ -5,6 +5,7 @@
 // sun under the horizon, drawn as the flatter lower half, so Fajr and Isha sit on the path too.
 
 var W = 1024, H = 600;
+var BANDS = [-16, 100, 190, 268, 330, 380]; // sky band edges, shared with Sky.qml
 var CX = 512, HORIZON = 380, RX = 380, RY_UP = 232, RY_DOWN = 92;
 var MARGIN = 16;          // labels stay this far from the screen edge (burn-in shift is up to 4)
 var LAND_TOP = 420;       // a label below the horizon sits wholly below this line

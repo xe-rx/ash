@@ -5,7 +5,7 @@ import QtQuick 2.1
 Item {
     id: sky
     property var pal
-    property var bounds: [-16, 100, 190, 268, 330, 380]
+    property var bounds: [-16, 100, 190, 268, 330, 380] // same as BANDS in core/geometry.js
 
     Repeater {
         model: 5
