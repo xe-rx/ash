@@ -1,7 +1,7 @@
 import QtQuick 2.1
 import "../core/geometry.js" as Geo
 
-// The 24h time (largest, in fixed digit cells so it never shifts), the next prayer with its
+// The 24h time (largest, placed by ink so gaps are even and the colon never moves), the next prayer with its
 // countdown, and the quiet Hijri date. All on the sky, inside the sun's arc.
 Item {
     id: readouts
@@ -16,21 +16,13 @@ Item {
         color: pal.softSky; font.family: face; font.pixelSize: 24; font.weight: Font.Normal
     }
 
-    Row {
-        id: clock
-        anchors.horizontalCenter: parent.horizontalCenter
-        y: 176
-        Repeater {
-            model: Geo.clockCells(scene.clockText)
-            Item {
-                width: modelData; height: 130
-                Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    y: modelData === Geo.COLON_CELL ? -22 : -14
-                    text: scene.clockText.charAt(index); color: pal.inkSky; font.family: face
-                    font.pixelSize: Geo.CLOCK_PX; font.weight: Font.Medium
-                }
-            }
+    // Each character sits by its ink (core/geometry.js), so the gaps are even and the colon is fixed.
+    Repeater {
+        model: Geo.clockGlyphs(scene.clockText)
+        Text {
+            x: modelData.x; y: 176 + (modelData.colon ? -22 : -14)
+            text: modelData.ch; color: pal.inkSky; font.family: face
+            font.pixelSize: Geo.CLOCK_PX; font.weight: Font.Medium
         }
     }
 
