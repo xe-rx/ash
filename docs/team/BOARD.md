@@ -24,6 +24,10 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ### Round 1, wave 2 (after wave 1 merges)
 - [ ] **Scene, view, live run (frontend-engineer).** Full desert scene, all readouts, palette through the day and night, burn-in shift, tap handling. `scripts/run-local.sh` opens a live 1024x600 window, with options for a chosen time and a fast-forward. Done when: screenshots at dawn, noon, sunset and night are checked, and the PO approves the look.
 
+### Toolchain follow-ups (from PR 0001, non-blocking)
+- [ ] Network check: add `Qt.createQmlObject`, `Qt.include`, `createComponent`, `Function(`, `WorkerScript`, `EventSource`, `sendBeacon`. Done when: planted violations fail.
+- [ ] `t_offline` must fail, not skip, under `REQUIRE_QT=1` if namespaces are unavailable; `check-qml.sh` resolves relative paths before `cd`; state the coordinate check's limits in its header; fix the vacuous `h_nongit` test in `tests/test_file_length.sh`.
+
 ### Round 2: perfecting
 - [ ] Polish from PO feedback on the live window.
 - [ ] README: how to run locally. PO compares a few dates with their mosque.
