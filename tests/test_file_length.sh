@@ -28,6 +28,7 @@ t_at_limit_ok()      { setup_repo; mkfile a.py 300; run_check a.py; assert_rc 0;
 t_over_limit_fails() { setup_repo; mkfile a.py 301; run_check a.py; assert_rc 1; assert_contains "$OUT" "a.py: 301 lines (max 300)"; }
 t_max_lines_env()    { setup_repo; mkfile a.py 11; MAX_LINES=10 run_check a.py; assert_rc 1; assert_contains "$OUT" "(max 10)"; }
 t_non_code_ignored() { setup_repo; mkfile notes.md 500; mkfile data.json 500; mkfile x.txt 500; run_check notes.md data.json x.txt; assert_rc 0; }
+t_qml_checked()      { setup_repo; mkfile View.qml 300; mkfile Big.qml 301; run_check View.qml Big.qml; assert_rc 1; assert_contains "$OUT" "Big.qml: 301 lines (max 300)"; assert_not_contains "$OUT" "View.qml"; }
 t_many_extensions()  { setup_repo; for e in sh ts go rs css sql; do mkfile "f.$e" 301; done; run_check f.sh f.ts f.go f.rs f.css f.sql; assert_rc 1
   for e in sh ts go rs css sql; do assert_contains "$OUT" "f.$e: 301"; done; }
 t_exempt_dirs()      { setup_repo
@@ -49,6 +50,7 @@ t "script: file at exactly 300 lines passes" t_at_limit_ok
 t "script: 301 lines fails with message" t_over_limit_fails
 t "script: MAX_LINES env overrides limit" t_max_lines_env
 t "script: non-code extensions ignored" t_non_code_ignored
+t "script: 301-line QML file fails, 300 passes" t_qml_checked
 t "script: many code extensions checked" t_many_extensions
 t "script: exempt directories skipped" t_exempt_dirs
 t "script: .min/.generated/_pb2 exempt" t_exempt_patterns
