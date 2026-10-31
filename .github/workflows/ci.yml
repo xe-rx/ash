@@ -56,7 +56,24 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+      # Node core tests (tests/test_core.sh) run inside scripts/test.sh. The package.json arrives
+      # with the core; the guards keep this workflow valid before then. scripts/test.sh itself
+      # fails (never skips) if package.json exists but node_modules does not.
+      - name: Set up Node
+        if: hashFiles('package.json') != ''
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          cache: ${{ hashFiles('package-lock.json') != '' && 'npm' || '' }}
+      - name: Install Node dependencies
+        if: hashFiles('package.json') != ''
+        run: npm ci --ignore-scripts
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Qt 5.11 toolchain (for the QML tests)
+        run: scripts/setup-qt.sh
       - run: bash scripts/test.sh
+        env:
+          REQUIRE_QT: '1'
 
   python:
     name: Python tests
@@ -75,5 +92,20 @@ jobs:
       # Collects every tests/**/test_*.py; deps come from requirements-test.txt only.
       - run: uv run --with-requirements requirements-test.txt python -m pytest -q tests
 
-  # Stack job: added at kickoff (format check, lint, typecheck, test, build), with the same
-  # commands as AGENTS.md. Pin every third-party action by commit SHA and keep permissions read-only.
+  # Stack job: same commands as AGENTS.md "Dev commands". The QML view and its build/lint commands
+  # (if any beyond the Qt 5.11 parse check) are added when they exist.
+  ash-rules:
+    name: Ash rules and QML
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: scripts/check-ash-rules.sh
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Qt 5.11 toolchain
+        run: scripts/setup-qt.sh
+      - run: scripts/check-qml.sh

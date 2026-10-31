@@ -42,3 +42,14 @@ data/build/
 # Qt compiled caches
 *.jsc
 *.qmlc
+
+# Ash: real (private) config never in git; only config/ash.example.json is tracked (ADR 0003)
+ash.json
+ash.*.json
+*.local.json
+/config/*.json
+!/config/ash.example.json
+
+# Rendered screenshots and other generated review output (large; keep in $PROJECT_DATA)
+screenshots/
+/out/

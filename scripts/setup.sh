@@ -60,4 +60,10 @@ for hook in .githooks/*; do
   echo "ok       executable: $hook"
 done
 
+if "$(dirname "$0")/setup-qt.sh" --check > /dev/null 2>&1; then
+  echo "ok       Qt 5.11 toolchain"
+else
+  echo "NOTE     Qt 5.11 toolchain not installed (needed for check-qml and the QML tests): run scripts/setup-qt.sh"
+fi
+
 echo "Setup complete."

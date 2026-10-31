@@ -3,7 +3,7 @@
 # Usage: check-file-length.sh [file...]   (no args: all tracked files)
 set -euo pipefail
 MAX_LINES=${MAX_LINES:-300}
-CODE_EXT='\.(py|js|jsx|ts|tsx|mjs|cjs|go|rs|java|kt|kts|rb|php|cs|swift|c|h|cc|cpp|hpp|sh|bash|sql|vue|svelte|css|scss|lua|ex|exs|dart|scala)$'
+CODE_EXT='\.(py|js|jsx|ts|tsx|mjs|cjs|go|rs|java|kt|kts|rb|php|cs|swift|c|h|cc|cpp|hpp|sh|bash|sql|vue|svelte|css|scss|lua|ex|exs|dart|scala|qml)$'
 EXEMPT='^(\.claude/skills/|\.claude/references/|vendor/|node_modules/|dist/|build/)|\.min\.|\.generated\.|_pb2\.py$'
 
 cd "$(git rev-parse --show-toplevel)"

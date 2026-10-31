@@ -46,6 +46,6 @@ test('hijriOffsetDays must be -1, 0 or 1; missing means 0', function () {
 
 test('non-objects are rejected and errors never echo config values', function () {
   [null, undefined, 5, 'x', [1]].forEach(bad);
-  var e = bad({ lat: 91.37, lon: 0, hijriOffsetDays: 0 });
+  var e = bad({ lat: 91, lon: 0, hijriOffsetDays: 0 });
   assert.ok(e.indexOf('91') === -1);
 });
