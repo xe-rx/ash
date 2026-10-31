@@ -29,6 +29,13 @@ var BANNED = [
   ['ES6: class', /\bclass\s+\w+/], ['I/O: require/import()', /\brequire\s*\(|\bimport\s*\(/]
 ];
 
+// The only two exceptions: the view's minute clock reads the time, and the view asks the engine
+// for the zone offset at a given instant (the core itself stays clock free).
+var ALLOWED = {
+  'clock: Date.now': ['MinuteClock.qml'], 'clock: new Date()': ['MinuteClock.qml'],
+  'local time getters': ['AshView.qml']
+};
+
 test('app/ has code files to check', function () {
   assert.ok(files(APP).filter(function (f) { return /\.(js|qml)$/.test(f); }).length >= 7);
 });
@@ -36,6 +43,7 @@ test('app/ has code files to check', function () {
 BANNED.forEach(function (rule) {
   test('app/ has no ' + rule[0], function () {
     files(APP).filter(function (f) { return /\.(js|qml)$/.test(f); }).forEach(function (f) {
+      if ((ALLOWED[rule[0]] || []).indexOf(path.basename(f)) >= 0) { return; }
       var lines = code(fs.readFileSync(f, 'utf8')).split('\n');
       lines.forEach(function (line, i) {
         assert.ok(!rule[1].test(line), path.basename(f) + ':' + (i + 1) + ' ' + rule[0]);

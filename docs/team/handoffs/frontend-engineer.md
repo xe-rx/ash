@@ -1,29 +1,22 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 08:40 · Branch: frontend-engineer/core · Status: done
+Updated: 2026-10-31 09:02 · Branch: frontend-engineer/scene · Status: done
 
 ## Task
-Pure calculation core in app/ash/core, ES5, sceneAt(nowMs, offsetAt, config); tests; Qt 5.11 parity.
+Ash scene view (QML) + palette/geometry cores + dev tooling; acceptance: REQUIRE_QT=1 scripts/test.sh, check-file-length, check-pii, check-ash-rules, check-qml, sheet renders.
 
 ## Done
-- app/ash/core: civil.js, sun.js, prayer.js, hijri.js, hijri-data.js, config.js, scene.js (all < 130 lines).
-- Golden vs adhan-js 4.4.6 (MIT), 2026 + 2028 (leap), Utrecht/Maastricht/Groningen, whole scene and dayTimes: max deviation fajr 900 ms, isha 983 ms (adhan keeps sub-second remainders), sunrise/dhuhr/asr/sunset/maghrib 0 ms.
-- Hijri: 1446-1500 AH (2024-07-07..2077-11-16) from @tabby_ai/hijri-converter 1.0.5 (MIT) = port of hijridate (MIT). Cross-checked month by month with .NET UmAlQuraCalendar (MIT): identical 1410-1500 AH; ICU 78.3 agrees 1420-1449. UNVERIFIED against the official KACST site (script-rendered, unreadable); the 6 test dates are from the tables, not the official source. Generator: tools/gen-hijri-data.js (kept for provenance).
-- tests: tests/core/*.test.js (node:test), static.test.js (no network/eval/clock/ES6), tests/test_core.sh (53 pass), tests/qt/ (Qt 5.11.2 QML engine vs Node, 4 scenes identical; skipped with message when toolchain absent).
-- Prayer day rule (scene.js header): first civil day, from yesterday, whose Isha has not passed.
+- core/palette.js (OKLab stops with deliberate mid colours, inks derived from the real backgrounds), core/geometry.js (ellipse path, label layout, burn-in shift); tests: palette, geometry (3 places, all 2026), labels-contrast (checked red against the old palette).
+- app/ash: AshView.qml (nowMs/config/useClock, closed signal, error screen), MinuteClock.qml, view/*.qml, fonts/Poppins (OFL, notices).
+- dev/harness.py, Harness.qml, sheet.py, sheet-times.js, image_stats.py; scripts/screenshot.sh (--sheet), scripts/run-local.sh; tests/test_view.sh.
+- Last round: clock cells widened (geometry.clockCells, 140 px font, 96 px cells), sun ring moved in front of the family (view/SunRing.qml). All checks green.
 
 ## Next steps
-1. View task binds to sceneAt; pass config parsed from ash.json (keys lat, lon, hijriOffsetDays).
-2. CI must run npm ci then tests/test_core.sh (needs node_modules/adhan).
-
-## Open questions / blockers
-- Hijri date changes at local midnight, not Maghrib (PO call).
-- node --test tests/core/ (directory arg) does not work on Node 25; use the glob (npm test).
-- hijri is null after 2077-11-16; error text for polar days when the sun never rises.
+1. PO: run scripts/run-local.sh on a machine with a display (live window UNTESTED by me).
+2. Polish: sun ring is drawn under the family (hidden when the sun is right behind it); family balance; element count not measured (est. 175-195).
+3. Toon tile / dim hook / qb adapter on hold; wrap AshView later.
 
 ## Gotchas learned
-- Qt writes .jsc caches beside JS; gitignored, removed by test_core.sh.
-- Compare vm-context objects via JSON, not deepStrictEqual.
-## Suggested skills
-test-driven-development, verification-before-completion
-- Merged main once (authorised); config test uses whole-degree lat 91; Parity.qml imports only QtQuick.
-- Review fixes: REQUIRE_QT=1 fails without Qt; golden tolerance <1000 ms plus minute text, also at 00:03 (planted +1 min asr caught, reverted); THIRD_PARTY_NOTICES added.
+- Poppins digits are proportional: the clock uses fixed digit cells. Qt 5.11 cannot enable tnum.
+- Item scale gives jagged edges: size by factor instead.
+- static.test.js allows the clock only in MinuteClock.qml and getTimezoneOffset only in AshView.qml.
+- Screenshots: ~/ash-data/screens/sheet.png and single PNGs.
