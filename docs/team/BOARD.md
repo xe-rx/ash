@@ -25,6 +25,7 @@ Device access is on hold (PO, 2026-10-31).
 PO change 2026-10-31: "can't get into toon yet, for now, focus on running it locally here and perfecting it". Rounds below replace the approved round order; the milestone in the brief is unchanged and can't be met until device access returns.
 
 ### Round 2: perfecting
+PO request 2026-10-31: "Can you do some research on higher quality styles and atmosphere creation and see whether you can improve it. If not this just means its a human task!"
 PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
 - [ ] Apply the PO's Hijri decision.
 - [ ] PO compares a few dates with their mosque.
@@ -37,6 +38,7 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| Atmosphere experiment from research (docs/product/ART-DIRECTION.md) | frontend-engineer | frontend-engineer/art-direction | .worktrees/frontend-engineer-art-direction | building |
 
 ## In review
 
