@@ -26,7 +26,7 @@ test('the colon never moves more than 12 px between two consecutive minutes (all
     if (prev !== null) { worst = Math.max(worst, Math.abs(colon.x - prev)); }
     prev = colon.x;
   }
-  assert.ok(worst <= 12, 'colon moved ' + worst + ' px');
+  assert.strictEqual(worst, 0, 'colon moved ' + worst + ' px'); // stricter than the 12 px bound
 });
 
 test('the colon sits in the middle between hours and minutes, with equal ink gaps', function () {

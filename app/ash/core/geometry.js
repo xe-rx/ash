@@ -122,7 +122,7 @@ function clockGlyphs(text) {
   }
   var edge = colonAt < n ? out[colonAt].inkLeft : CX;
   for (i = colonAt - 1; i >= 0; i--) { // hours grow leftwards from the colon
-    m = glyphMetrics(out[i].ch); ink = out[i].inkRight;
+    ink = out[i].inkRight;
     out[i].inkRight = edge - CLOCK_GAP; out[i].inkLeft = out[i].inkRight - ink; edge = out[i].inkLeft;
   }
   edge = colonAt < n ? out[colonAt].inkRight : CX;

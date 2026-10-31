@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 15:17 · Branch: frontend-engineer/clock-spacing · Status: done
+Updated: 2026-10-31 15:23 · Branch: frontend-engineer/clock-spacing · Status: done
 
 ## Task
 Clock spacing (even gaps around 1, colon stable <=12 px), polar message fix, marker-vs-ring test.
@@ -16,3 +16,6 @@ Clock spacing (even gaps around 1, colon stable <=12 px), polar message fix, mar
 ## Gotchas learned
 - node --test tests/core/ (directory form) fails here; use tests/core/*.test.js. npm ci --offline needed in a new worktree.
 - Glyph metrics are hardcoded; if the font file changes, re-measure (QFontMetricsF).
+
+## Review fixes (done)
+- clock.test.js asserts colon shift === 0; unused var removed; markers.test.js has fixed ring anchors (sunrise 132,380; sunset 892,380; Dhuhr top 512,148); tests/qt/font_metrics.py + t_font_metrics in tests/test_view.sh check the glyph table vs QFontMetricsF (Font.Medium resolves to SemiBold; fails under REQUIRE_QT=1 if toolchain missing).

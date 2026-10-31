@@ -23,3 +23,15 @@ test('every prayer marker is at the ring position of that prayer time', function
     });
   });
 });
+
+test('the ring has fixed anchors: sunrise and sunset at its ends, Dhuhr at the top', function () {
+  var cfg = H.PLACES.utrecht, off = H.amsterdamOffset;
+  var s = Scene.sceneAt(H.ams(2026, 6, 21, 3, 0), off, cfg);
+  var rise = G.sunPoint(Scene.sceneAt(s.sunrise.ms, off, cfg));
+  var set = G.sunPoint(Scene.sceneAt(s.sunset.ms, off, cfg));
+  var noon = G.sunPoint(Scene.sceneAt(s.prayers[1].ms, off, cfg));
+  // Literal screen pixels of the 1024x600 design: the ring runs x 132..892, horizon y 380, top y 148.
+  assert.ok(Math.abs(rise.x - 132) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
+  assert.ok(Math.abs(set.x - 892) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
+  assert.ok(Math.abs(noon.x - 512) < 12 && Math.abs(noon.y - 148) < 3, 'dhuhr ' + noon.x + ',' + noon.y);
+});
