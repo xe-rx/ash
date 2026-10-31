@@ -34,6 +34,13 @@ t_nam()   { net_case NetworkAccessManager 'QNetworkAccessManager m'; }
 t_webkit(){ net_case QtWebKit 'import QtWebKit 3.0'; }
 t_eval()  { net_case eval 'eval("1+1")'; }
 t_newfn() { net_case new-Function 'var f = new Function("return 1")'; }
+t_qco()   { net_case dyn-code 'Qt.createQmlObject(src, parent)'; }
+t_qinc()  { net_case dyn-code 'Qt.include("x.js")'; }
+t_ccomp() { net_case dyn-code 'var c = Qt.createComponent(u)'; }
+t_fnc()   { net_case dyn-code 'var f = Function("return 1")'; }
+t_wscr()  { net_case dyn-code 'WorkerScript { source: "w.js" }'; }
+t_es()    { net_case dyn-code 'var e = new EventSource(u)'; }
+t_beacon(){ net_case dyn-code 'navigator.sendBeacon(u, d)'; }
 t_nodenet() { net_case node-net "const h = require('http');"; }
 t_qml_file() { setup_repo; plant app/Y.qml $'Item {\n  Loader { source: "https://x.test/a.qml" }\n}'; rules; assert_rc 1; assert_contains "$OUT" "app/Y.qml:2:"; }
 t_no_false_positive() { setup_repo
@@ -74,7 +81,10 @@ t_whole_degrees() { coord_case tests/w.js 'x = { lat: 0, lon: 0 }; y = { lat: 90
 
 # dynamic: scripts/run-offline.sh really cuts the network (skipped where userns is unavailable)
 t_offline() {
-  if ! unshare -rn true 2>/dev/null; then echo "    skip: unshare -rn unavailable here"; return 0; fi
+  if ! unshare -rn true 2>/dev/null; then
+    [[ ${REQUIRE_QT:-} == 1 ]] && { _fail "unshare -rn unavailable but REQUIRE_QT=1"; return 0; }
+    echo "    skip: unshare -rn unavailable here"; return 0
+  fi
   run "$REPO_ROOT/scripts/run-offline.sh" python3 -c '
 import socket,sys
 try: socket.create_connection(("93.184.216.34", 80), timeout=3)
@@ -94,6 +104,13 @@ t "net: NetworkAccessManager" t_nam
 t "net: QtWebKit" t_webkit
 t "net: eval(" t_eval
 t "net: new Function" t_newfn
+t "net: Qt.createQmlObject" t_qco
+t "net: Qt.include" t_qinc
+t "net: createComponent" t_ccomp
+t "net: Function(" t_fnc
+t "net: WorkerScript" t_wscr
+t "net: EventSource" t_es
+t "net: sendBeacon" t_beacon
 t "net: node http require" t_nodenet
 t "net: URL in a .qml file" t_qml_file
 t "net: prefetch/medieval/fetch2 are not hits" t_no_false_positive

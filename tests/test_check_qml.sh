@@ -45,6 +45,10 @@ t_dir_arg_all_reported() { need_qt || return 0; mk_tmp_var D; mkdir "$D/sub"
   w ok.qml $'import QtQuick 2.11\nItem {}'
   printf 'import QtQuick 2.11\nItem { x: }\n' > "$D/sub/bad.qml"
   run "$CHECK" "$D"; assert_rc 1; assert_contains "$OUT" "sub/bad.qml"; assert_contains "$OUT" "2 file(s), 1 with errors"; }
+t_relative_arg() { need_qt || return 0; mk_tmp_var D; mkdir "$D/sub"
+  printf 'import QtQuick 2.11\nItem { x: }\n' > "$D/sub/bad.qml"
+  run bash -c 'cd "$0" && "$1" sub/bad.qml' "$D" "$CHECK"; assert_rc 1; assert_contains "$OUT" "bad.qml:2:"
+  run bash -c 'cd "$0/sub" && "$1" ../sub' "$D" "$CHECK"; assert_rc 1; assert_contains "$OUT" "1 with errors"; }
 t_no_qml() { mk_tmp_var D; git -C "$D" init -q; require_isolated "$D"; mkdir "$D/scripts" "$D/dev"
   cp "$CHECK" "$REPO_ROOT/scripts/setup-qt.sh" "$D/scripts/"
   run "$D/scripts/check-qml.sh"; assert_rc 0; assert_contains "$OUT" "no .qml files yet"; }
@@ -52,6 +56,7 @@ t_no_toolchain() { mk_tmp_var D; w g.qml $'import QtQuick 2.11\nItem {}'
   PROJECT_DATA="$D/none" run "$CHECK" "$D/g.qml"; assert_rc 1; assert_contains "$ERR" "toolchain missing"; }
 
 t "check-qml: valid file passes" t_good
+t "check-qml: relative path args resolve against the caller cwd" t_relative_arg
 t "check-qml: syntax error reported with file and line" t_syntax
 t "check-qml: unknown property reported with line" t_prop
 t "check-qml: QtQuick newer than 2.11 rejected" t_newer_qtquick

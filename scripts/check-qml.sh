@@ -4,9 +4,14 @@
 # Exit 0 with a message when there is no QML yet; non-zero if the toolchain is absent.
 set -euo pipefail
 root=$(cd "$(dirname "$0")/.." && pwd -P)
+# resolve relative path arguments against the caller's cwd before we cd
+args=()
+for a in "$@"; do
+  if [[ "$a" == /* ]]; then args+=("$a"); else args+=("$PWD/$a"); fi
+done
 cd "$root"
 
-if (($#)); then targets=("$@"); else mapfile -t targets < <(git ls-files '*.qml'); fi
+if ((${#args[@]})); then targets=("${args[@]}"); else mapfile -t targets < <(git ls-files '*.qml'); fi
 if ((${#targets[@]} == 0)); then echo "check-qml: no .qml files yet, nothing to check"; exit 0; fi
 
 venv=$("$root/scripts/setup-qt.sh" --check 2>/dev/null) || {
