@@ -9,7 +9,7 @@
 
 var SAFE = 4.62; // margin over 4.5:1, for hex rounding
 
-var PAPER = "#f4e8d4", INK_NIGHT_PANEL = "#181b38", PLUM = "#5c3874";
+var PAPER = "#f4e8d4", INK_NIGHT_PANEL = "#181b38", PLUM = "#4d3b69";
 var clamp = C.clamp, mix = C.mix, smooth = C.smooth;
 
 // ---- tone: keep every band of a set on one side of the luminance gap where no ink can read ----
@@ -98,10 +98,10 @@ function paletteAt(altDeg, rising) {
   var haloFree = mix(s.sun, s.hor, 0.3), halo = mix(tintKeepingLuminance(haloFree, sky[5], 0.4), haloFree, freeW);
   var inkS = skyLight ? "#f3eee6" : "#14233a";
   var accS = skyLight ? "#f3c47c" : "#8a3a1e";
-  // The panel: warm paper (tinted by the horizon light) by day, then a short crossing through a
-  // saturated plum to deep indigo; mixed along the hue circle so it is never a desaturated grey.
+  // The panel: warm paper (tinted by the horizon light) by day, then a long, quiet crossing through a
+  // dusty plum to deep indigo; mixed along the hue circle so it is never a desaturated grey.
   var paper = mix(PAPER, s.hor, 0.16);
-  var inkPanel = C.mixLch(C.mixLch(INK_NIGHT_PANEL, PLUM, smooth(clamp((alt + 9) / 4, 0, 1))), paper, smooth(clamp((alt + 5) / 3.5, 0, 1)));
+  var inkPanel = C.mixLch(C.mixLch(INK_NIGHT_PANEL, PLUM, smooth(clamp((alt + 14) / 7, 0, 1))), paper, smooth(clamp((alt + 7) / 8, 0, 1)));
   var panelLight = inkIsLight([inkPanel]);
   var panel = tone([inkPanel], panelLight)[0];
   var panelInk = ensureContrast(panelLight ? "#f3eee6" : "#2a1d12", [panel], panelLight);
