@@ -61,8 +61,10 @@ t_normal_socket() {
 t_local_no_socket() {
   local T; mk_tmp_var T; fake_repo "$T"
   run_fake "$T" DISPLAY=:0
-  assert_rc 1 "exit"; assert_contains "$ERR" "no display" "friendly message"
-  assert_contains "$ERR" ":0" "names the display"
+  assert_rc 0 "rc is the stub python's"; assert_contains "$OUT" "DISPLAY=:0" "DISPLAY unchanged, python ran"
+  assert_contains "$ERR" "warning: no X server socket found for DISPLAY=:0, trying anyway." "warning"
+  assert_contains "$ERR" "Run this from a desktop terminal (on WSL2: use WSLg, or start an X server and export DISPLAY)." "hint"
+  assert_contains "$ERR" "To render without a window use scripts/screenshot.sh instead." "screenshot hint"
 }
 t_remote_untouched() {
   local T x; mk_tmp_var T; fake_repo "$T"
@@ -78,6 +80,6 @@ t "no display variables at all gives the friendly message" t_none
 t "screenshot --out refuses the repo root, trailing slashes and dot paths" t_out_guard
 t "WSLg socket replaces :N when the normal socket is missing" t_wslg_redirect
 t "a real normal socket keeps DISPLAY and prints nothing" t_normal_socket
-t "local :N with no socket anywhere gives the friendly message" t_local_no_socket
+t "local :N with no socket anywhere warns and still runs" t_local_no_socket
 t "remote and path displays are left to Qt" t_remote_untouched
 summary
