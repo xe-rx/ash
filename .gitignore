@@ -38,3 +38,7 @@ __pycache__/
 # Raw downloads and build outputs (never in git)
 data/raw/
 data/build/
+
+# Qt compiled caches
+*.jsc
+*.qmlc

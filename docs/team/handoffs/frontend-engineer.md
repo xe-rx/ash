@@ -1,26 +1,27 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 08:31 · Branch: frontend-engineer/core · Status: in-progress
+Updated: 2026-10-31 08:35 · Branch: frontend-engineer/core · Status: done
 
 ## Task
-Pure calculation core in app/ash/core (sun, prayer, hijri, scene, config), ES5, node:test + tests/test_core.sh, Qt 5.11 parity check. Contract: sceneAt(nowMs, offsetAt, config).
+Pure calculation core in app/ash/core, ES5, sceneAt(nowMs, offsetAt, config); tests; Qt 5.11 parity.
 
 ## Done
-- civil.js (date math, formatClock, localDay), sun.js, prayer.js with golden test vs adhan-js 4.4.6 (2026 + 2028, 3 places): max dev fajr 900 ms, isha 983 ms, rest 0 (commit 1).
-- tests/core/load-core.js (QML-style vm loader), helpers.js (Amsterdam offsets), adhan-ref.js.
-- tools/gen-hijri-data.js: generator for Hijri data from @tabby_ai/hijri-converter 1.0.5 (MIT; port of dralshehri/hijridate MIT). Kept as provenance for hijri-data.js.
-- Hijri table cross-check: month starts 1410-1500 AH identical to .NET UmAlQuraCalendar table (MIT) ; ICU 78.3 agrees 1420-1449. RJD r = unix day r-40588.
+- app/ash/core: civil.js, sun.js, prayer.js, hijri.js, hijri-data.js, config.js, scene.js (all < 130 lines).
+- Golden vs adhan-js 4.4.6 (MIT), 2026 + 2028 (leap), Utrecht/Maastricht/Groningen, whole scene and dayTimes: max deviation fajr 900 ms, isha 983 ms (adhan keeps sub-second remainders), sunrise/dhuhr/asr/sunset/maghrib 0 ms.
+- Hijri: 1446-1500 AH (2024-07-07..2077-11-16) from @tabby_ai/hijri-converter 1.0.5 (MIT) = port of hijridate (MIT). Cross-checked month by month with .NET UmAlQuraCalendar (MIT): identical 1410-1500 AH; ICU 78.3 agrees 1420-1449. UNVERIFIED against the official KACST site (script-rendered, unreadable); the 6 test dates are from the tables, not the official source. Generator: tools/gen-hijri-data.js (kept for provenance).
+- tests: tests/core/*.test.js (node:test), static.test.js (no network/eval/clock/ES6), tests/test_core.sh (53 pass), tests/qt/ (Qt 5.11.2 QML engine vs Node, 4 scenes identical; skipped with message when toolchain absent).
+- Prayer day rule (scene.js header): first civil day, from yesterday, whose Isha has not passed.
 
 ## Next steps
-1. hijri-data.js (1446-1500 AH, '1'=30 days strings; first day 19911) + hijri.js + tests (>=5 known dates, UNVERIFIED vs official KACST site).
-2. config.js (keys lat, lon, hijriOffsetDays; <=2 decimals) + config/ash.example.json (only JSON in config/).
-3. scene.js: prayer day rule B = first day (civil-1..civil+1) whose Isha > now; dayProgress via day windows split at mid-night between sunset and next sunrise; countdown from minute-floored now.
-4. tests: scene, DST (29 Mar / 25 Oct 2026), 00:03 21 June, static no-network/eval/Date.now test, tests/test_core.sh (RESULT line), Qt 5.11 parity (PyQt5 QJSEngine, skip if absent).
-5. package.json: fix placeholder description/scripts (use node --test "tests/core/*.test.js"; node 25 rejects a directory arg).
+1. View task binds to sceneAt; pass config parsed from ash.json (keys lat, lon, hijriOffsetDays).
+2. CI must run npm ci then tests/test_core.sh (needs node_modules/adhan).
 
-## Open questions
-- Hijri day changes at civil midnight, not Maghrib (PO call).
-- node --test tests/core/ fails on Node 25 (directory arg); use the glob.
+## Open questions / blockers
+- Hijri date changes at local midnight, not Maghrib (PO call).
+- node --test tests/core/ (directory arg) does not work on Node 25; use the glob (npm test).
+- hijri is null after 2077-11-16; error text for polar days when the sun never rises.
 
 ## Gotchas learned
-- vm contexts: use JSON compare, not deepStrictEqual, on objects from core.
-- Only Utrecht/Maastricht/Groningen coordinates in app/, config/, tests/; no other JSON in config/.
+- Qt writes .jsc caches beside JS; gitignored, removed by test_core.sh.
+- Compare vm-context objects via JSON, not deepStrictEqual.
+## Suggested skills
+test-driven-development, verification-before-completion

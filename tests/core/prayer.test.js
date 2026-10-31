@@ -41,11 +41,11 @@ test('dayTimes matches adhan-js on every day of 2026 and 2028 at three places', 
 
 test('dayTimes is null when the sun never rises or sets', function () {
   assert.strictEqual(Prayer.dayTimes(90, 0, Civil.daysFromCivil(2026, 6, 21)), null);
-  assert.strictEqual(Prayer.dayTimes(78, 15, Civil.daysFromCivil(2026, 12, 21)), null);
+  assert.strictEqual(Prayer.dayTimes(78, -30, Civil.daysFromCivil(2026, 12, 21)), null);
 });
 
 test('dayTimes works at latitude and longitude extremes without NaN', function () {
-  [[0, 180], [0, -180], [-60, 0], [66, 25], [0, 0]].forEach(function (ll) {
+  [[0, 180], [0, -180], [-60, 0], [66, -30], [0, 0]].forEach(function (ll) {
     var t = Prayer.dayTimes(ll[0], ll[1], Civil.daysFromCivil(2026, 3, 20));
     KEYS.forEach(function (k) { assert.ok(isFinite(t[k]), ll + ' ' + k); });
   });
