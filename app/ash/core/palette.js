@@ -134,16 +134,16 @@ function paletteAt(altDeg, rising) {
   var skyLight = inkIsLight(bandsOf(s.top, s.hor));
   var sky = tone(bandsOf(s.top, s.hor), skyLight);
   var lit = smooth(clamp((alt + 10) / 24, 0, 1)); // 0 in the dark, 1 in full daylight
-  var far = mix(mix(s.sand, s.hor, 0.5), "#f4a58f", 0.22 * lit), mid = s.sand, near = mix(s.sand, "#8f2f3a", 0.55);
-  var land = [far, mid];
+  var far = mix(mix(s.sand, s.hor, 0.5), "#f4a58f", 0.22 * lit), mid = s.sand, near = mix(s.sand, "#8f2f3a", 0.5 * lit);
+  var land = [far, mid, near];
   var landLight = inkIsLight(land);
   land = tone(land, landLight);
-  var dim = function (hex) { return mix(mix(hex, s.hor, 0.12), "#04060e", 0.72 * (1 - lit)); };
+  var dim = function (hex) { return mix(mix(hex, s.hor, 0.12), "#04060e", 0.5 * (1 - lit)); };
   var inkS = skyLight ? "#f2efff" : "#0b1c30", inkL = landLight ? "#f2efff" : "#0b1c30";
   var accS = skyLight ? "#ffc861" : "#a1123c", accL = landLight ? "#ffc861" : "#a1123c";
   var mean = function (b) { return b[Math.floor(b.length / 2)]; };
   return {
-    skyBands: sky, land: land, duneFar: land[0], duneMid: land[1], duneNear: dim(near),
+    skyBands: sky, land: land, duneFar: land[0], duneMid: land[1], duneNear: land[2],
     sun: s.sun, moon: alt < -3, stars: alt < -9, moonColor: "#e9e6d8", starColor: "#cfd3f0",
     dots: mix(inkS, mean(sky), 0.35), dotsBelow: mix(inkS, mean(sky), 0.7),
     inkSky: ensureContrast(inkS, sky, skyLight), accentSky: ensureContrast(accS, sky, skyLight),

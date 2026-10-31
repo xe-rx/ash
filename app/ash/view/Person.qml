@@ -1,9 +1,10 @@
 import QtQuick 2.1
 
-// One faceless seated figure, built of pills and circles. Origin: bottom centre of the lap.
-// Variants: a headscarf (hijab colour set), a cap (cap colour set) or bare hair (hair set).
+// One faceless seated figure, built of pills and circles, sized by `u` (1 = adult at 1x).
+// Origin: bottom centre of the lap. Variants: headscarf, cap or bare hair.
 Item {
     id: person
+    property real u: 1
     property color robe: "#ffffff"
     property color skin: "#c98c60"
     property color scarf: "transparent"
@@ -14,11 +15,11 @@ Item {
     property bool hasHair: false
     width: 0; height: 0
 
-    Rectangle { x: -48; y: -26; width: 96; height: 28; radius: 14; color: person.robe }          // crossed legs
-    Rectangle { x: -27; y: -76; width: 54; height: 66; radius: 24; color: person.robe }          // body
-    Rectangle { x: -15; y: -104; width: 30; height: 30; radius: 15; color: person.skin }         // head
-    Rectangle { visible: person.hasHair; x: -16; y: -106; width: 32; height: 20; radius: 10; color: person.hair }
-    Rectangle { visible: person.hasCap; x: -14; y: -108; width: 28; height: 14; radius: 7; color: person.cap }
-    Rectangle { visible: person.hasScarf; x: -25; y: -112; width: 50; height: 66; radius: 24; color: person.scarf }
-    Rectangle { visible: person.hasScarf; x: -11; y: -100; width: 22; height: 26; radius: 11; color: person.skin }
+    Rectangle { x: -48 * u; y: -26 * u; width: 96 * u; height: 28 * u; radius: 14 * u; color: person.robe; antialiasing: true }
+    Rectangle { x: -27 * u; y: -76 * u; width: 54 * u; height: 66 * u; radius: 24 * u; color: person.robe; antialiasing: true }
+    Rectangle { x: -15 * u; y: -104 * u; width: 30 * u; height: 30 * u; radius: 15 * u; color: person.skin; antialiasing: true }
+    Rectangle { visible: person.hasHair; x: -16 * u; y: -106 * u; width: 32 * u; height: 20 * u; radius: 10 * u; color: person.hair; antialiasing: true }
+    Rectangle { visible: person.hasCap; x: -14 * u; y: -108 * u; width: 28 * u; height: 14 * u; radius: 7 * u; color: person.cap; antialiasing: true }
+    Rectangle { visible: person.hasScarf; x: -25 * u; y: -112 * u; width: 50 * u; height: 66 * u; radius: 24 * u; color: person.scarf; antialiasing: true }
+    Rectangle { visible: person.hasScarf; x: -11 * u; y: -100 * u; width: 22 * u; height: 26 * u; radius: 11 * u; color: person.skin; antialiasing: true }
 }

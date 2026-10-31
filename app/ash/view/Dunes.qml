@@ -13,6 +13,6 @@ Item {
     Rectangle { x: -520; y: 428; width: 1000; height: 1000; radius: 500; color: dunes.pal.duneMid }
     Rectangle { x: 520; y: 452; width: 1100; height: 1100; radius: 550; color: dunes.pal.duneMid }
 
-    Rectangle { x: -240; y: 524; width: 1500; height: 300; radius: 150; rotation: -3.2; color: dunes.pal.duneNear }
+    Rectangle { x: -240; y: 524; width: 1500; height: 300; radius: 150; rotation: -3.2; antialiasing: true; color: dunes.pal.duneNear }
     Rectangle { x: -420; y: 560; width: 760; height: 760; radius: 380; color: dunes.pal.duneNear }
 }

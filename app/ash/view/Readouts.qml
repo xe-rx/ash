@@ -12,13 +12,13 @@ Item {
     Text {
         y: 14; width: 1024; horizontalAlignment: Text.AlignHCenter
         text: scene.hijri ? scene.hijri.text : ""
-        color: pal.softSky; font.family: face; font.pixelSize: 19; font.weight: Font.Normal
+        color: pal.softSky; font.family: face; font.pixelSize: 21; font.weight: Font.Normal
     }
 
     Row {
         id: clock
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 190
+        y: 176
         Repeater {
             model: scene.clockText.split("")
             Item {
@@ -34,7 +34,7 @@ Item {
     }
 
     Text {
-        y: 328; width: 1024; horizontalAlignment: Text.AlignHCenter
+        y: 336; width: 1024; horizontalAlignment: Text.AlignHCenter
         text: scene.next ? scene.next.countdownText : ""
         color: pal.accentSky; font.family: face; font.pixelSize: 34; font.weight: Font.DemiBold
     }
