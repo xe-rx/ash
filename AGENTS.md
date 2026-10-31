@@ -10,6 +10,11 @@ scripts/check-pii.sh            # no email addresses in committed files
 scripts/test.sh                 # shell test suites (hooks, team tooling)
 uv run --with-requirements requirements-test.txt python -m pytest -q tests   # python tests, as CI runs them
 scripts/team/worktree.sh list   # team git environments
+scripts/setup-qt.sh             # Qt 5.11 toolchain (py3.8 + PyQt5 5.11.3, hash-pinned) in $PROJECT_DATA/toolchain/qt511; prints its path
+scripts/check-qml.sh [path...]  # parse-check tracked .qml on Qt 5.11 (QtQuick imports only, relative paths must resolve)
+scripts/check-ash-rules.sh      # ADR 0003: no network APIs in app/, no real config tracked, no private coordinates
+scripts/run-offline.sh CMD...   # run CMD with no network (unshare -rn); for the dynamic offline test
+npm ci && node --test tests/core/   # core tests in Node (package.json arrives with the core; scripts/test.sh fails if node_modules is missing)
 # stack commands (format, lint, test, screenshot, package): added by round 1, see docs/CODING_RULES.md
 ```
 
