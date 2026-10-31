@@ -1,0 +1,11 @@
+# Weekly update PRs for pinned GitHub Actions. Add an ecosystem per stack at kickoff
+# (npm, pip/uv, cargo, gomod, docker), each with the directory of its manifest.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

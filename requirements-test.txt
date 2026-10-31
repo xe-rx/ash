@@ -1,0 +1,4 @@
+# Python test dependencies: the single source for CI and local runs (see AGENTS.md).
+# Builders add what their tests import, pinned (e.g. jsonschema==4.25.1).
+pytest
+hypothesis

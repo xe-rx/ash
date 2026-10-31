@@ -1,0 +1,8 @@
+# Rename to CODEOWNERS once the repository has a remote and named owners.
+# The PO owns decisions and agent instructions; replace the handle.
+# *                    @owner
+# /docs/adr/           @owner
+# /AGENTS.md           @owner
+# /CLAUDE.md           @owner
+# /.claude/            @owner
+# /.github/            @owner

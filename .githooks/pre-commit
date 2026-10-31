@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Reject commits containing code files over the line limit (docs/CODING_RULES.md).
+mapfile -t staged < <(git diff --cached --name-only --diff-filter=ACMR)
+((${#staged[@]})) || exit 0
+if ! out=$("$(git rev-parse --show-toplevel)/scripts/check-file-length.sh" "${staged[@]}"); then
+  echo "Commit rejected: files over the line limit. Split them by responsibility (docs/CODING_RULES.md)." >&2
+  echo "$out" >&2
+  exit 1
+fi
+if ! out=$("$(git rev-parse --show-toplevel)/scripts/check-pii.sh" "${staged[@]}" 2>&1); then
+  echo "Commit rejected: personal data (email) in staged files." >&2
+  echo "$out" >&2
+  exit 1
+fi

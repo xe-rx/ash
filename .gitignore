@@ -1,0 +1,40 @@
+# Secrets
+.env
+.env.*
+!.env.example
+secrets/
+
+# Claude Code personal files
+.claude/settings.local.json
+CLAUDE.local.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Common build / dependency output
+node_modules/
+dist/
+build/
+coverage/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+target/
+
+# Team worktrees (created by scripts/team/worktree.sh)
+.worktrees/
+__pycache__/
+.pytest_cache/
+.hypothesis/
+
+# Raw downloads and build outputs (never in git)
+data/raw/
+data/build/
