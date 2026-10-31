@@ -9,6 +9,7 @@ Item {
     property double startMs: 0
     property double speed: 0
     property var config: ({})
+    property string sky: "bands"
     property var shots: []
     property int shotIndex: 0
     signal finished()
@@ -20,6 +21,7 @@ Item {
         id: view
         anchors.fill: parent
         config: root.config
+        sky: root.sky
         useClock: root.startMs === 0 && root.shots.length === 0
         nowMs: root.startMs
         onClosed: root.viewClosed()

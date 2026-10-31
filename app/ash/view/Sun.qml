@@ -1,6 +1,7 @@
 import QtQuick 2.1
 
-// The sun: three stepped, flat halos of falling opacity, the disc and a lighter core. Lives under
+// The sun: five stepped, flat halos of falling opacity (the two largest are very faint and warm the
+// sky around a low sun), the disc and a lighter core. Lives under
 // the dunes, so the horizon cuts it; in twilight only the halos rise above the dunes (a glow).
 // Sizes and opacities come from core/sunlook.js by altitude.
 Item {
@@ -10,12 +11,12 @@ Item {
     property var look: view.look
 
     Repeater {
-        model: 3
+        model: 5
         Rectangle {
             visible: sun.look.glowVisible
-            x: sun.view.x - sun.look.haloR[2 - index]; y: sun.view.y - sun.look.haloR[2 - index]
-            width: 2 * sun.look.haloR[2 - index]; height: width; radius: width / 2
-            color: sun.pal.halo; opacity: sun.look.haloAlpha[2 - index]; antialiasing: true
+            x: sun.view.x - sun.look.haloR[4 - index]; y: sun.view.y - sun.look.haloR[4 - index]
+            width: 2 * sun.look.haloR[4 - index]; height: width; radius: width / 2
+            color: index < 2 ? sun.pal.glow : sun.pal.halo; opacity: sun.look.haloAlpha[4 - index]; antialiasing: true
         }
     }
     Rectangle {

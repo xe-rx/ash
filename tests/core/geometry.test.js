@@ -17,8 +17,8 @@ function clearance(c, r, b) {
 test('the sun arc: sunrise and sunset at its ends on the horizon, Dhuhr near the top (literal pixels)', function () {
   var s = at(H.ams(2026, 6, 21, 3, 0));
   var rise = G.sunPlace(at(s.sunrise.ms)), set = G.sunPlace(at(s.sunset.ms)), noon = G.sunPlace(at(s.prayers[1].ms));
-  assert.ok(Math.abs(rise.x - 60) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
-  assert.ok(Math.abs(set.x - 670) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
+  assert.ok(Math.abs(rise.x - 70) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
+  assert.ok(Math.abs(set.x - 660) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
   assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 65) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
 });
 
@@ -83,6 +83,7 @@ test('the table is clear of the sky arc, the clock, the family and the screen ed
   }
   var end = G.arcPoint(1);
   assert.ok(end.x + 46 < P.x, 'the sun at sunset reaches the panel');
+  assert.ok(G.arcPoint(0).x - 46 >= 22, 'the sun just after sunrise is clipped by the left screen edge (and the burn-in shift)');
 });
 
 test('table layout: five rows in the panel, one next row, times in aligned cells, dot between the rows', function () {

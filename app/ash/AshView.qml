@@ -15,6 +15,7 @@ Item {
     property double nowMs: 0             // 0 = no real tick yet: draw nothing, never a wrong time
     property bool ticked: nowMs !== 0
     property var config: ({})
+    property string sky: "bands"          // dev only, sky mode: "bands" (default) or "gradient"; set by dev/harness.py --sky
     property bool useClock: true          // the harness switches the real clock off and sets nowMs
     signal closed()
 
@@ -40,7 +41,7 @@ Item {
         active: view.shown !== null && view.pal !== null && view.sun !== null
         x: view.shift.x; y: view.shift.y; width: 1024; height: 600
         sourceComponent: Component {
-            AshScene { scene: view.shown; pal: view.pal; sun: view.sun; face: view.face }
+            AshScene { scene: view.shown; pal: view.pal; sun: view.sun; face: view.face; sky: view.sky }
         }
     }
 

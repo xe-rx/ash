@@ -37,7 +37,7 @@ fake_repo() {
   mkdir -p "$1/repo/scripts" "$1/repo/dev" "$1/venv/bin" "$1/x" "$1/w"
   cp "$RUN" "$1/repo/scripts/run-local.sh"
   printf '#!/bin/sh\necho %s\n' "$1/venv" > "$1/repo/scripts/setup-qt.sh"
-  printf '#!/bin/sh\necho "DISPLAY=$DISPLAY"\n' > "$1/venv/bin/python"
+  printf '#!/bin/sh\necho "DISPLAY=$DISPLAY"\necho "ARGS=$*"\n' > "$1/venv/bin/python"
   chmod +x "$1/repo/scripts/setup-qt.sh" "$1/venv/bin/python"
 }
 mksock() { python3 -c 'import socket,sys; s=socket.socket(socket.AF_UNIX); s.bind(sys.argv[1])' "$1"; }
@@ -74,6 +74,23 @@ t_remote_untouched() {
   done
 }
 
+t_sky_flag() { # dev only: --sky bands|gradient reaches the harness; default is bands (no flag passed); anything else is refused
+  local T v; mk_tmp_var T; fake_repo "$T"; mksock "$T/x/X0"
+  for v in bands gradient; do
+    run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky "$v"
+    assert_rc 0 "exit --sky $v"; assert_contains "$OUT" "--sky $v" "harness got --sky $v"
+  done
+  run_fake "$T" DISPLAY=:0
+  assert_not_contains "$OUT" "--sky" "no flag by default, so the harness uses bands"
+  for v in sepia "" Gradient; do
+    run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky "$v"
+    assert_rc 2 "refused --sky '$v'"; assert_contains "$ERR" "--sky takes bands or gradient" "message for '$v'"
+    assert_not_contains "$OUT" "ARGS" "the harness did not run for '$v'"
+  done
+  run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky
+  assert_rc 2 "--sky without a value"
+}
+
 t "xcb with only WAYLAND_DISPLAY set gives the friendly message" t_wayland_only_xcb
 t "wayland platform with only DISPLAY set names WAYLAND_DISPLAY" t_x_only_wayland
 t "no display variables at all gives the friendly message" t_none
@@ -82,4 +99,5 @@ t "WSLg socket replaces :N when the normal socket is missing" t_wslg_redirect
 t "a real normal socket keeps DISPLAY and prints nothing" t_normal_socket
 t "local :N with no socket anywhere warns and still runs" t_local_no_socket
 t "remote and path displays are left to Qt" t_remote_untouched
+t "--sky bands|gradient is passed on, bands by default, anything else refused" t_sky_flag
 summary

@@ -8,7 +8,7 @@
 var W = 1024, H = 600;
 var BANDS = [-16, 40, 90, 135, 180, 225, 270, 315, 350, 380]; // nine sky band edges, shared with Sky.qml
 var HORIZON = 380;
-var ARC_CX = 365, ARC_RX = 305, ARC_RY = 315;
+var ARC_CX = 365, ARC_RX = 295, ARC_RY = 315;
 var SUNRISE_DEG = -50 / 60;  // altitude of the sun's centre at sunrise and sunset (as in sun.js)
 
 function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }

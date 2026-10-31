@@ -1,26 +1,27 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 21:25 · Branch: frontend-engineer/atmosphere · Status: done
+Updated: 2026-10-31 22:45 · Branch: frontend-engineer/art-direction · Status: done
 
 ## Task
-PO redesign: no sun path/labels; prayer table panel (Hijri header, rail dot); altitude-driven sun with halos and twilight glow; dusty 7-band palette; clock/countdown under the arc with a real sun clearance test.
+Art-direction experiment (docs/product/ART-DIRECTION.md): colour script, depth, one light, sky A vs B; honest result.
 
 ## Done
-- core: colour.js, palette.js, sunlook.js, geometry.js (arc, sunView, family), clock.js, table.js, scene.js railRow. view: Sky, Sun, PrayerTable, Readouts, AshScene. Old path/ring/labels removed.
-- tests: rail, geometry (arc anchors, clearance min 32.9 px, panel clear), clock, palette (7 bands, contrast vs real backgrounds), qt font_metrics at 108 and 27 px, strip test in test_view.sh. screenshot.sh --strip sunrise|sunset.
-- Screens: ~/ash-data/screens-atmosphere/ (sheet.png, strip-sunrise.png, strip-sunset.png). Items 130-146 total (was 192-213).
+- core/script.js colour script (+ palette.js uses it), silhouettes (view/Silhouettes.qml), five halos (sunlook.js, Sun.qml), luminance-keeping halo tints (palette.js), arc moved inward 10 px (geometry ARC_RX 295), quieter plum crossing, warm HAZE day sky.
+- core/skygrad.js + Sky.qml switch (line 14, gradientSky) + tools/gen-grain.js -> app/ash/assets/grain.png (22.7 KB). A active (recommended).
+- Cast shadow dropped (three attempts looked like stray bars); lit crest not tried.
+- Tests: script, sunlook, skygrad, halo-contrast (flat and gradient), geometry updated (arc ends 70/660). REQUIRE_QT=1 scripts/test.sh: all 12 files pass.
+- Renders: ~/ash-data/screens-artdir/{A,B,step1,step2,step3}.
+
+- Tech lead round 2: pill mesas removed (Silhouettes.qml now 4 soft domes), grain opacity 0.045 -> 0.02 (B2 reads clean, no banding seen by eye at night or dawn), dev flag `--sky bands|gradient` on scripts/run-local.sh, scripts/screenshot.sh and dev/harness.py (default bands; tested in tests/test_run_local.sh). Renders: ~/ash-data/screens-artdir/{A,B2}.
+
+- Packaging note: if the gradient sky is chosen, device packaging must include app/ash/assets/ (grain.png, 22.7 KB); the app loads it as ../assets/grain.png from view/Sky.qml.
 
 ## Next steps
-1. Tech lead review/merge. PO to judge on the wall; live window untested by me.
-2. Possible polish: panel colour flips quickly at dusk (single step, mauve -> navy); glow after sunset is subtle behind the panel.
+1. Tech lead review, PO eyes on A vs B and on the colour script.
+2. Remaining ideas (not started): shadow as figure-shaped silhouette shapes, lit crest, per-moment panel colours in the script, higher silhouettes at midday, an even stronger dusk land/sky split.
+
+## Open questions / blockers
+None.
 
 ## Gotchas learned
-- node --test tests/core/*.test.js (dir form fails); npm ci --offline in a new worktree.
-- Ink toning only on bands 3..5 (behind clock/countdown); geometry BANDS and clock layout are tied.
-
-## Art review fixes (done)
-- 9 sky bands (steps halved: mean 0.044 -> 0.023, max 0.141 -> 0.064), whole-sky lightness shift for ink instead of per-band toning, monotonic top to horizon; day tops violet-blue, mids pinkish, no green (test: OKLab hue 100..200, chroma >= 0.015, alt 8..90).
-- Panel: tinted warm paper to plum to indigo (chroma >= 0.02 tested), row fill from panel luminance, rail dot with ring; sun core only a 14% lift, halos tighter by day; family dusk shadow warm; mother lighter; table insets 20 px equal.
-
-## Code review fixes (done)
-- No sky lightness shift any more: stops are authored so mid and hor reach luminance 0.179 at FLIP_RISING (-7) and FLIP_SETTING (0); ink flips there only. mixLch fades to OKLab near opposite hues (no direction pop). Smoothness test: 9 bands, 0.05 deg, bound 0.02 (old code 0.177, new 0.0066).
-- Moon wholly in band 1; halo-contrast.test.js (composited, worst 4.53); row fill lighter amber (#e39a38); stale comments tidied.
+- Halo tints must keep the sky luminance near the ink flip (sky lum ~0.179) or contrast fails by 0.03-0.1.
+- Silhouette order test needs every layer consistently darker than the horizon at twilight and night.
