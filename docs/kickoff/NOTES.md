@@ -1,6 +1,6 @@
 # Kickoff notes: Ash
 
-Started: 2026-10-31 06:51 · Phase: 5 outputs (awaiting PO approval)
+Started: 2026-10-31 06:51 · Phase: done (approved by the PO 2026-10-31)
 
 ## Idea
 Ambient background app for muslims, infographic style situated in the desert, with a cloth (or maybe oasis) where a muslim family sits. It shows off the time, and sun position with prayer times thats it. Will be ran on the Toon screen (touchplay version) netherlands.

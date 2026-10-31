@@ -1,19 +1,18 @@
 # Handoff: tech-lead
-Updated: 2026-10-31 · Branch: tech-lead/kickoff · Status: waiting on the PO
+Updated: 2026-10-31 · Branch: main · Status: waiting on the PO (probe)
 
 ## Task
 Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 
 ## Done
-- Kickoff interview, role prep, decision meeting and pre-mortem. Outputs drafted: brief, ADRs 0001-0003, risks, glossary, coding rules, proposal, board.
+- Kickoff complete and merged: brief, ADRs 0001-0003, risks, glossary, coding rules, proposal (approved by the PO 2026-10-31, no changes), board.
 
 ## Next steps
-1. Get the PO's approval of `docs/proposals/0001-ash-ambient-prayer-screen.md`; record date and changes in the proposal, brief and board.
-2. Merge `tech-lead/kickoff` to `main` after approval.
-3. Get the probe output, then start round 1 with the `tech-lead` skill.
+1. Get the probe output from the PO (command in the proposal).
+2. Pin the Qt version and resolution from it, then start round 1 with the `tech-lead` skill.
 
 ## Open questions / blockers
-- PO approval and probe output.
+- Probe output from the PO.
 
 ## Gotchas learned
 - "Touchplay" matches no product we could find; the PO confirmed the device is a rooted Toon 2.
@@ -22,4 +21,4 @@ Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 - `qmlscene` isn't installed on this machine.
 
 ## Suggested skills
-- tech-lead, webapp-testing is not applicable (Qt, not a browser), test-driven-development
+- tech-lead, test-driven-development (webapp-testing doesn't apply: Qt, not a browser)

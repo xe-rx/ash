@@ -1,6 +1,6 @@
 # Proposal 0001: Ash, an ambient prayer screen for the Toon 2
 
-Status: draft · Author: tech lead
+Status: approved by the PO 2026-10-31, no changes · Author: tech lead
 
 ## Summary (5 lines the PO can read alone)
 Ash shows a simple desert scene with a faceless family on a cloth, the time, the sun's position and the prayer times on your rooted Toon 2.

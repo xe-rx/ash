@@ -1,6 +1,6 @@
 # Product brief: Ash
 
-Status: draft · Owner: the PO · Source: `docs/kickoff/NOTES.md`
+Status: approved 2026-10-31 · Owner: the PO · Source: `docs/kickoff/NOTES.md`
 
 ## Why are we here?
 A Muslim household in the Netherlands wants the day's rhythm of sun and prayer visible at a glance at home, as a calm picture rather than another app or a list of numbers. The PO's rooted Toon 2 is already on the wall and already lit.

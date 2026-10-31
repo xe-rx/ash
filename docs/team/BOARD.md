@@ -1,6 +1,6 @@
 # Team board: Ash
 
-Round: 0 (kickoff, awaiting approval) · PO: the user · Tech lead: main session
+Round: 0 (device probe) · PO: the user · Tech lead: main session
 
 ## Roster
 | Role | Kind | Status |
@@ -12,7 +12,6 @@ Round: 0 (kickoff, awaiting approval) · PO: the user · Tech lead: main session
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-- [ ] Approve `docs/proposals/0001-ash-ambient-prayer-screen.md`
 - [ ] Round 0: run the read-only device probe in the proposal and send the output
 
 ## Running jobs and servers
@@ -20,7 +19,7 @@ Round: 0 (kickoff, awaiting approval) · PO: the user · Tech lead: main session
 |---|---|---|---|---|
 
 ## Backlog
-Nothing starts until the PO approves the proposal.
+Proposal approved by the PO 2026-10-31, no changes. Round 1 starts once the probe output is in.
 
 ### Top risk mitigations (from `docs/RISKS.md`)
 - [ ] R1: test the dim hook on the device early in round 2, with the fallback already agreed
@@ -57,4 +56,4 @@ Depends on the probe output for the Qt version and resolution.
 ## In review
 
 ## Done
-- Kickoff phases 1-4; outputs drafted on branch `tech-lead/kickoff`
+- Kickoff: all phases; proposal approved by the PO 2026-10-31
