@@ -21,10 +21,9 @@ test('every label, clock line and date reads at 4.5:1 on what is behind it, all 
       var pal = P.paletteAt(s.sun.altitudeDeg, s.sun.azimuthDeg < 180), L = G.layout(s);
       var checks = [];
       L.labels.forEach(function (b, i) {
-        var land = b.y >= G.LAND_TOP, next = s.prayers[i].isNext;
+        var land = G.onLand(b), next = s.prayers[i].isNext;
         var bgs = land ? [pal.duneFar, pal.duneMid, pal.duneNear] : bandsBehind(pal, b.y, b.y + b.h);
-        var ink = next ? (land ? pal.accentLand : pal.accentSky) : (land ? pal.inkLand : pal.inkSky);
-        var soft = next ? ink : (land ? pal.softLand : pal.softSky);
+        var col = P.labelColors(pal, land, next), ink = col.ink, soft = col.soft;
         checks.push([ink, bgs], [soft, bgs]);
       });
       checks.push([pal.inkSky, bandsBehind(pal, 176, 336)], [pal.accentSky, bandsBehind(pal, 336, 378)], [pal.softSky, bandsBehind(pal, 10, 44)]);

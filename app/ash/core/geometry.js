@@ -92,6 +92,9 @@ function layout(scene) {
   return { labels: boxes, sun: { x: sun.x, y: sun.y, p: sunP }, sunBox: sunBox, dots: dots };
 }
 
+// A label box wholly on the ground (below the horizon) rather than on the sky.
+function onLand(box) { return box.y >= LAND_TOP; }
+
 // Clock: Poppins digits are proportional, so each character gets a fixed cell. The widest digit
 // advance measured in Qt 5.11 at 140 px (Poppins SemiBold, what Font.Medium resolves to) is 93 px.
 var CLOCK_PX = 140, DIGIT_CELL = 96, COLON_CELL = 40;

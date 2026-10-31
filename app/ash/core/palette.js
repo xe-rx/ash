@@ -168,4 +168,10 @@ function paletteAt(altDeg, rising) {
   };
 }
 
+// Ink and soft colours of one prayer label: the next prayer in the accent, others in ink and soft.
+function labelColors(pal, onLand, isNext) {
+  var ink = isNext ? (onLand ? pal.accentLand : pal.accentSky) : (onLand ? pal.inkLand : pal.inkSky);
+  return { ink: ink, soft: isNext ? ink : (onLand ? pal.softLand : pal.softSky) };
+}
+
 function chroma(hex) { var l = toLab(hex); return Math.sqrt(l[1] * l[1] + l[2] * l[2]); }

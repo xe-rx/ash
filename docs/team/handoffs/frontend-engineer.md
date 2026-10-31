@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 09:02 · Branch: frontend-engineer/scene · Status: done
+Updated: 2026-10-31 09:15 · Branch: frontend-engineer/polish · Status: done
 
 ## Task
 Ash scene view (QML) + palette/geometry cores + dev tooling; acceptance: REQUIRE_QT=1 scripts/test.sh, check-file-length, check-pii, check-ash-rules, check-qml, sheet renders.
@@ -20,3 +20,7 @@ Ash scene view (QML) + palette/geometry cores + dev tooling; acceptance: REQUIRE
 - Item scale gives jagged edges: size by factor instead.
 - static.test.js allows the clock only in MinuteClock.qml and getTimezoneOffset only in AshView.qml.
 - Screenshots: ~/ash-data/screens/sheet.png and single PNGs.
+
+## Polish round (PR 0003 follow-ups)
+- scene.js pathProgress (0..1 day, 1..2 night loop); sun marker and prayer markers use it; night ring never moves labels. Test: <=12 px/min over every minute of DST, solstice and 12 other days, 3 places.
+- AshView: blank (#05070f) before first tick, error only after. run-local display check per platform; screenshot --out guard via realpath; palette.labelColors + geometry.onLand shared by view and test. New tests/test_run_local.sh.
