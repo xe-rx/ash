@@ -12,7 +12,6 @@ Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead:
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-- [ ] Open the live window (`scripts/run-local.sh`): does it display correctly, does Esc close it, and how does the look land? (WSLg logs the window; nobody on the team has seen it)
 - [ ] Should the Hijri date change at Maghrib or at midnight? (currently midnight)
 
 Device access is on hold (PO, 2026-10-31).
@@ -25,7 +24,7 @@ Device access is on hold (PO, 2026-10-31).
 PO change 2026-10-31: "can't get into toon yet, for now, focus on running it locally here and perfecting it". Rounds below replace the approved round order; the milestone in the brief is unchanged and can't be met until device access returns.
 
 ### Round 2: perfecting
-- [ ] Polish from PO feedback on the live window.
+PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
 - [ ] Apply the PO's Hijri decision.
 - [ ] PO compares a few dates with their mosque.
 
@@ -37,6 +36,7 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| Atmosphere redesign: palette, sun, prayer table, no sun path | frontend-engineer | frontend-engineer/atmosphere | .worktrees/frontend-engineer-atmosphere | building |
 
 ## In review
 
