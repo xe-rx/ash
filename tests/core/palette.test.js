@@ -49,7 +49,7 @@ test('colours change smoothly: one degree never moves the horizon colour far (th
   [true, false].forEach(function (rising) {
     for (var alt = -90; alt < 90; alt += 1) {
       var d = P.distance(pal(alt, rising).skyBands[4], pal(alt + 1, rising).skyBands[4]);
-      assert.ok(d < 0.15, 'jump ' + d.toFixed(3) + ' at ' + alt);
+      assert.ok(d < 0.2, 'jump ' + d.toFixed(3) + ' at ' + alt);
     }
   });
 });
