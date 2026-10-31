@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 08:36 · Branch: frontend-engineer/core · Status: done
+Updated: 2026-10-31 08:40 · Branch: frontend-engineer/core · Status: done
 
 ## Task
 Pure calculation core in app/ash/core, ES5, sceneAt(nowMs, offsetAt, config); tests; Qt 5.11 parity.
@@ -26,3 +26,4 @@ Pure calculation core in app/ash/core, ES5, sceneAt(nowMs, offsetAt, config); te
 ## Suggested skills
 test-driven-development, verification-before-completion
 - Merged main once (authorised); config test uses whole-degree lat 91; Parity.qml imports only QtQuick.
+- Review fixes: REQUIRE_QT=1 fails without Qt; golden tolerance <1000 ms plus minute text, also at 00:03 (planted +1 min asr caught, reverted); THIRD_PARTY_NOTICES added.

@@ -175,10 +175,27 @@ test('hijri is null outside the table and offset is applied', function () {
   assert.strictEqual(b, '2 Ramadan 1446');
 });
 
-test('the full-year golden: scene prayers equal adhan-js within a minute, with Amsterdam clock text', function (t) {
+// adhan-js keeps a sub-second remainder when it rounds, so Fajr and Isha differ from our
+// whole-minute values by up to 983 ms (observed max); the others match exactly. The scene is
+// evaluated at 13:00 and at 00:03 (when 20 June style lists still hold last night's Isha).
+test('the full-year golden: scene prayers equal adhan-js to the minute, with Amsterdam clock text', function (t) {
   var ref = require('./adhan-ref').reference;
   var Civil = load('civil.js');
   var max = { fajr: 0, sunrise: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 };
+  var KEYS = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  function check(label, s, want) {
+    var got = { fajr: s.prayers[0].ms, dhuhr: s.prayers[1].ms, asr: s.prayers[2].ms,
+      maghrib: s.prayers[3].ms, isha: s.prayers[4].ms, sunrise: s.sunrise.ms };
+    Object.keys(got).forEach(function (k) {
+      var dev = Math.abs(got[k] - want[k]);
+      if (dev > max[k]) { max[k] = dev; }
+      assert.ok(dev < 1000, label + ' ' + k + ' off by ' + dev);
+    });
+    s.prayers.forEach(function (pr, i) {
+      var minute = Math.round(want[KEYS[i]] / 60000) * 60000; // adhan's rounded minute
+      assert.strictEqual(pr.timeText, H.fmtLocal(minute, H.amsterdamOffset(minute)), label + ' text ' + pr.name);
+    });
+  }
   Object.keys(H.PLACES).forEach(function (name) {
     var p = H.PLACES[name];
     [2026, 2028].forEach(function (year) {
@@ -186,18 +203,19 @@ test('the full-year golden: scene prayers equal adhan-js within a minute, with A
       var count = Civil.daysFromCivil(year + 1, 1, 1) - first;
       for (var i = 0; i < count; i++) {
         var c = Civil.civilFromDays(first + i);
-        var s = Scene.sceneAt(H.ams(c.y, c.m, c.d, 13, 0), H.amsterdamOffset, p);
-        var want = ref(p.lat, p.lon, c.y, c.m, c.d);
-        var got = { fajr: s.prayers[0].ms, dhuhr: s.prayers[1].ms, asr: s.prayers[2].ms,
-          maghrib: s.prayers[3].ms, isha: s.prayers[4].ms, sunrise: s.sunrise.ms };
-        Object.keys(got).forEach(function (k) {
-          var dev = Math.abs(got[k] - want[k]);
-          if (dev > max[k]) { max[k] = dev; }
-          assert.ok(dev <= 60000, name + ' ' + year + '-' + c.m + '-' + c.d + ' ' + k);
-        });
-        s.prayers.forEach(function (pr) {
-          assert.strictEqual(pr.timeText, H.fmtLocal(pr.ms, H.amsterdamOffset(pr.ms)));
-        });
+        var label = name + ' ' + year + '-' + c.m + '-' + c.d;
+        var prev = Civil.civilFromDays(first + i - 1);
+        check(label + ' 13:00', Scene.sceneAt(H.ams(c.y, c.m, c.d, 13, 0), H.amsterdamOffset, p),
+          ref(p.lat, p.lon, c.y, c.m, c.d));
+        // 00:03: the list is last night's day if its Isha is still to come, else today's
+        var late = Scene.sceneAt(H.ams(c.y, c.m, c.d, 0, 3), H.amsterdamOffset, p);
+        var yday = ref(p.lat, p.lon, prev.y, prev.m, prev.d);
+        var yIshaPending = Math.round(yday.isha / 60000) * 60000 > H.ams(c.y, c.m, c.d, 0, 3);
+        var today = ref(p.lat, p.lon, c.y, c.m, c.d);
+        var want = yIshaPending ? JSON.parse(JSON.stringify(yday)) : today;
+        want.sunrise = today.sunrise; // top-level sunrise is always the civil day's
+        check(label + ' 00:03', late, want);
+        assert.strictEqual(late.prayers.filter(function (x) { return x.isNext; }).length, 1);
       }
     });
   });

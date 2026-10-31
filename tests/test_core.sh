@@ -36,6 +36,11 @@ echo "== Qt 5.11 parity"
 if [[ -x "$QT_PY" ]] && "$QT_PY" -c 'import PyQt5.QtQml' 2>/dev/null; then
   t "sceneAt gives the same result in Qt 5.11 QML and Node" qt_parity
 else
-  echo "  SKIPPED: Qt 5.11 toolchain not found at $QT_PY (counted as neither pass nor fail)"
+  if [[ ${REQUIRE_QT:-} == 1 ]]; then
+    echo "  FAIL: Qt 5.11 toolchain missing at $QT_PY but REQUIRE_QT=1" >&2
+    FAILED=$((FAILED + 1))
+  else
+    echo "  SKIPPED: Qt 5.11 toolchain not found at $QT_PY (counted as neither pass nor fail)"
+  fi
 fi
 summary

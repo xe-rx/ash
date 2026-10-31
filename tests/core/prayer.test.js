@@ -16,6 +16,8 @@ test('dayTimes returns whole-minute instants for Utrecht on 1 June 2026', functi
   assert.ok(t.asr < t.sunset && t.sunset === t.maghrib && t.maghrib < t.isha);
 });
 
+// adhan-js keeps a sub-second remainder when it rounds, so Fajr and Isha differ from our
+// whole-minute values by up to 983 ms (observed max); all others match exactly.
 test('dayTimes matches adhan-js on every day of 2026 and 2028 at three places', function (t) {
   var max = {};
   KEYS.forEach(function (k) { max[k] = 0; });
@@ -31,7 +33,7 @@ test('dayTimes matches adhan-js on every day of 2026 and 2028 at three places', 
         KEYS.forEach(function (k) {
           var dev = Math.abs(got[k] - want[k]);
           if (dev > max[k]) { max[k] = dev; }
-          assert.ok(dev <= 60000, name + ' ' + c.y + '-' + c.m + '-' + c.d + ' ' + k + ' off by ' + dev + ' ms');
+          assert.ok(dev < 1000, name + ' ' + c.y + '-' + c.m + '-' + c.d + ' ' + k + ' off by ' + dev + ' ms');
         });
       }
     }

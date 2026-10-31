@@ -14,6 +14,8 @@ for (var y = FIRST; y <= LAST; y++) {
   var s = '';
   for (var m = 1; m <= 12; m++) {
     var i = (y - BASE_YEAR) * 12 + m - 1;
+    // The table has no start for the month after 1500-12, so 1500-12 is assumed to have 30 days
+    // (the package's own HIJRI_RANGE ends 1500-12-30).
     var len = (i + 1 < days.length ? days[i + 1] : days[i] + 30) - days[i];
     if (len !== 29 && len !== 30) { throw new Error('month length ' + len + ' at ' + y + '-' + m); }
     s += len === 30 ? '1' : '0';
