@@ -1,6 +1,6 @@
 # Kickoff notes: Ash
 
-Started: 2026-10-31 06:51 · Phase: 1 interview
+Started: 2026-10-31 06:51 · Phase: 5 outputs (awaiting PO approval)
 
 ## Idea
 Ambient background app for muslims, infographic style situated in the desert, with a cloth (or maybe oasis) where a muslim family sits. It shows off the time, and sun position with prayer times thats it. Will be ran on the Toon screen (touchplay version) netherlands.
@@ -54,10 +54,10 @@ Corrections to the researcher's report, checked against the statement itself:
 ## Decisions
 | # | Decision | Options | Inputs | Recommendation | PO choice | ADR |
 |---|---|---|---|---|---|---|
-| D1 | Fajr and Isha method | MWL + angle-based; MWL + seventh of night; a 12 degree method; a mosque's Bilal timetable as data | Researcher, tech lead measurement | MWL 18/17 + angle-based: closest calculated option to Bilal practice | pending | 0002 |
-| D2 | Asr rule | Standard; Hanafi | Researcher | Standard, unless the family follows Hanafi | pending | 0002 |
-| D3 | Architecture | A tile; B tile + dim reopen; C firmware patch | Architect | B, delivered as A in round 1 and the hook in round 2 after a device test | pending | 0001 |
-| D4 | Calculation code | Own small ES5 core checked against adhan-js in tests; vendored adhan-js | Researcher, architect, security-reviewer | Own core, with adhan-js as a test-only reference | pending | 0001 |
-| D5 | UI evidence | Offscreen Qt screenshots + PO photo, in place of the browser rule | Architect | Accept: the app does not run in a browser | pending | 0001 |
+| D1 | Fajr and Isha method | MWL + angle-based; MWL + seventh of night; a 12 degree method; a mosque's Bilal timetable as data | Researcher, tech lead measurement | MWL 18/17 + angle-based: closest calculated option to Bilal practice | MWL + angle-based | 0002 |
+| D2 | Asr rule | Standard; Hanafi | Researcher | Standard, unless the family follows Hanafi | Standard | 0002 |
+| D3 | Architecture | A tile; B tile + dim reopen; C firmware patch | Architect | B, delivered as A in round 1 and the hook in round 2 after a device test | Tile + dim hook, in steps; one permanent tile accepted | 0001 |
+| D4 | Calculation code | Own small ES5 core checked against adhan-js in tests; vendored adhan-js | Researcher, architect, security-reviewer | Own core, with adhan-js as a test-only reference | Own core, adhan-js in tests only | 0001 |
+| D5 | UI evidence | Offscreen Qt screenshots + PO photo, in place of the browser rule | Architect | Accept: the app does not run in a browser | Qt screenshots + PO photo | 0001 |
 
 ## Open questions for the PO

@@ -47,11 +47,19 @@ Rules every role follows. Reviewers check them; the hard limits are enforced by 
 ## Stack (filled in at kickoff)
 | Concern | Tool and command |
 |---|---|
-| Formatter | <e.g. prettier / ruff format>, wired into `.claude/hooks/format.sh` |
-| Linter | <...> |
-| Type checker | <strictest practical mode> |
-| Test runner | <...>, wired into `scripts/test.sh` and CI |
-| Logger | <the one project logger> |
+| Formatter | prettier for JS and JSON (already in `.claude/hooks/format.sh`); QML by review until a matching `qmlformat` is available. Pinned in round 1 |
+| Linter | ESLint on `app/ash/core/` with `ecmaVersion: 5`, so newer syntax fails; `qmllint` from the pinned Qt (`scripts/check-qml.sh`); shellcheck on `device/` and `scripts/` |
+| Type checker | None available for ES5 QML JS: the validated config boundary and golden tests take this role |
+| Test runner | `node --test tests/core/`, wrapped by `tests/test_core.sh` for `scripts/test.sh` and CI |
+| Logger | `console.warn` and `console.error` in QML only: app version and errors, never config values |
+
+## Ash rules (ADR 0001, ADR 0003)
+- **Core:** ES5 only, no clock, no QML, no I/O: `sceneAt(nowMs, utcOffsetMinutes, config)`. Loops are bounded. Results are defined values, never NaN. Invalid config shows a visible error, never a wrong time.
+- **View:** QtQuick primitives only, one minute timer stopped when hidden, no animations.
+- **Network:** no network APIs in Ash, enforced by a static test and a run under `unshare -n` or `strace`. Failing these blocks the merge.
+- **Privacy:** the real config is never committed; `config/ash.example.json` uses a public landmark; a check rejects other precise coordinates in `app/`, `docs/` and `tests/`. Screenshots use the example config.
+- **Device scripts:** POSIX `sh` with `set -eu`, quoted variables and fixed absolute paths, refusing empty variables. Back up before changing anything, stage then swap atomically, support `--dry-run`, and be idempotent. Write only to Ash's paths. Never store credentials, and leave SSH, the firewall and services alone. Tested only against a fake root.
+- **Third-party code:** nothing vendored ships to the device without a pinned hash, licence and source recorded, and a PO-approved ADR for any distribution route such as ToonStore.
 
 ## Git
 - Branch per task: `<role>/<slug>` (e.g. `backend-engineer/user-signup`), in its own worktree.

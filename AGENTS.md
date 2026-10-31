@@ -1,6 +1,6 @@
 # Ash: instructions for coding agents
 
-<one-sentence pitch, written at kickoff> The product brief is `docs/product/BRIEF.md`; decisions are in `docs/adr/`.
+An ambient idle screen for a rooted Toon 2 that shows the time, the sun's position and prayer times in a simple desert infographic, offline. The product brief is `docs/product/BRIEF.md`; decisions are in `docs/adr/`.
 
 ## Dev commands
 ```bash
@@ -10,14 +10,15 @@ scripts/check-pii.sh            # no email addresses in committed files
 scripts/test.sh                 # shell test suites (hooks, team tooling)
 uv run --with-requirements requirements-test.txt python -m pytest -q tests   # python tests, as CI runs them
 scripts/team/worktree.sh list   # team git environments
-# <stack commands: added at kickoff (format, lint, typecheck, test, build, run)>
+# stack commands (format, lint, test, screenshot, package): added by round 1, see docs/CODING_RULES.md
 ```
 
 ## Rules
 - **Code files ≤ 300 lines**, enforced by hook, pre-commit, CI and review. Split by responsibility. Full rules: `docs/CODING_RULES.md`.
 - Test-first for behaviour changes; a bug gets a failing regression test before the fix. Root cause before fixes.
 - No "done" without fresh evidence: the command you ran and its output, or a screenshot for UI.
-- UI work is done only when the production build has been rendered in a real browser and the screenshots checked.
+- UI work is done only when the QML has been rendered offscreen at the Toon's resolution and the screenshots checked; device-level behaviour also needs a PO photo or report (ADR 0001).
+- Never touch the Toon, and never modify its firmware files: the PO runs every install and rollback (ADR 0001).
 - Conventional commits; one branch and worktree per task (`<role>/<slug>`); only the tech lead merges to `main`, after review.
 - Hard-to-reverse decisions get an ADR (`docs/templates/ADR.md`).
 
