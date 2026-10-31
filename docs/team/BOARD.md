@@ -42,6 +42,9 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| Clock digit spacing; scene.js polar message; marker test | frontend-engineer | frontend-engineer/clock-spacing | .worktrees/frontend-engineer-clock-spacing | building |
+| Toolchain follow-ups from PR 0001 | devops-engineer | devops-engineer/toolchain-followups | .worktrees/devops-engineer-toolchain-followups | building |
+| README: run locally | docs-writer | docs-writer/readme | .worktrees/docs-writer-readme | building |
 
 ## In review
 
