@@ -5,7 +5,7 @@ import "core/geometry.js" as Geo
 import "view"
 
 // The Ash idle screen, 1024x600. Takes the time and the config; draws the desert, the family,
-// the sun on its path and the prayer times. Tap anywhere: `closed`.
+// the sun in the sky and the prayer table. Tap anywhere: `closed`.
 // A tile, dim hook or adapter can wrap this item later; it knows nothing about them.
 Item {
     id: view
@@ -26,7 +26,7 @@ Item {
     onSceneChanged: { if (scene.ok === true) { shown = scene } else { shown = null } }
     Component.onCompleted: { if (scene.ok === true) { shown = scene } }
     property var pal: shown ? Palette.paletteAt(shown.sun.altitudeDeg, shown.sun.azimuthDeg < 180) : null
-    property var geo: shown ? Geo.layout(shown) : null
+    property var sun: shown ? Geo.sunView(shown) : null
     property var shift: Geo.shiftAt(nowMs)
     property string face: fontRegular.status === FontLoader.Ready ? fontRegular.name : "DejaVu Sans, sans-serif"
 
@@ -37,10 +37,10 @@ Item {
     MinuteClock { enabled: view.useClock; onMinute: view.nowMs = ms }
 
     Loader {
-        active: view.shown !== null && view.pal !== null && view.geo !== null
+        active: view.shown !== null && view.pal !== null && view.sun !== null
         x: view.shift.x; y: view.shift.y; width: 1024; height: 600
         sourceComponent: Component {
-            AshScene { scene: view.shown; pal: view.pal; geo: view.geo; face: view.face }
+            AshScene { scene: view.shown; pal: view.pal; sun: view.sun; face: view.face }
         }
     }
 

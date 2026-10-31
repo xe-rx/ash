@@ -1,19 +1,18 @@
 import QtQuick 2.1
+import "../core/geometry.js" as Geo
 
-// The picture itself, back to front: sky, sun, ground, sun path, family, prayer labels, readouts.
+// The picture itself, back to front: sky, sun and its glow, dunes, family, prayer table, readouts.
 Item {
     id: stage
     property var scene
     property var pal
-    property var geo
+    property var sun
     property string face: "sans-serif"
 
     Sky { pal: stage.pal }
-    SunDisc { pal: stage.pal; layout: stage.geo; isUp: stage.scene.sun.isUp }
+    Sun { pal: stage.pal; view: stage.sun }
     Dunes { pal: stage.pal }
-    SunPath { pal: stage.pal; layout: stage.geo; isUp: stage.scene.sun.isUp }
-    Family { pal: stage.pal; x: 590; y: 556 }
-    SunRing { pal: stage.pal; layout: stage.geo; isUp: stage.scene.sun.isUp }
-    PrayerLabels { pal: stage.pal; layout: stage.geo; prayers: stage.scene.prayers; face: stage.face }
+    Family { pal: stage.pal; x: Geo.FAMILY.x; y: Geo.FAMILY.y }
+    PrayerTable { pal: stage.pal; scene: stage.scene; face: stage.face }
     Readouts { pal: stage.pal; scene: stage.scene; face: stage.face }
 }

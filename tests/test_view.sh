@@ -65,9 +65,11 @@ t_offline() { need_qt || return 0; mk_tmp_var D
   assert_file "$D/ash-2026-06-21-14-30.png"
 }
 t_font_metrics() { need_qt || return 0
-  local table; table=$(node -e "console.log(JSON.stringify(require('$REPO_ROOT/tests/core/load-core').load('geometry.js').GLYPH_METRICS))")
-  local px; px=$(node -e "console.log(require('$REPO_ROOT/tests/core/load-core').load('geometry.js').CLOCK_PX)")
-  run env QT_QPA_PLATFORM=offscreen "$VENV/bin/python" -I "$REPO_ROOT/tests/qt/font_metrics.py" "$REPO_ROOT/app/ash/fonts" "$px" "$table"
+  local core="$REPO_ROOT/tests/core/load-core" args
+  args=$(node -e "var L=require('$core').load,C=L('clock.js'),T=L('table.js');console.log(JSON.stringify(C.GLYPH_METRICS) + '\n' + C.CLOCK_PX + ' ' + T.TIME_PX)")
+  local table=${args%%$'\n'*} sizes=${args#*$'\n'}
+  # shellcheck disable=SC2086 # sizes is a space separated list
+  run env QT_QPA_PLATFORM=offscreen "$VENV/bin/python" -I "$REPO_ROOT/tests/qt/font_metrics.py" "$REPO_ROOT/app/ash/fonts" "$table" $sizes
   assert_rc 0 "glyph table vs Qt ($OUT $ERR)"
 }
 

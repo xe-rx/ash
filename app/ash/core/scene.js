@@ -48,16 +48,15 @@ function dayProgress(ms, days, times) {
   return (ms - t.sunrise) / (t.sunset - t.sunrise);
 }
 
-// Position of the sun on the full sun path: 0..1 from sunrise to sunset, then 1..2 from sunset
-// through solar midnight to the next sunrise (the night half of the loop). Continuous in time.
-function pathProgress(ms, today, times) {
-  for (var k = today - 3; k <= today + 3; k++) {
-    var t = times(k);
-    if (ms >= t.sunrise && ms <= t.sunset) { return (ms - t.sunrise) / (t.sunset - t.sunrise); }
-    var next = times(k + 1);
-    if (ms > t.sunset && ms < next.sunrise) { return 1 + (ms - t.sunset) / (next.sunrise - t.sunset); }
+// Where now falls among the five prayer rows, as 0..4 with fractions: linear in time between
+// neighbouring prayers, held on the first row before Fajr. After Isha the list rolls to the next
+// day (see the prayer day rule), which is the one defined jump back to 0.
+function railRow(nowMs, prayers) {
+  if (nowMs <= prayers[0].ms) { return 0; }
+  for (var i = 0; i < 4; i++) {
+    if (nowMs < prayers[i + 1].ms) { return i + (nowMs - prayers[i].ms) / (prayers[i + 1].ms - prayers[i].ms); }
   }
-  return 1.5;
+  return 4;
 }
 
 function sceneAt(nowMs, offsetAt, config) {
@@ -107,8 +106,7 @@ function build(nowMs, offsetAt, cfg) {
   for (var i = 0; i < 5; i++) {
     var ms = day[KEYS[i]];
     var isNext = next === null && ms > nowMs;
-    var p = { name: NAMES[i], ms: ms, timeText: Civil.formatClock(ms, offsetFor(offsetAt, ms)), isNext: isNext,
-      pathProgress: pathProgress(ms, today, times) };
+    var p = { name: NAMES[i], ms: ms, timeText: Civil.formatClock(ms, offsetFor(offsetAt, ms)), isNext: isNext };
     if (isNext) {
       var minutes = (ms - nowMinute) / 60000;
       next = { name: p.name, ms: ms, timeText: p.timeText, minutesUntil: minutes, countdownText: countdownText(p.name, minutes) };
@@ -123,10 +121,11 @@ function build(nowMs, offsetAt, cfg) {
     ok: true,
     clockText: Civil.formatClock(nowMs, off),
     sun: { altitudeDeg: pos.altitudeDeg, azimuthDeg: pos.azimuthDeg, dayProgress: progress,
-      isUp: progress >= 0 && progress <= 1, pathProgress: pathProgress(nowMs, today, times) },
+      isUp: progress >= 0 && progress <= 1 },
     sunrise: { ms: t.sunrise, timeText: Civil.formatClock(t.sunrise, offsetFor(offsetAt, t.sunrise)) },
     sunset: { ms: t.sunset, timeText: Civil.formatClock(t.sunset, offsetFor(offsetAt, t.sunset)) },
     prayers: prayers,
+    railRow: railRow(nowMs, prayers),
     next: next,
     hijri: hijri === null ? null : { day: hijri.day, monthName: hijri.monthName, year: hijri.year, text: hijri.text }
   };

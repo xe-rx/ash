@@ -1,21 +1,19 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 15:23 · Branch: frontend-engineer/clock-spacing · Status: done
+Updated: 2026-10-31 20:58 · Branch: frontend-engineer/atmosphere · Status: in-progress
 
 ## Task
-Clock spacing (even gaps around 1, colon stable <=12 px), polar message fix, marker-vs-ring test.
+PO redesign: remove sun path/ring/labels; prayer table panel right (Hijri header, rail dot); prettier altitude-driven sun (3 halos + disc + core, glow under horizon); dusty 7-band palette; clock under the arc with real sun-vs-clock clearance test. Baseline QML items before: 192-213 total (179-200 visible).
 
 ## Done
-- Polar: sceneAt maps a "polar" throw from any neighbouring day to a sun error (scene.js NO_SUN); test in scene.test.js (failed first: "time zone" message at lat 66).
-- Markers: tests/core/markers.test.js (5 dates, utrecht); fails when the prayer mapping is offset by 0.02.
-- Clock: geometry.clockGlyphs places each char by ink (metrics measured in Qt 5.11, 140 px SemiBold), colon fixed at CX (shift 0), gap 15 px; Readouts.qml uses it; tests/core/clock.test.js (1440 minutes: colon shift, equal gaps, fits in OBSTACLES[1]). Old clockCells/DIGIT_CELL removed.
-- Screens: ~/ash-data/screens-clock/ (sheet.png, 5 singles).
+- core: colour.js (maths + mixLch), palette.js (7 bands, panel colours), sunlook.js, geometry.js (arc, sunPlace/sunView, shift, family), clock.js, table.js; scene.js railRow (pathProgress removed).
+- view: Sky(7 bands), Sun, PrayerTable, Readouts, AshScene; old SunPath/SunRing/PrayerLabels/SunDisc removed.
+- tests: rail, geometry (arc anchors, clearance min 35 px, panel), clock, palette updated; qt font_metrics checks sizes 108 and 27.
 
 ## Next steps
-1. Tech lead: review and merge. PO: check on device (live window untested).
+1. Sheet + sunrise/sunset strips (>=8 frames) to ~/ash-data/screens-atmosphere/, look critically, tune colours/family x.
+2. Element count after; contrast minima; docs/GLOSSARY update (sun path mentions); dev/sheet-times unchanged.
+3. Full checks: REQUIRE_QT=1 scripts/test.sh, check-file-length, check-pii, check-ash-rules, check-qml.
 
 ## Gotchas learned
-- node --test tests/core/ (directory form) fails here; use tests/core/*.test.js. npm ci --offline needed in a new worktree.
-- Glyph metrics are hardcoded; if the font file changes, re-measure (QFontMetricsF).
-
-## Review fixes (done)
-- clock.test.js asserts colon shift === 0; unused var removed; markers.test.js has fixed ring anchors (sunrise 132,380; sunset 892,380; Dhuhr top 512,148); tests/qt/font_metrics.py + t_font_metrics in tests/test_view.sh check the glyph table vs QFontMetricsF (Font.Medium resolves to SemiBold; fails under REQUIRE_QT=1 if toolchain missing).
+- node --test tests/core/*.test.js (dir form fails); npm ci --offline in a new worktree.
+- Ink tone only on bands 3..5 (those behind clock/countdown); palette test derives bands from geometry.
