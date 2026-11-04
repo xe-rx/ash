@@ -1,7 +1,8 @@
 import QtQuick 2.1
 
-// One faceless seated figure, built of pills and circles, sized by `u` (1 = adult at 1x).
-// Origin: bottom centre of the lap. Variants: headscarf, cap or bare hair.
+// One faceless seated figure built of crisp parts, sized by `u` (1 = adult at 1x): a lap block, a trapezoid robe
+// (a rectangle with two triangular side facets), shoulders, a square-cornered head, and distinct headwear
+// (kufi, hair or a triangular hijab). Fold facets are translucent triangles. Origin: bottom centre of the lap.
 Item {
     id: person
     property real u: 1
@@ -15,14 +16,22 @@ Item {
     property bool hasHair: false
     width: 0; height: 0
 
-    Rectangle { x: -48 * u; y: -26 * u; width: 96 * u; height: 28 * u; radius: 14 * u; color: person.robe; antialiasing: true }
-    Rectangle { x: -27 * u; y: -76 * u; width: 54 * u; height: 66 * u; radius: 24 * u; color: person.robe; antialiasing: true }
-    // folds as facets: the right half of the robe in shade, a crisp lap fold and a sash line
-    Rectangle { x: 6 * u; y: -70 * u; width: 21 * u; height: 60 * u; radius: 20 * u; color: "#000000"; opacity: 0.14; antialiasing: true }
-    Rectangle { x: 14 * u; y: -22 * u; width: 34 * u; height: 22 * u; radius: 11 * u; color: "#000000"; opacity: 0.12; antialiasing: true }
-    Rectangle { x: -27 * u; y: -46 * u; width: 54 * u; height: Math.max(1, 2 * u); color: "#000000"; opacity: 0.2 }
-    Rectangle { x: -15 * u; y: -104 * u; width: 30 * u; height: 30 * u; radius: 15 * u; color: person.skin; antialiasing: true }
-    Rectangle { visible: person.hasHair; x: -16 * u; y: -106 * u; width: 32 * u; height: 20 * u; radius: 10 * u; color: person.hair; antialiasing: true }
-    Rectangle { visible: person.hasCap; x: -14 * u; y: -108 * u; width: 28 * u; height: 14 * u; radius: 7 * u; color: person.cap; antialiasing: true }
-    Rectangle { visible: person.hasScarf; x: -24 * u; y: -110 * u; width: 48 * u; height: 64 * u; radius: 24 * u; color: person.scarf; antialiasing: true }
+    // hijab: a triangle from the crown down over the shoulders, behind the face
+    Facet { visible: person.hasScarf; x: -34 * u; y: -112 * u; hw: 34 * u; hh: 70 * u; leftHalf: true; col: person.scarf }
+    Facet { visible: person.hasScarf; x: 0; y: -112 * u; hw: 34 * u; hh: 70 * u; leftHalf: false; col: person.scarf }
+    // lap and robe
+    Rectangle { x: -48 * u; y: -26 * u; width: 96 * u; height: 28 * u; radius: 3 * u; color: person.robe }
+    Rectangle { x: -22 * u; y: -70 * u; width: 44 * u; height: 50 * u; color: person.robe }
+    Facet { x: -34 * u; y: -70 * u; hw: 12 * u; hh: 50 * u; leftHalf: true; col: person.robe }      // the robe widens to the lap
+    Facet { x: 22 * u; y: -70 * u; hw: 12 * u; hh: 50 * u; leftHalf: false; col: person.robe }
+    Rectangle { x: -30 * u; y: -76 * u; width: 60 * u; height: 12 * u; radius: 3 * u; color: person.robe }   // shoulders
+    // folds: a shade triangle down the right side, a light one on the left, a lap crease
+    Facet { x: 0; y: -62 * u; hw: 28 * u; hh: 42 * u; leftHalf: false; col: "#000000"; opacity: 0.16 }
+    Facet { x: -26 * u; y: -62 * u; hw: 22 * u; hh: 36 * u; leftHalf: true; col: "#ffffff"; opacity: 0.12 }
+    Rectangle { x: -48 * u; y: -14 * u; width: 96 * u; height: Math.max(1, 1.5 * u); color: "#000000"; opacity: 0.2 }
+    // head and headwear
+    Rectangle { x: -14 * u; y: -102 * u; width: 28 * u; height: 28 * u; radius: 5 * u; color: person.skin }
+    Rectangle { visible: person.hasHair; x: -15 * u; y: -106 * u; width: 30 * u; height: 14 * u; radius: 3 * u; color: person.hair }
+    Rectangle { visible: person.hasCap; x: -15 * u; y: -108 * u; width: 30 * u; height: 13 * u; radius: 2 * u; color: person.cap }
+    Rectangle { visible: person.hasCap; x: -15 * u; y: -97 * u; width: 30 * u; height: Math.max(1, 2 * u); color: "#000000"; opacity: 0.25 }
 }

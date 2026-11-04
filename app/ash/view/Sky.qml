@@ -29,13 +29,7 @@ Item {
         x: -16; y: Grad.SKY_TOP; width: 1056; height: Grad.SKY_H; opacity: 0.02
     }
 
-    Repeater {
-        model: sky.pal.stars ? [[610, 44, 3], [760, 70, 2], [880, 34, 3], [940, 120, 2], [820, 150, 2],
-            [70, 120, 2], [230, 30, 3], [330, 84, 2], [440, 22, 2], [560, 100, 2], [690, 22, 2],
-            [30, 40, 2], [150, 160, 2], [980, 70, 3], [890, 200, 2], [120, 230, 2]] : []
-        Rectangle { x: modelData[0]; y: modelData[1]; width: modelData[2]; height: modelData[2]
-            radius: modelData[2] / 2; color: sky.pal.starColor; opacity: sky.pal.starAlpha }
-    }
+    Image { visible: sky.pal.stars; x: 0; y: 0; width: 1024; height: 360; source: "../assets/stars.png"; opacity: sky.pal.starAlpha }
 
     // The moon is a fixed crescent symbol, not the astronomical phase: a disc with a disc of sky
     // cut out of it, the cut-out having the gradient's colour at its middle.

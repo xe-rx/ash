@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-04 05:09 · Branch: frontend-engineer/sadu-redesign · Status: done
+Updated: 2026-11-04 05:12 · Branch: frontend-engineer/sadu-redesign · Status: done
 
 ## Task
 Sadu redesign (PO-chosen): gradient sky only, woven qata table on the right, cream clock + tag countdown, dye colour script, one 8 px grid. PO steer later: richer geometric detail (faceted dunes, richer family/rug, star motifs), item budget ~400.

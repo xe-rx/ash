@@ -121,3 +121,12 @@ test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes'
   }
   assert.ok(Object.keys(seen).length > 10);
 });
+
+test('the qata has the same geometry at every moment: its layout is a constant, and the view does not shift it with the burn-in shift', function () {
+  var a = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0))), b = Table.tableLayout(at(H.ams(2026, 12, 21, 0, 1)));
+  assert.strictEqual(JSON.stringify(a.qata), JSON.stringify(b.qata));
+  assert.deepStrictEqual(a.rows.map(function (r) { return r.y; }), b.rows.map(function (r) { return r.y; }));
+  var fs = require('fs'), path = require('path');
+  var scene = fs.readFileSync(path.join(__dirname, '..', '..', 'app', 'ash', 'view', 'AshScene.qml'), 'utf8');
+  assert.ok(!/PrayerTable/.test(scene), 'PrayerTable sits inside the shifted scene');
+});

@@ -6,7 +6,7 @@
 //   y 8..31  band: eight-point stars (two squares) on goat-hair black, fine cream rules top and bottom
 //   y 32..39 stripe again
 //   y 40..63 fringe: cream threads, 4 px wide every 8 px, uneven lengths, transparent between
-// rug.png, 48 x 16: the border of the family's rug, a row of nested diamonds between two rules.
+// stars.png: see below. rug.png, 48 x 16: the border of the family's rug, a row of nested diamonds between two rules.
 // Fixed colours only; geometric shapes only; deterministic (no random numbers).
 var fs = require('fs'), zlib = require('zlib'), path = require('path');
 var GROUND = [29, 23, 21], CREAM = [239, 228, 207], MADDER = [168, 50, 42], CLEAR = [0, 0, 0, 0];
@@ -58,8 +58,25 @@ function rug(x, y) { // 48 x 16
   return GROUND;
 }
 
+// stars.png, 1024 x 360: a dense field of stars in three brightness levels (alpha 0.4, 0.7, 1; 1 and 2 px, a few
+// 3 px crosses), thinning out towards the horizon glow (no stars below y 300). Fixed colour #cfd3f0; deterministic LCG.
+var starPx = {}, seed = 20261104;
+function rnd() { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; }
+(function () {
+  var n, x, y, level, size, a, dx, dy, k;
+  for (n = 0; n < 420; n++) {
+    x = Math.floor(rnd() * 1024); y = Math.floor(rnd() * 300);
+    if (rnd() > Math.min(1, (320 - y) / 200)) { continue; }
+    k = rnd(); level = k < 0.6 ? 0 : (k < 0.9 ? 1 : 2); a = [0.4, 0.7, 1][level] * 255;
+    size = level === 2 ? 2 : 1;
+    for (dx = 0; dx < size; dx++) { for (dy = 0; dy < size; dy++) { starPx[(x + dx) + ',' + (y + dy)] = a; } }
+    if (level === 2 && rnd() < 0.5) { starPx[(x - 1) + ',' + y] = 110; starPx[(x + 2) + ',' + y] = 110; starPx[x + ',' + (y - 1)] = 110; starPx[x + ',' + (y + 2)] = 110; }
+  }
+})();
+function stars(x, y) { var a = starPx[x + ',' + y]; return a ? [207, 211, 240, Math.round(a)] : CLEAR; }
+
 var dir = process.argv[2] || path.join(__dirname, '..', 'app', 'ash', 'assets');
-[['weave.png', 304, 64, weave], ['rug.png', 48, 16, rug]].forEach(function (a) {
+[['weave.png', 304, 64, weave], ['rug.png', 48, 16, rug], ['stars.png', 1024, 360, stars]].forEach(function (a) {
   var buf = png(a[1], a[2], a[3]), f = path.join(dir, a[0]);
   fs.writeFileSync(f, buf); console.log(f + ': ' + buf.length + ' bytes');
 });

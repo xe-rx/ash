@@ -15,7 +15,7 @@ Item {
     Rectangle { x: -180 * f + 3; y: -26 * f + 3; width: 360 * f - 6; height: 54 * f - 6; color: family.pal.cloth
         opacity: family.pal.weaveDim; visible: family.pal.weaveDim > 0 }
 
-    Person { u: 1.08 * f; x: -104 * f; y: -2 * f; robe: family.pal.father; skin: family.pal.skin; hasCap: true; cap: family.pal.father }
+    Person { u: 1.08 * f; x: -104 * f; y: -2 * f; robe: family.pal.father; skin: family.pal.skin; hasCap: true; cap: family.pal.clothStripe }
     Person { u: 0.98 * f; x: 104 * f; y: -2 * f; robe: family.pal.mother; skin: family.pal.skin; hasScarf: true; scarf: family.pal.hijab }
     Person { u: 0.62 * f; x: -36 * f; y: 10 * f; robe: family.pal.boy
         skin: family.pal.skinDark; hasHair: true; hair: family.pal.hair }

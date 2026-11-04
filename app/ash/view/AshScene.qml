@@ -14,6 +14,5 @@ Item {
     Silhouettes { pal: stage.pal }
     Dunes { pal: stage.pal }
     Family { pal: stage.pal; x: Geo.FAMILY.x; y: Geo.FAMILY.y }
-    PrayerTable { pal: stage.pal; scene: stage.scene; face: stage.face }
     Readouts { pal: stage.pal; scene: stage.scene; face: stage.face }
 }

@@ -69,6 +69,7 @@ function paletteAt(altDeg, rising) {
   for (k = 0; k < 5; k++) {
     var c = [s.farTwo, s.farOne, s.duneFar, s.duneMid, s.duneNear][k];
     faces[names[k] + "Lit"] = mix(c, mix(s.sun, s.tint, 0.4), 0.2 * (1 - s.sink * 0.5));
+    faces[names[k] + "Mid"] = mix(faces[names[k] + "Lit"], c, 0.5);
     faces[names[k] + "Shade"] = mix(c, mix(s.shade, "#0e0810", 0.4), 0.38);
   }
   var faded = ensureContrast(mix(cream, ground, 0.55), [ground], true);
