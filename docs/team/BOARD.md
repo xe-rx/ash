@@ -12,8 +12,10 @@ Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead:
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-- [ ] Compare the skies live (`scripts/run-local.sh --sky bands|gradient`) and pick one; then remove the loser and the flag, and if gradient wins, include `app/ash/assets/` in device packaging. Tech lead recommends gradient.
-- [ ] Should the Hijri date change at Maghrib or at midnight? (currently midnight)
+- [ ] PO compares a few dates with their mosque (`config/ash.json`).
+- [ ] Optional: a Claude desktop session with computer use, reachable over Remote Control, to watch the live window.
+
+Decided 2026-11-04: gradient sky; Hijri rolls over at Maghrib; UI redesign in the Sadu (woven tent) direction, chosen on the Impeccable decision page (contract in `.impeccable/surfaces/`).
 
 Device access is on hold (PO, 2026-10-31).
 
@@ -27,8 +29,6 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 ### Round 2: perfecting
 PO request 2026-10-31: "Can you do some research on higher quality styles and atmosphere creation and see whether you can improve it. If not this just means its a human task!"
 PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
-- [ ] Apply the PO's Hijri decision.
-- [ ] PO compares a few dates with their mosque.
 
 ### On hold until the PO can reach the Toon
 - [ ] Round 0 probe (command in the proposal); pin Qt version and resolution from it
@@ -38,6 +38,8 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| Sadu redesign, gradient-only sky | frontend-engineer | frontend-engineer/sadu-redesign | .worktrees/frontend-engineer-sadu-redesign | building |
+| Hijri rollover at Maghrib | backend-engineer | backend-engineer/hijri-maghrib | .worktrees/backend-engineer-hijri-maghrib | building |
 
 ## In review
 
