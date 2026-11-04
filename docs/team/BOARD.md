@@ -15,6 +15,7 @@ Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead:
 - [ ] PO compares a few dates with their mosque (`config/ash.json`).
 - [ ] Optional: a Claude desktop session with computer use, reachable over Remote Control, to watch the live window.
 
+PO 2026-11-04: QML primitives "will always look flat and simple"; approved baking geometric SVG art to PNG and prototyping a lattice panel and a tent view.
 Decided 2026-11-04: gradient sky; Hijri rolls over at Maghrib; UI redesign in the Sadu (woven tent) direction, chosen on the Impeccable decision page (contract in `.impeccable/surfaces/`).
 
 Device access is on hold (PO, 2026-10-31).
@@ -38,8 +39,9 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Sadu redesign, gradient-only sky | frontend-engineer | frontend-engineer/sadu-redesign | .worktrees/frontend-engineer-sadu-redesign | building |
-| Hijri rollover at Maghrib | backend-engineer | backend-engineer/hijri-maghrib | .worktrees/backend-engineer-hijri-maghrib | building |
+| Sadu redesign, gradient-only sky | frontend-engineer | frontend-engineer/sadu-redesign | .worktrees/frontend-engineer-sadu-redesign | paused: PO rethinking rendering; table/clock/palette reusable |
+| Baked-art prototypes (lattice, tent) at sunset | frontend-engineer | frontend-engineer/baked-art | .worktrees/frontend-engineer-baked-art | building |
+| Hijri rollover at Maghrib | backend-engineer | backend-engineer/hijri-maghrib | .worktrees/backend-engineer-hijri-maghrib | approved (PR 0011), awaits trial merge |
 
 ## In review
 
