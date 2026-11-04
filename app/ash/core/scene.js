@@ -116,7 +116,14 @@ function build(nowMs, offsetAt, cfg) {
 
   var progress = dayProgress(nowMs, [today - 1, today, today + 1], times);
   var pos = Sun.position(nowMs, cfg.lat, cfg.lon);
-  var hijri = Hijri.hijriFor(today, cfg.hijriOffsetDays);
+  // The Hijri day starts at Maghrib (PO decision 2026-11-04): from today's Maghrib to midnight
+  // it is the next civil day's date. After midnight `today` is the next day and its Maghrib is
+  // still ahead, so there is no second step. With no Maghrib (null, which build() cannot reach
+  // today because polar days fail the scene first) the rollover stays at midnight.
+  var maghrib = t.maghrib;
+  var afterMaghrib = typeof maghrib === "number" && isFinite(maghrib) && nowMs >= maghrib;
+  var hijri = Hijri.hijriFor(today + (afterMaghrib ? 1 : 0), cfg.hijriOffsetDays);
+  if (hijri === null && afterMaghrib) { hijri = Hijri.hijriFor(today, cfg.hijriOffsetDays); } // table's last day
   return {
     ok: true,
     clockText: Civil.formatClock(nowMs, off),
