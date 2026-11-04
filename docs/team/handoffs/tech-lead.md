@@ -1,28 +1,28 @@
 # Handoff: tech-lead
-Updated: 2026-10-31 · Branch: main · Status: waiting on PO feedback (live window)
+Updated: 2026-11-04 · Branch: main · Status: waiting on PO feedback on the new scene
 
 ## Task
 Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 
 ## Done
-- Round 2, first batch merged (PRs 0005-0010): clock spacing, toolchain follow-ups, README, WSLg display, atmosphere redesign and art direction experiment from PO feedback. Round 1 merged locally (PRs 0001-0004). Kickoff complete and merged: brief, ADRs 0001-0003, risks, glossary, coding rules, proposal (approved by the PO 2026-10-31, no changes), board.
+- Round 2, batch 2 (2026-11-04): PR 0011 Hijri at Maghrib, PR 0012 baked geometric SVG art (tools/art, rsvg-convert), PR 0013 Sadu redesign with scene C (tent frame + mashrabiya lattice, 14 land moments cross-faded, live sun/clock/table). PRODUCT.md and the Impeccable direction contract in .impeccable/surfaces/.
+- Earlier: PRs 0001-0010, kickoff, proposal approved 2026-10-31.
 
 ## Next steps
-1. The PO confirmed the live window works. Get their sky choice and reaction to PR 0010; then remove the losing sky and the `--sky` flag.
-2. Run the next polish from that feedback; weak spots are listed in PRs 0009 and 0010.
-3. Apply the PO's answer on the Hijri date change (Maghrib recommended, midnight today).
-4. Device work is on hold until the PO has Toon access (board). Toolchain follow-ups from PR 0001 are on the board.
+1. PO feedback on the live scene; polish from it (board lists candidates and review follow-ups).
+2. PO compares times with their mosque.
+3. Device work on hold until Toon access; first device check: cost of the full-screen PNGs.
 
 ## Open questions / blockers
-- PO: sky choice (bands or gradient) and reaction to PR 0010; Hijri date change time.
+- PO: reaction to the new scene; mosque comparison.
+- Optional: a Claude desktop session with computer use, reachable over Remote Control (this session is linked), to watch the live window.
 
 ## Gotchas learned
-- "Touchplay" matches no product we could find; the PO confirmed the device is a rooted Toon 2.
-- Builders hit their 40-turn limit on big tasks: resume them with SendMessage. `worktree.sh merge` needs `--discard-data` when only caches and node_modules remain; Qt's `.qmlc`/`.jsc` bytecode files also trigger the refusal, so look, then discard.
-- Domoticaforum blocks direct fetches (403), so forum facts are from search snippets and marked as such.
-- The researcher's claim that seventh of the night matches Bilal practice was wrong; see the measurement in `docs/kickoff/NOTES.md`.
-- `qmlscene` isn't installed. Toolchain: `~/ash-data/toolchain/qt511` (Python 3.8, PyQt5 5.11.3, Qt 5.11.2). Offscreen needs `QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software`, and `grabToImage` (grabWindow returns empty).
-- `/tmp/.X11-unix` is empty here (cause unknown); the real socket is `/wslg/.X11-unix/X0`, which run-local.sh now finds. Agents can start the window under `timeout` and confirm it in `/wslg/weston.log`, but can't see it. A sandbox bypass was denied earlier: don't retry it.
+- Impeccable (v4.5.2 installed, v4.8.0 available) runs its decision page on 127.0.0.1; the PO could open it from Windows. Its question logs are gitignored.
+- QML primitives look flat whatever you do; baked SVG art via rsvg-convert is the way to detail. Two builders sharing a role share one handoff file: expect a conflict on merge.
+- Builders hit their 40-turn limit on big tasks: resume them with SendMessage. `worktree.sh merge` needs `--discard-data` when only .qmlc/.jsc caches remain.
+- `/tmp/.X11-unix` is empty here; run-local.sh finds `/wslg/.X11-unix/X0`. Agents confirm the window in `/wslg/weston.log` but can't see it.
+- Toolchain: `~/ash-data/toolchain/qt511`; offscreen needs `QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software` and `grabToImage`.
 
 ## Suggested skills
-- tech-lead, test-driven-development (webapp-testing doesn't apply: Qt, not a browser)
+- tech-lead, impeccable (design rounds), test-driven-development

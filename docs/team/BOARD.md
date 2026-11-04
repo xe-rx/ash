@@ -31,7 +31,12 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 PO request 2026-10-31: "Can you do some research on higher quality styles and atmosphere creation and see whether you can improve it. If not this just means its a human task!"
 PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
 
+- [ ] PO looks at the new scene live (`scripts/run-local.sh --at "2026-06-21 21:00" --speed 30`) and gives feedback
+- [ ] Review follow-ups (PR 0013): comment on the relaxed ellipse test; tie `valanceY` to tent.png by a test; hem margin 4.8 px
+- [ ] Art polish candidates: figures still a little blocky, family sinks at set0/set-4, dunes hard-edged
+
 ### On hold until the PO can reach the Toon
+- [ ] Measure the Toon's cost of full-screen alpha PNGs and the per-minute cross-fade (1.5 MB of art)
 - [ ] Round 0 probe (command in the proposal); pin Qt version and resolution from it
 - [ ] Tile, dim hook and `qb.*` adapters; device scripts and `docs/INSTALL.md`
 - [ ] Soft chime (depends on audio); GUI-failure and rollback rehearsal; one-week soak
@@ -39,13 +44,11 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Sadu redesign, gradient-only sky | frontend-engineer | frontend-engineer/sadu-redesign | .worktrees/frontend-engineer-sadu-redesign | integrating baked layers (landAt cross-fade, tent, lattice, live wash) |
-| Baked art: figures pass, 14 land moments, tent.png, lattice.png | frontend-engineer | frontend-engineer/baked-art | .worktrees/frontend-engineer-baked-art | building (PO approved scene C 2026-11-04) |
-| Hijri rollover at Maghrib | backend-engineer | backend-engineer/hijri-maghrib | .worktrees/backend-engineer-hijri-maghrib | approved (PR 0011), awaits trial merge |
 
 ## In review
 
 ## Done
+- PR 0011 Hijri at Maghrib; PR 0012 baked geometric art; PR 0013 Sadu redesign with scene C (tent + lattice), 2026-11-04
 - PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README; PR 0008 WSLg display; PR 0009 atmosphere redesign; PR 0010 art direction experiment
 - PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run; PR 0004 scene follow-ups
 - Kickoff: all phases; proposal approved by the PO 2026-10-31
