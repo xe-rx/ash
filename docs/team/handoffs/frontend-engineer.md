@@ -1,27 +1,29 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 22:45 · Branch: frontend-engineer/art-direction · Status: done
+Updated: 2026-11-04 05:28 · Branch: frontend-engineer/baked-art · Status: done
 
 ## Task
-Art-direction experiment (docs/product/ART-DIRECTION.md): colour script, depth, one light, sky A vs B; honest result.
+Prototype two baked-SVG sunset scenes (A mashrabiya, B tent) at 1024x600, no app integration.
 
 ## Done
-- core/script.js colour script (+ palette.js uses it), silhouettes (view/Silhouettes.qml), five halos (sunlook.js, Sun.qml), luminance-keeping halo tints (palette.js), arc moved inward 10 px (geometry ARC_RX 295), quieter plum crossing, warm HAZE day sky.
-- core/skygrad.js + Sky.qml switch (line 14, gradientSky) + tools/gen-grain.js -> app/ash/assets/grain.png (22.7 KB). A active (recommended).
-- Cast shadow dropped (three attempts looked like stray bars); lit crest not tried.
-- Tests: script, sunlook, skygrad, halo-contrast (flat and gradient), geometry updated (arc ends 70/660). REQUIRE_QT=1 scripts/test.sh: all 12 files pass.
-- Renders: ~/ash-data/screens-artdir/{A,B,step1,step2,step3}.
+- Generator in tools/art/ (palette, svg, layout, sky, landscape, family, sadu, text, panelA, panelB, build). Run: node tools/art/build.js [outdir]
+- Output in ~/ash-data/proto-baked/: full scenes plus layers sky, landscape, panel, text per scene.
 
-- Tech lead round 2: pill mesas removed (Silhouettes.qml now 4 soft domes), grain opacity 0.045 -> 0.02 (B2 reads clean, no banding seen by eye at night or dawn), dev flag `--sky bands|gradient` on scripts/run-local.sh, scripts/screenshot.sh and dev/harness.py (default bands; tested in tests/test_run_local.sh). Renders: ~/ash-data/screens-artdir/{A,B2}.
+- Scene C (PO pick: A's lattice with B's tent) added: C-tent-lattice.png plus layers sky/landscape/tent/lattice/wash/text; tent.js split out; wash separate layer.
 
-- Packaging note: if the gradient sky is chosen, device packaging must include app/ash/assets/ (grain.png, 22.7 KB); the app loads it as ../assets/grain.png from view/Sky.qml.
+- Moments pass: tools/art/moments.js (copy of script.js table), bake.js writes app/ash/assets/land/*.png (14), tent.png, lattice.png (1.37 MB total, deterministic, lossless via quantize.py/PIL); figures.js/rug.js split; sheet.py contact sheet.
+
+- tent-night.png / lattice-night.png baked via P.moonlit (colour remap of the same SVG, identical alpha). Assets total 1,521,718 B.
+- Build needs system python3 + PIL and rsvg-convert (build-time only, not shipped).
 
 ## Next steps
-1. Tech lead review, PO eyes on A vs B and on the colour script.
-2. Remaining ideas (not started): shadow as figure-shaped silhouette shapes, lit crest, per-moment panel colours in the script, higher silhouettes at midday, an even stronger dusk land/sky split.
+1. Integrate C as stacked Images with live sun/clock/text; parameterise palette for ~8 moments.
 
 ## Open questions / blockers
 None.
 
 ## Gotchas learned
-- Halo tints must keep the sky luminance near the ink flip (sky lum ~0.179) or contrast fails by 0.03-0.1.
-- Silhouette order test needs every layer consistently darker than the horizon at twilight and night.
+- Palette quantising bands the dune gradients; lossless RGBA fits 1.5 MB. Run: node tools/art/bake.js
+- rsvg needs FONTCONFIG_FILE with <dir> to app/ash/fonts; build.js makes a temp one.
+- Masks (lattice) bake to real alpha holes in the panel layer.
+## Suggested skills
+impeccable
