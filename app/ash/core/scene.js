@@ -123,6 +123,7 @@ function build(nowMs, offsetAt, cfg) {
   var maghrib = t.maghrib;
   var afterMaghrib = typeof maghrib === "number" && isFinite(maghrib) && nowMs >= maghrib;
   var hijri = Hijri.hijriFor(today + (afterMaghrib ? 1 : 0), cfg.hijriOffsetDays);
+  if (hijri === null && afterMaghrib) { hijri = Hijri.hijriFor(today, cfg.hijriOffsetDays); } // table's last day
   return {
     ok: true,
     clockText: Civil.formatClock(nowMs, off),

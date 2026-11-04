@@ -9,7 +9,8 @@ var Scene = load('scene.js');
 function cfg(offset) { return { lat: 52.09, lon: 5.12, hijriOffsetDays: offset }; }
 function textAt(ms, offset) { return Scene.sceneAt(ms, H.amsterdamOffset, cfg(offset)).hijri.text; }
 function maghribOf(y, mo, d) {
-  return Scene.sceneAt(H.ams(y, mo, d, 12, 0), H.amsterdamOffset, cfg(0)).prayers[3].ms;
+  var prayers = Scene.sceneAt(H.ams(y, mo, d, 12, 0), H.amsterdamOffset, cfg(0)).prayers;
+  return prayers.filter(function (p) { return p.name === 'Maghrib'; })[0].ms;
 }
 
 // 1 March 2025 is 1 Ramadan 1446 by civil day (see scene.test.js).
@@ -46,4 +47,17 @@ test('no Maghrib (polar): no scene, no Hijri date shifted by a missing Maghrib',
   assert.strictEqual(r.ok, false);
   assert.ok(/no sunrise or sunset/.test(r.error));
   assert.strictEqual(r.hijri, undefined);
+});
+
+// At the table's last day the next day has no date; keep showing the last one, not a blank.
+test('hijri after Maghrib on the last table day keeps that day instead of going blank', function () {
+  var Hijri = load('hijri.js');
+  var day = Math.floor(Date.UTC(2090, 5, 1) / H.DAY); // beyond the table
+  while (Hijri.hijriFor(day, 0) === null) { day--; }   // last civil day with a date
+  var last = Hijri.hijriFor(day, 0).text;
+  var d = new Date(day * H.DAY);
+  var y = d.getUTCFullYear(), mo = d.getUTCMonth() + 1, dd = d.getUTCDate();
+  assert.strictEqual(Hijri.hijriFor(day + 1, 0), null);
+  assert.strictEqual(textAt(H.ams(y, mo, dd, 12, 0), 0), last);
+  assert.strictEqual(textAt(H.ams(y, mo, dd, 23, 59), 0), last);
 });
