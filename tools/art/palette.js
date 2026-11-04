@@ -21,6 +21,14 @@ P.shade = c => mix(c, P.shadow, 0.55);
 P.lit = c => mix(c, '#ffd9a0', 0.38);
 module.exports = { P, mix, lum, contrast };
 
+// Moonlit variant of a finished SVG string: every #rrggbb is cooled toward blue-violet and dimmed. Geometry is untouched,
+// so a day/night pair is pixel-for-pixel the same shape and cross-fades cleanly.
+P.moonlit = svg => svg.replace(/#([0-9a-fA-F]{6})\b/g, (m, h) => {
+  const c = '#' + h.toLowerCase(), l = Math.pow(lum(c), 0.45);
+  const target = mix('#080c26', '#9aa2d4', l);
+  return mix(mix(mix(c, '#1a2050', 0.5), target, 0.35), '#05071a', 0.12);
+});
+
 // Re-light the land palette from a colour-script moment (see moments.js). Rising: sun in the east (left of
 // the picture); setting: sun in the west (right). Night and day count as setting for geometry.
 P.apply = function (m, rising, L) {

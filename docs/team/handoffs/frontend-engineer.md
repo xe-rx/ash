@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-04 05:27 · Branch: frontend-engineer/baked-art · Status: done
+Updated: 2026-11-04 05:28 · Branch: frontend-engineer/baked-art · Status: done
 
 ## Task
 Prototype two baked-SVG sunset scenes (A mashrabiya, B tent) at 1024x600, no app integration.
@@ -11,6 +11,9 @@ Prototype two baked-SVG sunset scenes (A mashrabiya, B tent) at 1024x600, no app
 - Scene C (PO pick: A's lattice with B's tent) added: C-tent-lattice.png plus layers sky/landscape/tent/lattice/wash/text; tent.js split out; wash separate layer.
 
 - Moments pass: tools/art/moments.js (copy of script.js table), bake.js writes app/ash/assets/land/*.png (14), tent.png, lattice.png (1.37 MB total, deterministic, lossless via quantize.py/PIL); figures.js/rug.js split; sheet.py contact sheet.
+
+- tent-night.png / lattice-night.png baked via P.moonlit (colour remap of the same SVG, identical alpha). Assets total 1,521,718 B.
+- Build needs system python3 + PIL and rsvg-convert (build-time only, not shipped).
 
 ## Next steps
 1. Integrate C as stacked Images with live sun/clock/text; parameterise palette for ~8 moments.
