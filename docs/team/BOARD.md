@@ -39,8 +39,8 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Sadu redesign, gradient-only sky | frontend-engineer | frontend-engineer/sadu-redesign | .worktrees/frontend-engineer-sadu-redesign | paused: PO rethinking rendering; table/clock/palette reusable |
-| Baked-art prototypes (lattice, tent) at sunset | frontend-engineer | frontend-engineer/baked-art | .worktrees/frontend-engineer-baked-art | building |
+| Sadu redesign, gradient-only sky | frontend-engineer | frontend-engineer/sadu-redesign | .worktrees/frontend-engineer-sadu-redesign | integrating baked layers (landAt cross-fade, tent, lattice, live wash) |
+| Baked art: figures pass, 14 land moments, tent.png, lattice.png | frontend-engineer | frontend-engineer/baked-art | .worktrees/frontend-engineer-baked-art | building (PO approved scene C 2026-11-04) |
 | Hijri rollover at Maghrib | backend-engineer | backend-engineer/hijri-maghrib | .worktrees/backend-engineer-hijri-maghrib | approved (PR 0011), awaits trial merge |
 
 ## In review
