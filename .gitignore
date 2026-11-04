@@ -53,3 +53,4 @@ ash.*.json
 # Rendered screenshots and other generated review output (large; keep in $PROJECT_DATA)
 screenshots/
 /out/
+.impeccable/questions/
