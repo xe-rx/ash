@@ -17,3 +17,4 @@ Sadu redesign, now on baked art (PO decision): landAt core + Landscape/Tent/latt
 
 ## Gotchas learned
 - Qt 5.11 has no tabular figures: digit cells. Hijri part of scene.js belongs to another builder (I added one line, land:, and an import).
+- Baked art (frontend-engineer/baked-art) is merged on main: tools/art/ bakes the PNGs; see docs there.
