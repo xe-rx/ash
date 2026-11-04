@@ -1,27 +1,19 @@
 # Handoff: frontend-engineer
-Updated: 2026-10-31 22:45 · Branch: frontend-engineer/art-direction · Status: done
+Updated: 2026-11-04 05:04 · Branch: frontend-engineer/sadu-redesign · Status: in-progress
 
 ## Task
-Art-direction experiment (docs/product/ART-DIRECTION.md): colour script, depth, one light, sky A vs B; honest result.
+Sadu redesign (PO-chosen): gradient sky only, woven qata table on the right, cream clock + tag countdown, dye colour script, one 8 px grid. PO steer later: richer geometric detail (faceted dunes, richer family/rug, star motifs), item budget ~400.
 
 ## Done
-- core/script.js colour script (+ palette.js uses it), silhouettes (view/Silhouettes.qml), five halos (sunlook.js, Sun.qml), luminance-keeping halo tints (palette.js), arc moved inward 10 px (geometry ARC_RX 295), quieter plum crossing, warm HAZE day sky.
-- core/skygrad.js + Sky.qml switch (line 14, gradientSky) + tools/gen-grain.js -> app/ash/assets/grain.png (22.7 KB). A active (recommended).
-- Cast shadow dropped (three attempts looked like stray bars); lit crest not tried.
-- Tests: script, sunlook, skygrad, halo-contrast (flat and gradient), geometry updated (arc ends 70/660). REQUIRE_QT=1 scripts/test.sh: all 12 files pass.
-- Renders: ~/ash-data/screens-artdir/{A,B,step1,step2,step3}.
-
-- Tech lead round 2: pill mesas removed (Silhouettes.qml now 4 soft domes), grain opacity 0.045 -> 0.02 (B2 reads clean, no banding seen by eye at night or dawn), dev flag `--sky bands|gradient` on scripts/run-local.sh, scripts/screenshot.sh and dev/harness.py (default bands; tested in tests/test_run_local.sh). Renders: ~/ash-data/screens-artdir/{A,B2}.
-
-- Packaging note: if the gradient sky is chosen, device packaging must include app/ash/assets/ (grain.png, 22.7 KB); the app loads it as ../assets/grain.png from view/Sky.qml.
+- core/script.js + palette.js: dye palette, cream ink all day (sky text zone darkened to 5.6:1), night dim; skyBands renamed skyStops.
+- core/table.js (qata layout, UNIT 8), clock.js (120 px clock, tag countdown), geometry.js (BANDS gone, FAMILY x 496), skygrad stops.
+- tools/gen-weave.js -> app/ash/assets/weave.png, rug.png; QML Sky/PrayerTable/Readouts rewritten; --sky removed everywhere.
+- Sheet render ~/ash-data/screens-sadu/sheet.png looks right.
 
 ## Next steps
-1. Tech lead review, PO eyes on A vs B and on the colour script.
-2. Remaining ideas (not started): shadow as figure-shaped silhouette shapes, lit crest, per-moment panel colours in the script, higher silhouettes at midday, an even stronger dusk land/sky split.
-
-## Open questions / blockers
-None.
+1. Richer geometry: faceted dunes (Dunes.qml, Silhouettes.qml mesas), Family/Person facets, rug.png on Family cloth, night stars.
+2. Count items per moment; run REQUIRE_QT=1 scripts/test.sh, checks; strips sunrise/sunset into ~/ash-data/screens-sadu/.
+3. Final report: counts, worst contrast (clock ink 5.60 on sky; faded ink 4.62), font decision (kept Poppins: the chosen sketch uses it).
 
 ## Gotchas learned
-- Halo tints must keep the sky luminance near the ink flip (sky lum ~0.179) or contrast fails by 0.03-0.1.
-- Silhouette order test needs every layer consistently darker than the horizon at twilight and night.
+- Qt 5.11 has no tabular figures: digit cells in clock.js/table.js. Hijri part of scene.js belongs to another builder.

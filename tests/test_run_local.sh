@@ -74,21 +74,11 @@ t_remote_untouched() {
   done
 }
 
-t_sky_flag() { # dev only: --sky bands|gradient reaches the harness; default is bands (no flag passed); anything else is refused
-  local T v; mk_tmp_var T; fake_repo "$T"; mksock "$T/x/X0"
-  for v in bands gradient; do
-    run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky "$v"
-    assert_rc 0 "exit --sky $v"; assert_contains "$OUT" "--sky $v" "harness got --sky $v"
-  done
-  run_fake "$T" DISPLAY=:0
-  assert_not_contains "$OUT" "--sky" "no flag by default, so the harness uses bands"
-  for v in sepia "" Gradient; do
-    run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky "$v"
-    assert_rc 2 "refused --sky '$v'"; assert_contains "$ERR" "--sky takes bands or gradient" "message for '$v'"
-    assert_not_contains "$OUT" "ARGS" "the harness did not run for '$v'"
-  done
-  run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky
-  assert_rc 2 "--sky without a value"
+t_sky_flag_gone() { # the sky is a gradient only: --sky no longer exists and is refused as an unknown option
+  local T; mk_tmp_var T; fake_repo "$T"; mksock "$T/x/X0"
+  run env -u WAYLAND_DISPLAY -u QT_QPA_PLATFORM ASH_X11_DIR="$T/x" ASH_WSLG_X11_DIR="$T/w" DISPLAY=:0 "$T/repo/scripts/run-local.sh" --sky gradient
+  assert_rc 2 "--sky is refused"; assert_contains "$ERR" "unknown option --sky" "message"
+  assert_not_contains "$OUT" "ARGS" "the harness did not run"
 }
 
 t "xcb with only WAYLAND_DISPLAY set gives the friendly message" t_wayland_only_xcb
@@ -99,5 +89,5 @@ t "WSLg socket replaces :N when the normal socket is missing" t_wslg_redirect
 t "a real normal socket keeps DISPLAY and prints nothing" t_normal_socket
 t "local :N with no socket anywhere warns and still runs" t_local_no_socket
 t "remote and path displays are left to Qt" t_remote_untouched
-t "--sky bands|gradient is passed on, bands by default, anything else refused" t_sky_flag
+t "--sky is gone: refused as an unknown option" t_sky_flag_gone
 summary

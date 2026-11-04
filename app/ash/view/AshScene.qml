@@ -8,9 +8,8 @@ Item {
     property var pal
     property var sun
     property string face: "sans-serif"
-    property string sky: "bands"         // dev only: "bands" or "gradient" (dev/harness.py --sky)
 
-    Sky { pal: stage.pal; mode: stage.sky }
+    Sky { pal: stage.pal }
     Sun { pal: stage.pal; view: stage.sun }
     Silhouettes { pal: stage.pal }
     Dunes { pal: stage.pal }
