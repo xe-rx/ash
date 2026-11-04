@@ -13,11 +13,7 @@ function blend(under, over, a) { // over at alpha a on under, in sRGB like the r
   var u = C.hexToRgb(under), o = C.hexToRgb(over);
   return C.rgbToHex([u[0] + (o[0] - u[0]) * a, u[1] + (o[1] - u[1]) * a, u[2] + (o[2] - u[2]) * a]);
 }
-function bandAt(pal, y) {
-  for (var i = 0; i < 9; i++) { if (y < G.BANDS[i + 1]) { return pal.skyBands[i]; } }
-  return pal.skyBands[8];
-}
-function gradientAt(pal, y) { return Grad.skyColorAt(pal.skyBands, y); }
+function gradientAt(pal, y) { return Grad.skyColorAt(pal.skyStops, y); }
 function backgroundAt(pal, view, x, y, skyAt) {
   var bg = skyAt(pal, y);
   for (var k = 4; k >= 0; k--) {
@@ -27,7 +23,7 @@ function backgroundAt(pal, view, x, y, skyAt) {
   return bg;
 }
 
-[['flat bands', bandAt], ['smooth gradient', gradientAt]].forEach(function (mode) {
+[['smooth gradient', gradientAt]].forEach(function (mode) {
 test('clock and countdown keep 4.5:1 over the sun halos on ' + mode[0] + ', every sample of the year in 3 places', function () {
   var worst = 99, where = '', n = 0;
   [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
@@ -37,7 +33,7 @@ test('clock and countdown keep 4.5:1 over the sun halos on ' + mode[0] + ', ever
         var view = G.sunView(s);
         if (!view.look.glowVisible) { continue; }
         var pal = P.paletteAt(s.sun.altitudeDeg, s.sun.azimuthDeg < 180);
-        [[K.clockBox(s.clockText), pal.inkSky], [K.countdownBox(s.next.countdownText), pal.accentSky]].forEach(function (t) {
+        [[K.clockBox(s.clockText), pal.inkSky], [K.countdownBox(s.next.countdownText), pal.inkSky]].forEach(function (t) {
           var b = t[0];
           for (var i = 0; i <= 12; i++) {
             for (var j = 0; j <= 4; j++) {

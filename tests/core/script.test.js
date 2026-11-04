@@ -10,7 +10,7 @@ function pal(alt, rising) { return JSON.parse(JSON.stringify(P.paletteAt(alt, ri
 function eachAlt(from, to, step, fn) {
   [true, false].forEach(function (rising) { for (var alt = from; alt <= to; alt += step) { fn(pal(alt, rising), alt, rising); } });
 }
-function hor(p) { return p.skyBands[8]; }
+function hor(p) { return p.skyStops[8]; }
 
 test('depth: from the farthest silhouette to the near dune, every layer is further from the horizon sky than the one behind it', function () {
   var worst = 9;
@@ -36,8 +36,8 @@ test('depth: every silhouette is visibly different from the horizon band it sits
   console.log('# smallest separation between silhouette layers ' + lo.toFixed(3));
 });
 
-test('depth: by day the far layers are cooler than the near dune (bluer: higher OKLab b towards negative)', function () {
+test('depth: by day the far layers are lighter than the near dune (the air is bright, the foreground deep madder)', function () {
   eachAlt(20, 90, 5, function (p, alt) {
-    assert.ok(C.toLab(p.farTwo)[2] < C.toLab(p.duneNear)[2] - 0.02, 'far ' + p.farTwo + ' not cooler than near ' + p.duneNear + ' at ' + alt);
+    assert.ok(C.toLab(p.farTwo)[0] > C.toLab(p.duneNear)[0] + 0.15, 'far ' + p.farTwo + ' not lighter than near ' + p.duneNear + ' at ' + alt);
   });
 });

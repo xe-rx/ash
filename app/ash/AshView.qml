@@ -15,7 +15,6 @@ Item {
     property double nowMs: 0             // 0 = no real tick yet: draw nothing, never a wrong time
     property bool ticked: nowMs !== 0
     property var config: ({})
-    property string sky: "bands"          // dev only, sky mode: "bands" (default) or "gradient"; set by dev/harness.py --sky
     property bool useClock: true          // the harness switches the real clock off and sets nowMs
     signal closed()
 
@@ -41,8 +40,18 @@ Item {
         active: view.shown !== null && view.pal !== null && view.sun !== null
         x: view.shift.x; y: view.shift.y; width: 1024; height: 600
         sourceComponent: Component {
-            AshScene { scene: view.shown; pal: view.pal; sun: view.sun; face: view.face; sky: view.sky }
+            AshScene { scene: view.shown; pal: view.pal; sun: view.sun; face: view.face }
         }
+    }
+
+    // the tent frame and the lattice table are not burn-in shifted: same geometry at every moment
+    Loader {
+        active: view.shown !== null && view.pal !== null
+        x: 0; y: 0; width: 1024; height: 600
+        sourceComponent: Component { Item {
+            Tent { night: view.pal.night }
+            PrayerTable { pal: view.pal; scene: view.shown; face: view.face }
+        } }
     }
 
     Rectangle { anchors.fill: parent; color: "#05070f"; visible: !view.ticked }   // before the first tick

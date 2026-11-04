@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Opens Ash in a live 1024x600 window on this machine (bundled Qt 5.11, software backend).
-# Usage: scripts/run-local.sh [--at "YYYY-MM-DD HH:MM"] [--speed N] [--sky bands|gradient]
+# Usage: scripts/run-local.sh [--at "YYYY-MM-DD HH:MM"] [--speed N]
 #   --at     freeze at, or start from, this local time (default: real time)
 #   --speed  simulated minutes per real second, to watch a whole day pass (needs --at)
-#   --sky    sky version to compare: bands (default, flat) or gradient (smooth, with paper grain)
 # Config: config/ash.json if present (gitignored), else config/ash.example.json. TZ is forced to
 # Europe/Amsterdam. Platform is xcb unless QT_QPA_PLATFORM is already set. Esc closes the window;
 # a tap prints "closed". Needs a reachable display (DISPLAY or WAYLAND_DISPLAY).
@@ -14,8 +13,7 @@ while (($#)); do
   case $1 in
     --at) args+=(--at "${2:?--at needs a value}"); shift 2 ;;
     --speed) args+=(--speed "${2:?--speed needs a number}"); shift 2 ;;
-    --sky) [[ ${2:-} == bands || ${2:-} == gradient ]] || { echo "run-local: --sky takes bands or gradient" >&2; exit 2; }; args+=(--sky "$2"); shift 2 ;;
-    -h|--help) sed -n '2,10p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,9p' "$0"; exit 0 ;;
     *) echo "run-local: unknown option $1" >&2; exit 2 ;;
   esac
 done

@@ -3,6 +3,7 @@
 .import "sun.js" as Sun
 .import "prayer.js" as Prayer
 .import "hijri.js" as Hijri
+.import "script.js" as Script
 .import "config.js" as Config
 // sceneAt(nowMs, offsetAt, config): everything the view draws, as plain values.
 // offsetAt(ms) returns the local UTC offset in minutes at that instant, so a DST change
@@ -132,6 +133,7 @@ function build(nowMs, offsetAt, cfg) {
     sunrise: { ms: t.sunrise, timeText: Civil.formatClock(t.sunrise, offsetFor(offsetAt, t.sunrise)) },
     sunset: { ms: t.sunset, timeText: Civil.formatClock(t.sunset, offsetFor(offsetAt, t.sunset)) },
     prayers: prayers,
+    land: Script.landAt(pos.altitudeDeg, pos.azimuthDeg < 180),
     railRow: railRow(nowMs, prayers),
     next: next,
     hijri: hijri === null ? null : { day: hijri.day, monthName: hijri.monthName, year: hijri.year, text: hijri.text }

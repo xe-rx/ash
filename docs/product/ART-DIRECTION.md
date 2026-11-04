@@ -31,4 +31,4 @@ Renders: `~/ash-data/screens-artdir/` (`step1`, `step2`, `step3` while building;
 - Large faint halos: clear improvement at a low sun (the sky is lit from the sun). Needed a luminance-keeping tint near the ink flip to keep 4.5:1.
 - Cast shadow: built in three forms and dropped; every one read as a stray bar, not as light.
 - Lit crest: not tried.
-- Sky mode "gradient" (B, gradient + grain): at 4.5% grain read as sandy stipple; at 2% (renders in `B2/`) it reads clean and no banding is visible by eye at night or dawn, but without grain the longest 8-bit step run is 55 px (deep night top). Compare live with `scripts/run-local.sh --sky bands|gradient`. Mode "bands" (A) stays the default.
+- Sky mode "gradient" (B, gradient + grain): at 4.5% grain read as sandy stipple; at 2% (renders in `B2/`) it reads clean and no banding is visible by eye at night or dawn, but without grain the longest 8-bit step run is 55 px (deep night top). The PO chose the gradient (2026-11-04): it is now the only sky and the `--sky` flag is gone.

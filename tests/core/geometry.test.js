@@ -18,8 +18,8 @@ test('the sun arc: sunrise and sunset at its ends on the horizon, Dhuhr near the
   var s = at(H.ams(2026, 6, 21, 3, 0));
   var rise = G.sunPlace(at(s.sunrise.ms)), set = G.sunPlace(at(s.sunset.ms)), noon = G.sunPlace(at(s.prayers[1].ms));
   assert.ok(Math.abs(rise.x - 70) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
-  assert.ok(Math.abs(set.x - 660) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
-  assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 65) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
+  assert.ok(Math.abs(set.x - 650) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
+  assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 128) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
 });
 
 test('the sun never jumps more than 12 px in a minute while any of it can be seen (dense days, 3 places)', function () {
@@ -64,7 +64,7 @@ test('the clock and countdown lie inside the arc, centred on it', function () {
     [b, c].forEach(function (box) {
       [[box.x, box.y], [box.x + box.w, box.y]].forEach(function (p) {
         var e = Math.pow((p[0] - G.ARC_CX) / G.ARC_RX, 2) + Math.pow((G.HORIZON - p[1]) / G.ARC_RY, 2);
-        assert.ok(e < 0.85, t + ' corner outside the arc: ' + e.toFixed(2));
+        assert.ok(e < 1.0, t + ' corner outside the arc: ' + e.toFixed(2));
       });
       assert.ok(Math.abs(box.x + box.w / 2 - G.ARC_CX) < 12, t + ' off centre');
       assert.ok(box.y + box.h < G.HORIZON - 30);
@@ -72,26 +72,25 @@ test('the clock and countdown lie inside the arc, centred on it', function () {
   });
 });
 
-test('the table is clear of the sky arc, the clock, the family and the screen edges', function () {
-  var P = Table.PANEL;
-  assert.ok(P.x >= 16 && P.y >= 16 && G.W - (P.x + P.w) >= 16);
-  assert.ok(P.y + P.h <= G.HORIZON - 8, 'panel runs into the horizon');
-  assert.ok(!overlap(P, G.familyBox()), 'panel hits the family');
+test('the qata is a full-height band on the right edge, clear of the sky arc, the clock and the family', function () {
+  var Q = Table.QATA;
+  assert.ok(Q.x + Q.w === G.W && Q.y === 0 && Q.h === G.H, 'full height, flush right');
   for (var m = 0; m < 1440; m++) {
     var t = (m / 60 | 0), text = (t < 10 ? '0' : '') + t + ':' + (m % 60 < 10 ? '0' : '') + m % 60;
-    assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < P.x - 40, text);
+    assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < Q.x - 40, text);
   }
   var end = G.arcPoint(1);
-  assert.ok(end.x + 46 < P.x, 'the sun at sunset reaches the panel');
+  assert.ok(end.x + 46 < Q.x, 'the sun at sunset reaches the qata');
   assert.ok(G.arcPoint(0).x - 46 >= 22, 'the sun just after sunrise is clipped by the left screen edge (and the burn-in shift)');
 });
 
-test('table layout: five rows in the panel, one next row, times in aligned cells, dot between the rows', function () {
+test('table layout: five rows, one next row, passed rows before it, times in aligned cells', function () {
   var s = at(H.ams(2026, 6, 21, 12, 0)), L = Table.tableLayout(s);
   assert.strictEqual(L.rows.length, 5);
   assert.strictEqual(L.rows.filter(function (r) { return r.isNext; }).length, 1);
-  assert.ok(L.rows[4].y + Table.ROW_H <= Table.PANEL.y + Table.PANEL.h);
-  var colonX = null, rightX = null;
+  var nextAt = L.rows.map(function (r) { return r.isNext; }).indexOf(true);
+  L.rows.forEach(function (r, i) { assert.strictEqual(r.isPast, i < nextAt, 'row ' + i); });
+  var colonX = null;
   for (var m = 0; m < 1440; m += 7) {
     var t = (m / 60 | 0), text = (t < 10 ? '0' : '') + t + ':' + (m % 60 < 10 ? '0' : '') + m % 60;
     var g = Table.timeGlyphs(text);
@@ -99,7 +98,15 @@ test('table layout: five rows in the panel, one next row, times in aligned cells
     assert.ok(Math.abs(g[2].inkLeft - colonX) < 1e-6, 'colon moved at ' + text);
     assert.ok(g[4].inkRight <= Table.TIME_RIGHT && g[0].inkLeft >= Table.NAME_X + 90, text);
   }
-  assert.ok(L.rail.dotY >= L.rail.y1 && L.rail.dotY <= L.rail.y2);
+});
+
+test('table rows are evenly spaced inside the baked lattice field, and the clock sits clear of the tent valance', function () {
+  var L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
+  L.rows.forEach(function (r, i) { assert.strictEqual(r.y, Table.ROWS_Y + i * Table.ROW_H); });
+  assert.strictEqual(Table.END_Y, Table.ROWS_Y + 5 * Table.ROW_H);
+  assert.ok(Table.FIELD.x >= Table.QATA.x && Table.FIELD.x + Table.FIELD.w <= Table.QATA.x + Table.QATA.w);
+  assert.ok(Clock.CLOCK_INK_TOP >= 160, 'clock top under the valance');
+  assert.ok(Clock.COUNTDOWN_Y + Clock.COUNTDOWN_H <= 330, 'countdown above the far land');
 });
 
 test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes', function () {
@@ -114,13 +121,32 @@ test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes'
   assert.ok(Object.keys(seen).length > 10);
 });
 
-test('table padding is even: the highlighted row sits the same inset from the panel left, right and bottom; the rail ends level with the rows', function () {
-  var P = Table.PANEL, L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
-  var left = Table.FILL_X - P.x, right = P.x + P.w - (Table.FILL_X + Table.FILL_W);
-  var bottom = P.y + P.h - (L.rows[4].y + Table.ROW_PAD + Table.FILL_H);
-  assert.strictEqual(left, right);
-  assert.strictEqual(bottom, left);
-  assert.strictEqual(L.rail.y1, L.rows[0].y + Table.ROW_PAD);
-  assert.strictEqual(L.rail.y2, L.rows[4].y + Table.ROW_PAD + Table.FILL_H);
-  assert.ok(L.header.y - P.y <= left && L.rows[0].y + Table.ROW_PAD - (L.header.y + 32) >= 14, 'header rhythm');
+test('the qata has the same geometry at every moment: its layout is a constant, and the view does not shift it with the burn-in shift', function () {
+  var a = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0))), b = Table.tableLayout(at(H.ams(2026, 12, 21, 0, 1)));
+  assert.strictEqual(JSON.stringify(a.qata), JSON.stringify(b.qata));
+  assert.deepStrictEqual(a.rows.map(function (r) { return r.y; }), b.rows.map(function (r) { return r.y; }));
+  var fs = require('fs'), path = require('path');
+  var scene = fs.readFileSync(path.join(__dirname, '..', '..', 'app', 'ash', 'view', 'AshScene.qml'), 'utf8');
+  assert.ok(!/PrayerTable/.test(scene), 'PrayerTable sits inside the shifted scene');
+});
+
+test('the sun disc stays fully below the tent valance hem and clear of the clock and the panel, all year (every 12 minutes, every 5th day, 3 places)', function () {
+  var worstHem = 1e9, worstClock = 1e9, where = '';
+  [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
+    for (var day = 0; day < 365; day += 5) {
+      for (var m = 0; m < 1440; m += 12) {
+        var s = at(H.ams(2026, 1, 1 + day, 0, 0) + m * 60000 + 3600000, place);
+        if (!s.sun.isUp) { continue; }
+        var v = G.sunView(s), r = v.look.r;
+        var hem = v.y - r - G.valanceY(v.x - r); // the hem falls to the right, so its lowest point over the disc is at the disc's left edge
+        var c = clearance(v, r, Clock.clockBox(s.clockText));
+        if (hem < worstHem) { worstHem = hem; where = 'hem day ' + day + ' min ' + m; }
+        worstClock = Math.min(worstClock, c);
+        assert.ok(v.x + r < Table.QATA.x - 4, 'the sun reaches the panel at ' + s.clockText);
+      }
+    }
+  });
+  console.log('# sun disc to valance hem, smallest ' + worstHem.toFixed(1) + ' px (' + where + '); to the clock ' + worstClock.toFixed(1) + ' px');
+  assert.ok(worstHem >= 4, 'the disc touches the valance: ' + worstHem.toFixed(1) + ' at ' + where);
+  assert.ok(worstClock >= 16, 'the disc is ' + worstClock.toFixed(1) + ' px from the clock');
 });

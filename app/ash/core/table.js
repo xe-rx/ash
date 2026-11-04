@@ -1,18 +1,16 @@
 .pragma library
 .import "clock.js" as Clock
-// The prayer table on the right: one flat panel with the Hijri date as its header, then five rows
-// (name left, time right) and a thin rail on the left edge whose dot shows where now falls between
-// the rows. Times sit in fixed digit cells so the columns line up although the digits are proportional.
-
-var PANEL = { x: 724, y: 28, w: 276, h: 344 };
-// One inset (20 px) from the panel on the left, right and bottom of the highlighted row, and the
-// same above the header; the rail runs in the margin to the left of the rows.
-var INSET = 20, ROW_H = 52, ROW_PAD = 3;
-var ROWS_Y = PANEL.y + PANEL.h - INSET + ROW_PAD - 5 * ROW_H;   // last row's fill ends INSET above the bottom
-var RAIL_X = PANEL.x + 9;
-var FILL_X = PANEL.x + INSET, FILL_W = PANEL.w - 2 * INSET, FILL_H = ROW_H - 2 * ROW_PAD;
-var NAME_X = FILL_X + 16, TIME_RIGHT = FILL_X + FILL_W - 16;
-var TIME_PX = 27;
+// The prayer table sits in the dark field of the baked lattice panel (assets/lattice.png, art scene C): a date
+// strip on top, five evenly spaced rows below it. The numbers are measured on that art; the rows and text are live.
+// Times sit in fixed digit cells so the columns line up although the digits are proportional.
+var QATA = { x: 704, y: 0, w: 320, h: 600 };           // the lattice panel on the right edge (wash and image)
+var FIELD = { x: 718, w: 292 };                        // the dark field inside the lattice frame
+var DATE_Y = 36, DATE_H = 58;                          // the date strip
+var ROWS_Y = 124, ROW_H = 68;                          // five rows; thin rules between them are baked
+var END_Y = ROWS_Y + 5 * ROW_H;                        // 464
+var PAD = 24;                                          // text inset from the field's edges
+var NAME_X = FIELD.x + PAD, TIME_RIGHT = FIELD.x + FIELD.w - PAD;
+var NAME_PX = 26, TIME_PX = 30;
 
 // widest digit advance at TIME_PX: every digit gets a cell this wide, ink centred in it
 function digitCell() { return Clock.glyphMetrics("4", TIME_PX)[0]; }
@@ -33,14 +31,13 @@ function timeGlyphs(text) {
 
 function rowTop(i) { return ROWS_Y + i * ROW_H; }
 
-// Everything the table draws, from a scene.
+// Everything the table draws, from a scene. A prayer is passed when it comes before the next one in the list.
 function tableLayout(scene) {
-  var rows = [], i, p;
+  var rows = [], i, p, nextAt = 0;
+  for (i = 0; i < scene.prayers.length; i++) { if (scene.prayers[i].isNext) { nextAt = i; } }
   for (i = 0; i < scene.prayers.length; i++) {
     p = scene.prayers[i];
-    rows.push({ y: rowTop(i), name: p.name, isNext: p.isNext, glyphs: timeGlyphs(p.timeText) });
+    rows.push({ y: rowTop(i), name: p.name, isNext: p.isNext, isPast: i < nextAt, glyphs: timeGlyphs(p.timeText) });
   }
-  var first = rowTop(0) + ROW_H / 2, last = rowTop(4) + ROW_H / 2;
-  return { panel: PANEL, rows: rows, header: { x: NAME_X, y: PANEL.y + INSET - 2, w: PANEL.w - 2 * INSET - 16 },
-    rail: { x: RAIL_X, y1: rowTop(0) + ROW_PAD, y2: rowTop(4) + ROW_H - ROW_PAD, dotY: first + scene.railRow * ROW_H } };
+  return { qata: QATA, rows: rows, header: { x: FIELD.x, y: DATE_Y, w: FIELD.w, h: DATE_H } };
 }

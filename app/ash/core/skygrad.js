@@ -1,14 +1,14 @@
 .pragma library
 .import "geometry.js" as Geo
 .import "colour.js" as C
-// Sky B, a smooth vertical gradient instead of nine flat bands: the band colours become gradient
-// stops at the band centres (band 4 a little higher, so the colour is already pure at the top of the
-// clock: only the ink bands 4..7 lie behind the text, see palette.js). The sky rectangle runs from SKY_TOP (16 px past the top edge, for the
+// The sky: a smooth vertical gradient through the nine stops of the palette (skyStops). Stops 0..7 lie above
+// and behind the clock and the countdown and are held dark enough for cream ink (palette.js); stop 8 is the
+// horizon colour. The sky rectangle runs from SKY_TOP (16 px past the top edge, for the
 // burn-in shift) to the horizon. Qt's Gradient mixes linearly in sRGB between stops; skyColorAt does
 // the same, so tests and the moon cut-out see the colour the screen shows.
 
 var SKY_TOP = -16, SKY_H = Geo.HORIZON - SKY_TOP;
-var STOP_Y = [12, 65, 112, 150, 190, 247, 292, 332, 365];
+var STOP_Y = [12, 65, 112, 150, 190, 247, 296, 344, 370];
 var STOPS = (function () {
   var out = [];
   for (var i = 0; i < 9; i++) { out.push((STOP_Y[i] - SKY_TOP) / SKY_H); }

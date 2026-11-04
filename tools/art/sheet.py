@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Contact sheet: every land layer over a vertical sky gradient. Args: assetsDir out.png (colours read from moments via node JSON on stdin)."""
+"""DEV ONLY. Contact sheet: every land layer over a vertical sky gradient. Args: assetsDir out.png (colours read from moments via node JSON on stdin)."""
 import sys, json
 from PIL import Image, ImageDraw
 assets, out = sys.argv[1], sys.argv[2]

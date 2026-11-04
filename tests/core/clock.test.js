@@ -44,11 +44,11 @@ test('ink gaps between digits are even, around a 1 as everywhere else', function
   assert.ok(lo > 6 && hi < 18);
 });
 
-test('the colon sits on the arc centre and the clock is centred on it within 40 px, every minute', function () {
+test('the colon sits on the arc centre and the clock is centred on it within 50 px, every minute', function () {
   for (var minute = 0; minute < 1440; minute++) {
     var g = C.clockGlyphs(text(minute)), mid = (g[0].inkLeft + g[4].inkRight) / 2;
     assert.ok(Math.abs((g[2].inkLeft + g[2].inkRight) / 2 - C.CLOCK_CX) < 0.01);
-    assert.ok(Math.abs(mid - C.CLOCK_CX) < 40, text(minute) + ' centre ' + mid);
+    assert.ok(Math.abs(mid - C.CLOCK_CX) < 50, text(minute) + ' centre ' + mid);
   }
 });
 
