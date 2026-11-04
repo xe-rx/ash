@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Sadu</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1024px;height:600px;overflow:hidden;background:#1d1715;font-family:"Poppins","Segoe UI",system-ui,sans-serif}
+.st{position:relative;width:1024px;height:600px;overflow:hidden;background:linear-gradient(#26285a 0%,#5b3466 32%,#b8433a 62%,#e9a23b 80%)}
+.sun{position:absolute;left:520px;top:258px;width:74px;height:74px;border-radius:50%;background:#ffd27a;box-shadow:0 0 0 26px rgba(255,190,90,.22),0 0 0 70px rgba(255,170,80,.10)}
+.far{position:absolute;left:-80px;top:360px;width:860px;height:120px;border-radius:50%;background:#d9874a}
+.mid{position:absolute;left:-200px;top:392px;width:1000px;height:260px;border-radius:50% 50% 0 0;background:#b85a2c}
+.near{position:absolute;left:-60px;top:470px;width:900px;height:220px;border-radius:60% 60% 0 0;background:#7d2f1f}
+.rug{position:absolute;left:250px;top:520px;width:360px;height:54px;background:#1d1715;border:6px solid #efe4cf;
+ background-image:repeating-linear-gradient(90deg,#a8322a 0 12px,#1d1715 12px 24px)}
+.p{position:absolute;background:#efe4cf;border-radius:40px 40px 10px 10px}
+.h{position:absolute;border-radius:50%}
+.clock{position:absolute;left:64px;top:96px;color:#fff4e2;font-size:150px;font-weight:600;letter-spacing:-4px;line-height:1;font-variant-numeric:tabular-nums}
+.next{position:absolute;left:70px;top:262px;color:#fff4e2;font-size:30px;font-weight:500}
+.next em{font-style:normal;color:#1d1715;background:#efe4cf;padding:2px 12px;margin-right:10px}
+/* the woven tent divider (qata) */
+.qata{position:absolute;right:0;top:0;width:308px;height:600px;background:#1d1715;color:#efe4cf}
+.band{height:22px;background:
+ linear-gradient(135deg,#1d1715 25%,transparent 25%) 0 0/22px 22px,
+ linear-gradient(225deg,#1d1715 25%,transparent 25%) 0 0/22px 22px,
+ linear-gradient(315deg,#1d1715 25%,transparent 25%) 0 0/22px 22px,
+ linear-gradient(45deg,#1d1715 25%,transparent 25%) 0 0/22px 22px,#efe4cf}
+.stripe{height:6px;background:repeating-linear-gradient(90deg,#a8322a 0 8px,#efe4cf 8px 16px)}
+.date{padding:22px 28px 16px;font-size:22px;letter-spacing:3px;text-transform:uppercase}
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 28px;font-size:26px}
+.row b{font-weight:600;font-variant-numeric:tabular-nums;font-size:34px}
+.row.past{color:#8a7d6c}
+.row.now{background:#a8322a;color:#fff4e2}
+.fringe{position:absolute;bottom:0;left:0;right:0;height:26px;background:repeating-linear-gradient(90deg,#efe4cf 0 3px,transparent 3px 11px)}
+</style></head><body><div class="st">
+<div class="sun"></div><div class="far"></div><div class="mid"></div><div class="near"></div>
+<div class="rug"></div>
+<div class="p" style="left:300px;top:448px;width:66px;height:80px"></div><div class="h" style="left:312px;top:414px;width:42px;height:42px;background:#efe4cf"></div>
+<div class="p" style="left:384px;top:486px;width:44px;height:44px;background:#26285a"></div><div class="h" style="left:394px;top:462px;width:26px;height:26px;background:#26285a"></div>
+<div class="p" style="left:446px;top:482px;width:44px;height:48px;background:#e9a23b"></div><div class="h" style="left:455px;top:456px;width:28px;height:30px;background:#e9a23b"></div>
+<div class="p" style="left:508px;top:440px;width:72px;height:90px;background:#a8322a"></div><div class="h" style="left:520px;top:404px;width:48px;height:52px;background:#a8322a"></div>
+<div class="clock">16:30</div>
+<div class="next"><em>Maghrib</em>in 36 min</div>
+<div class="qata">
+ <div class="band"></div><div class="stripe"></div>
+ <div class="date">24 Jumada I · 1448</div>
+ <div class="stripe"></div>
+ <div class="row past"><span>Fajr</span><b>05:44</b></div>
+ <div class="row past"><span>Dhuhr</span><b>12:24</b></div>
+ <div class="row past"><span>Asr</span><b>14:38</b></div>
+ <div class="row now"><span>Maghrib</span><b>17:06</b></div>
+ <div class="row"><span>Isha</span><b>18:55</b></div>
+ <div class="stripe" style="margin-top:22px"></div><div class="band" style="margin-top:6px"></div>
+ <div class="fringe"></div>
+</div></div></body></html>
