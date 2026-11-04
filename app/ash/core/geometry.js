@@ -1,12 +1,11 @@
 .pragma library
 .import "sunlook.js" as Look
 // Screen geometry of the picture, as pure functions (no QML, no clock). The sun moves on an
-// invisible arc through the open sky left of the prayer table: from the east horizon (progress 0)
+// invisible arc through the open sky left of the woven table: from the east horizon (progress 0)
 // over the top to the west horizon (progress 1). Under the horizon it sits at the arc's end on its
 // own side and sinks, so only its glow shows above the dunes.
 
 var W = 1024, H = 600;
-var BANDS = [-16, 40, 90, 135, 180, 225, 270, 315, 350, 380]; // nine sky band edges, shared with Sky.qml
 var HORIZON = 380;
 var ARC_CX = 365, ARC_RX = 295, ARC_RY = 315;
 var SUNRISE_DEG = -50 / 60;  // altitude of the sun's centre at sunrise and sunset (as in sun.js)
@@ -45,5 +44,5 @@ function shiftAt(nowMs) {
 }
 
 // The family sits on the dunes below the sky; its box (from Family.qml's sizes) is kept clear.
-var FAMILY = { x: 520, y: 556, f: 1.2 };
+var FAMILY = { x: 496, y: 556, f: 1.2 };
 function familyBox() { return { x: FAMILY.x - 218, y: FAMILY.y - 136, w: 436, h: 180 }; }

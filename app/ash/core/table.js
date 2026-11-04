@@ -1,18 +1,20 @@
 .pragma library
 .import "clock.js" as Clock
-// The prayer table on the right: one flat panel with the Hijri date as its header, then five rows
-// (name left, time right) and a thin rail on the left edge whose dot shows where now falls between
-// the rows. Times sit in fixed digit cells so the columns line up although the digits are proportional.
+// The prayer table is a woven band (qata) on the right edge: pattern bands, the Hijri date, five rows (name
+// left, time right) and a fringe. Times sit in fixed digit cells so the columns line up although the digits
+// are proportional.
 
-var PANEL = { x: 724, y: 28, w: 276, h: 344 };
-// One inset (20 px) from the panel on the left, right and bottom of the highlighted row, and the
-// same above the header; the rail runs in the margin to the left of the rows.
-var INSET = 20, ROW_H = 52, ROW_PAD = 3;
-var ROWS_Y = PANEL.y + PANEL.h - INSET + ROW_PAD - 5 * ROW_H;   // last row's fill ends INSET above the bottom
-var RAIL_X = PANEL.x + 9;
-var FILL_X = PANEL.x + INSET, FILL_W = PANEL.w - 2 * INSET, FILL_H = ROW_H - 2 * ROW_PAD;
-var NAME_X = FILL_X + 16, TIME_RIGHT = FILL_X + FILL_W - 16;
-var TIME_PX = 27;
+// UNIT is the one pick of the weave: every row, band and gap of the table is a multiple of it.
+var UNIT = 8;
+var QATA = { x: 720, y: 0, w: 304, h: 600 };           // the woven band, full height on the right edge
+// vertical sections, top to bottom (in px): pattern band 24, stripe 8, date 64, stripe 8, five rows of 88, stripe 8, band 24, fringe 24
+var BAND_H = 3 * UNIT, STRIPE_H = UNIT, DATE_H = 8 * UNIT, ROW_H = 11 * UNIT, FRINGE_H = 3 * UNIT;
+var DATE_Y = BAND_H + STRIPE_H;                        // 32
+var ROWS_Y = DATE_Y + DATE_H + STRIPE_H;               // 104
+var END_Y = ROWS_Y + 5 * ROW_H;                        // 544: where the closing stripe starts
+var PAD = 3 * UNIT;                                    // text inset from the band's edges
+var NAME_X = QATA.x + PAD, TIME_RIGHT = QATA.x + QATA.w - PAD;
+var NAME_PX = 3 * UNIT, TIME_PX = 4 * UNIT;
 
 // widest digit advance at TIME_PX: every digit gets a cell this wide, ink centred in it
 function digitCell() { return Clock.glyphMetrics("4", TIME_PX)[0]; }
@@ -33,14 +35,13 @@ function timeGlyphs(text) {
 
 function rowTop(i) { return ROWS_Y + i * ROW_H; }
 
-// Everything the table draws, from a scene.
+// Everything the table draws, from a scene. A prayer is passed when it comes before the next one in the list.
 function tableLayout(scene) {
-  var rows = [], i, p;
+  var rows = [], i, p, nextAt = 0;
+  for (i = 0; i < scene.prayers.length; i++) { if (scene.prayers[i].isNext) { nextAt = i; } }
   for (i = 0; i < scene.prayers.length; i++) {
     p = scene.prayers[i];
-    rows.push({ y: rowTop(i), name: p.name, isNext: p.isNext, glyphs: timeGlyphs(p.timeText) });
+    rows.push({ y: rowTop(i), name: p.name, isNext: p.isNext, isPast: i < nextAt, glyphs: timeGlyphs(p.timeText) });
   }
-  var first = rowTop(0) + ROW_H / 2, last = rowTop(4) + ROW_H / 2;
-  return { panel: PANEL, rows: rows, header: { x: NAME_X, y: PANEL.y + INSET - 2, w: PANEL.w - 2 * INSET - 16 },
-    rail: { x: RAIL_X, y1: rowTop(0) + ROW_PAD, y2: rowTop(4) + ROW_H - ROW_PAD, dotY: first + scene.railRow * ROW_H } };
+  return { qata: QATA, rows: rows, header: { x: NAME_X, y: DATE_Y, w: QATA.w - 2 * PAD, h: DATE_H } };
 }

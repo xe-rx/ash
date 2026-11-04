@@ -14,21 +14,21 @@ Item {
     property string mode: "bands"             // THE SWITCH: "bands" = flat bands (A), "gradient" = gradient + grain (B); dev only, set by scripts/run-local.sh --sky
     readonly property bool gradientSky: mode === "gradient"
     // what the moon's cut-out must match: the sky colour where it sits (band 1, or the gradient there)
-    property color moonCut: gradientSky ? Grad.skyColorAt(pal.skyBands, 61) : pal.skyBands[1]
+    property color moonCut: gradientSky ? Grad.skyColorAt(pal.skyStops, 61) : pal.skyStops[1]
 
     Rectangle {
         visible: sky.gradientSky
         x: -16; y: Grad.SKY_TOP; width: 1056; height: Grad.SKY_H
         gradient: Gradient {
-            GradientStop { position: Grad.STOPS[0]; color: sky.pal.skyBands[0] }
+            GradientStop { position: Grad.STOPS[0]; color: sky.pal.skyStops[0] }
             GradientStop { position: Grad.STOPS[1]; color: sky.moonCut }
-            GradientStop { position: Grad.STOPS[2]; color: sky.pal.skyBands[2] }
-            GradientStop { position: Grad.STOPS[3]; color: sky.pal.skyBands[3] }
-            GradientStop { position: Grad.STOPS[4]; color: sky.pal.skyBands[4] }
-            GradientStop { position: Grad.STOPS[5]; color: sky.pal.skyBands[5] }
-            GradientStop { position: Grad.STOPS[6]; color: sky.pal.skyBands[6] }
-            GradientStop { position: Grad.STOPS[7]; color: sky.pal.skyBands[7] }
-            GradientStop { position: Grad.STOPS[8]; color: sky.pal.skyBands[8] }
+            GradientStop { position: Grad.STOPS[2]; color: sky.pal.skyStops[2] }
+            GradientStop { position: Grad.STOPS[3]; color: sky.pal.skyStops[3] }
+            GradientStop { position: Grad.STOPS[4]; color: sky.pal.skyStops[4] }
+            GradientStop { position: Grad.STOPS[5]; color: sky.pal.skyStops[5] }
+            GradientStop { position: Grad.STOPS[6]; color: sky.pal.skyStops[6] }
+            GradientStop { position: Grad.STOPS[7]; color: sky.pal.skyStops[7] }
+            GradientStop { position: Grad.STOPS[8]; color: sky.pal.skyStops[8] }
         }
     }
     Image {
@@ -42,7 +42,7 @@ Item {
         Rectangle {
             x: -16; width: 1056
             y: Geo.BANDS[index]; height: Geo.BANDS[index + 1] - Geo.BANDS[index] + 1
-            color: sky.pal.skyBands[index]
+            color: sky.pal.skyStops[index]
         }
     }
 

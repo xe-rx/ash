@@ -72,26 +72,26 @@ test('the clock and countdown lie inside the arc, centred on it', function () {
   });
 });
 
-test('the table is clear of the sky arc, the clock, the family and the screen edges', function () {
-  var P = Table.PANEL;
-  assert.ok(P.x >= 16 && P.y >= 16 && G.W - (P.x + P.w) >= 16);
-  assert.ok(P.y + P.h <= G.HORIZON - 8, 'panel runs into the horizon');
-  assert.ok(!overlap(P, G.familyBox()), 'panel hits the family');
+test('the qata is a full-height band on the right edge, clear of the sky arc, the clock and the family', function () {
+  var Q = Table.QATA;
+  assert.ok(Q.x + Q.w === G.W && Q.y === 0 && Q.h === G.H, 'full height, flush right');
+  assert.ok(!overlap(Q, G.familyBox()), 'qata hits the family');
   for (var m = 0; m < 1440; m++) {
     var t = (m / 60 | 0), text = (t < 10 ? '0' : '') + t + ':' + (m % 60 < 10 ? '0' : '') + m % 60;
-    assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < P.x - 40, text);
+    assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < Q.x - 40, text);
   }
   var end = G.arcPoint(1);
-  assert.ok(end.x + 46 < P.x, 'the sun at sunset reaches the panel');
+  assert.ok(end.x + 46 < Q.x, 'the sun at sunset reaches the qata');
   assert.ok(G.arcPoint(0).x - 46 >= 22, 'the sun just after sunrise is clipped by the left screen edge (and the burn-in shift)');
 });
 
-test('table layout: five rows in the panel, one next row, times in aligned cells, dot between the rows', function () {
+test('table layout: five rows, one next row, passed rows before it, times in aligned cells', function () {
   var s = at(H.ams(2026, 6, 21, 12, 0)), L = Table.tableLayout(s);
   assert.strictEqual(L.rows.length, 5);
   assert.strictEqual(L.rows.filter(function (r) { return r.isNext; }).length, 1);
-  assert.ok(L.rows[4].y + Table.ROW_H <= Table.PANEL.y + Table.PANEL.h);
-  var colonX = null, rightX = null;
+  var nextAt = L.rows.map(function (r) { return r.isNext; }).indexOf(true);
+  L.rows.forEach(function (r, i) { assert.strictEqual(r.isPast, i < nextAt, 'row ' + i); });
+  var colonX = null;
   for (var m = 0; m < 1440; m += 7) {
     var t = (m / 60 | 0), text = (t < 10 ? '0' : '') + t + ':' + (m % 60 < 10 ? '0' : '') + m % 60;
     var g = Table.timeGlyphs(text);
@@ -99,7 +99,15 @@ test('table layout: five rows in the panel, one next row, times in aligned cells
     assert.ok(Math.abs(g[2].inkLeft - colonX) < 1e-6, 'colon moved at ' + text);
     assert.ok(g[4].inkRight <= Table.TIME_RIGHT && g[0].inkLeft >= Table.NAME_X + 90, text);
   }
-  assert.ok(L.rail.dotY >= L.rail.y1 && L.rail.dotY <= L.rail.y2);
+});
+
+test('one grid: every row, band and gap of the qata is a multiple of one unit, and the sections add up to the screen height', function () {
+  var U = Table.UNIT, L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
+  [Table.BAND_H, Table.STRIPE_H, Table.DATE_H, Table.ROW_H, Table.FRINGE_H, Table.DATE_Y, Table.ROWS_Y, Table.END_Y, Table.PAD, Table.NAME_PX, Table.TIME_PX, Table.QATA.w, Table.QATA.x]
+    .forEach(function (v) { assert.strictEqual(v % U, 0, v + ' is not a multiple of ' + U); });
+  L.rows.forEach(function (r) { assert.strictEqual(r.y % U, 0); });
+  assert.strictEqual(Table.END_Y + Table.STRIPE_H + Table.BAND_H + Table.FRINGE_H, G.H);
+  assert.strictEqual(Clock.CLOCK_INK_TOP % U, 0); assert.strictEqual(Clock.COUNTDOWN_Y % U, 0); assert.strictEqual(Clock.COUNTDOWN_H % U, 0);
 });
 
 test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes', function () {
@@ -112,15 +120,4 @@ test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes'
     seen[s.x + ',' + s.y] = 1;
   }
   assert.ok(Object.keys(seen).length > 10);
-});
-
-test('table padding is even: the highlighted row sits the same inset from the panel left, right and bottom; the rail ends level with the rows', function () {
-  var P = Table.PANEL, L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
-  var left = Table.FILL_X - P.x, right = P.x + P.w - (Table.FILL_X + Table.FILL_W);
-  var bottom = P.y + P.h - (L.rows[4].y + Table.ROW_PAD + Table.FILL_H);
-  assert.strictEqual(left, right);
-  assert.strictEqual(bottom, left);
-  assert.strictEqual(L.rail.y1, L.rows[0].y + Table.ROW_PAD);
-  assert.strictEqual(L.rail.y2, L.rows[4].y + Table.ROW_PAD + Table.FILL_H);
-  assert.ok(L.header.y - P.y <= left && L.rows[0].y + Table.ROW_PAD - (L.header.y + 32) >= 14, 'header rhythm');
 });

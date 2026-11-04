@@ -7,11 +7,12 @@
 // QFontMetricsF; they scale linearly with the size (tests/qt/font_metrics.py checks the sizes in use).
 
 var CLOCK_CX = 365;
-var CLOCK_PX = 108, CLOCK_GAP_EM = 0.1;
-var CLOCK_INK_TOP = 198;                 // y of the top of the digits
+var CLOCK_PX = 120, CLOCK_GAP_EM = 0.08;
+var CLOCK_INK_TOP = 192;                 // y of the top of the digits (a multiple of the 8 px unit)
 var INK_TOP_EM = 0.30, INK_BOTTOM_EM = 1.07; // digit ink relative to the Text item's top, per px
 var COLON_RAISE_EM = 0.057;              // Poppins' colon sits low; raised to the digits' middle
-var COUNTDOWN_PX = 28, COUNTDOWN_Y = 300, COUNTDOWN_EM_PER_CHAR = 0.55; // width bound, measured 0.50
+var COUNTDOWN_PX = 24, COUNTDOWN_Y = 304, COUNTDOWN_H = 40, COUNTDOWN_EM_PER_CHAR = 0.55; // the tag + text line; width bound, measured 0.50
+var TAG_PAD = 12;                        // tag padding left and right
 var BASE_PX = 140;
 var GLYPH_METRICS = {
   "0": [90.4, 7, 6.4], "1": [50.7, 5, 11.7], "2": [80.4, 6, 4.4], "3": [83.9, 6, 7.9], "4": [92.5, 6, 4.5],
@@ -63,6 +64,6 @@ function clockBox(text) {
   return { x: g[0].inkLeft, y: CLOCK_INK_TOP, w: g[g.length - 1].inkRight - g[0].inkLeft, h: (INK_BOTTOM_EM - INK_TOP_EM) * CLOCK_PX };
 }
 function countdownBox(text) {
-  var w = text.length * COUNTDOWN_EM_PER_CHAR * COUNTDOWN_PX;
-  return { x: CLOCK_CX - w / 2, y: COUNTDOWN_Y + 6, w: w, h: 26 };
+  var w = text.length * COUNTDOWN_EM_PER_CHAR * COUNTDOWN_PX + 2 * TAG_PAD;
+  return { x: CLOCK_CX - w / 2, y: COUNTDOWN_Y, w: w, h: COUNTDOWN_H };
 }

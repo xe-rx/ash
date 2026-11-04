@@ -8,7 +8,7 @@
 // the same, so tests and the moon cut-out see the colour the screen shows.
 
 var SKY_TOP = -16, SKY_H = Geo.HORIZON - SKY_TOP;
-var STOP_Y = [12, 65, 112, 150, 190, 247, 292, 332, 365];
+var STOP_Y = [12, 65, 112, 150, 190, 247, 296, 344, 370];
 var STOPS = (function () {
   var out = [];
   for (var i = 0; i < 9; i++) { out.push((STOP_Y[i] - SKY_TOP) / SKY_H); }
