@@ -68,3 +68,23 @@ function stopAt(list, alt) {
 }
 
 function momentAt(alt, rising) { return stopAt(rising ? RISING : SETTING, alt); }
+
+// The baked landscape images follow the same stops: landAt names the two moments to cross-fade (image a
+// below, image b above at opacity t), with exactly stopAt's stops and smoothstep. Entry i of a list is named
+// by entry i of its names; MOMENTS maps a name to its moment (rising and setting share NIGHT and DAY).
+var RISING_NAMES = ["night", "rise-20", "rise-12", "rise-7", "rise-1", "rise4", "rise18", "day"];
+var SETTING_NAMES = ["night", "set-20", "set-10", "set-4", "set0", "set6", "set18", "day", "day"];
+var MOMENTS = {};
+(function () {
+  var lists = [[RISING, RISING_NAMES], [SETTING, SETTING_NAMES]], i, k;
+  for (k = 0; k < 2; k++) { for (i = 0; i < lists[k][0].length; i++) { MOMENTS[lists[k][1][i]] = lists[k][0][i][1]; } }
+})();
+
+function landAt(alt, rising) {
+  var list = rising ? RISING : SETTING, names = rising ? RISING_NAMES : SETTING_NAMES;
+  if (alt <= list[0][0]) { return { a: names[0], b: names[0], t: 0 }; }
+  for (var i = 1; i < list.length; i++) {
+    if (alt <= list[i][0]) { return { a: names[i - 1], b: names[i], t: C.smooth((alt - list[i - 1][0]) / (list[i][0] - list[i - 1][0])) }; }
+  }
+  return { a: names[names.length - 1], b: names[names.length - 1], t: 0 };
+}
