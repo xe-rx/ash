@@ -1,6 +1,6 @@
 # PR 0011: Hijri date rolls over at Maghrib
 
-Branch: `backend-engineer/hijri-maghrib` · Author: backend-engineer · Status: in review
+Branch: `backend-engineer/hijri-maghrib` · Author: backend-engineer · Status: merged
 
 ## Summary
 PO decision 2026-11-04: the Hijri date changes at Maghrib, not midnight. `scene.js` adds one civil day to the Hijri lookup from today's Maghrib until midnight; offsets +1/-1 apply on top. A missing Maghrib keeps midnight rollover (defensive: polar days already fail the scene).
@@ -19,4 +19,4 @@ No blocking findings. Non-blocking: blank Hijri line after Maghrib on the table'
 ### security-reviewer: not required
 
 ## Resolution
-Pending the follow-up commit and the trial merge with the Sadu redesign.
+Follow-up c484952 (table last-day fallback, test by name) read by the tech lead. Trial merge with baked-art and sadu-redesign: all 12 test files and every check passed. Merge commit fb2fee8.
