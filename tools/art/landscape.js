@@ -6,15 +6,15 @@ const L = require('./layout');
 // Strata mesa: stacked tiers, each narrower, lit face toward the sun and a shadow face, thin strata lines.
 function mesa(ctx, x, base, w, h, tiers, haze) {
   const out = [], sunSide = L.SUN.x > x ? 1 : -1;
-  const lit = mix(mix(P.dunes[0], P.skyLow, 0.25), P.horizon, haze), dark = mix(P.shade(P.dunes[1]), P.skyLow, haze);
+  const lit = mix(P.far2, P.horizon, haze * 0.5), dark = mix(P.shade(P.far1), P.horizon, haze * 0.6);
   for (let t = 0; t < tiers; t++) {
     const th = h / tiers, y1 = base - th * t, y0 = y1 - th, inset = t * w * 0.05, hw = w / 2 - inset;
     const w0 = hw - 6, pts = [[x - hw, y1], [x - w0, y0], [x + w0, y0], [x + hw, y1]];
     out.push(S.poly(pts, { fill: dark }));
     const litPts = sunSide > 0 ? [[x - hw, y1], [x - w0, y0], [x + hw * 0.1, y0], [x - hw * 0.05, y1]] : [[x + hw, y1], [x + w0, y0], [x - hw * 0.1, y0], [x + hw * 0.05, y1]];
-    out.push(S.poly(litPts, { fill: S.lin(ctx, [[0, mix(lit, '#ffe0b0', 0.3)], [1, lit]]) }));
+    out.push(S.poly(litPts, { fill: S.lin(ctx, [[0, P.lit(lit)], [1, lit]]) }));
     for (let s = 1; s < 4; s++) out.push(S.line([x - hw + inset * 0.1, y0 + th * s / 4], [x + hw - inset * 0.1, y0 + th * s / 4], { stroke: P.shadow, stroke_width: 0.7, opacity: 0.18 }));
-    out.push(S.line([x - w0, y0], [x + w0, y0], { stroke: '#ffe0b0', stroke_width: 1, opacity: 0.45 }));
+    out.push(S.line([x - w0, y0], [x + w0, y0], { stroke: P.glint, stroke_width: 1, opacity: 0.45 }));
   }
   return out.join('\n');
 }
@@ -36,13 +36,13 @@ function duneLayer(ctx, seed, o) {
     const v = toSun ? [p.vx, vy] : [q.vx, valleyY(i + 1)];
     const foot = [p.px + (toSun ? 0.12 : -0.12) * o.span, Math.max(vy, v[1]) + 4];
     const face = [top, v, foot];
-    out.push(S.poly(face, { fill: S.lin(ctx, [[0, mix(P.lit(o.col), '#fff0c0', o.rich ? 0.35 : 0)], [0.45, o.rich ? mix(o.col, '#ff9a48', 0.25) : o.col], [1, o.rich ? mix(o.col, P.shadow, 0.3) : base]], { x1: 0, y1: 0, x2: toSun ? 0.3 : 0.7, y2: 1 }) }));
+    out.push(S.poly(face, { fill: S.lin(ctx, [[0, mix(P.lit(o.col), P.glint, o.rich ? 0.2 : 0)], [0.45, o.rich ? mix(o.col, P.tint, 0.2) : o.col], [1, o.rich ? mix(o.col, P.shadow, 0.3) : base]], { x1: 0, y1: 0, x2: toSun ? 0.3 : 0.7, y2: 1 }) }));
     const n = o.ripples;
     for (let k = 1; k <= n; k++) {
       const t = k / (n + 1), a = [top[0] + (v[0] - top[0]) * t, top[1] + (v[1] - top[1]) * t], b = [top[0] + (foot[0] - top[0]) * t, top[1] + (foot[1] - top[1]) * t];
-      out.push(S.line(a, b, { stroke: k % 2 ? '#ffe0b0' : P.shadow, stroke_width: 0.7, opacity: k % 2 ? 0.22 : 0.16 }));
+      out.push(S.line(a, b, { stroke: k % 2 ? P.glint : P.shadow, stroke_width: 0.7, opacity: k % 2 ? 0.22 : 0.16 }));
     }
-    out.push(S.line(top, foot, { stroke: '#ffe6bd', stroke_width: 1.1, opacity: 0.4 }));   // crest light
+    out.push(S.line(top, foot, { stroke: P.glint, stroke_width: 1.1, opacity: 0.4 }));   // crest light
     const shadeFace = [top, toSun ? [q.vx, valleyY(i + 1)] : [p.vx, vy], foot];
     out.push(S.poly(shadeFace, { fill: P.shade(o.col), opacity: 0.35 }));
   }
@@ -54,7 +54,7 @@ function duneLayer(ctx, seed, o) {
 
 function landscape(ctx) {
   const out = [], H = L.HORIZON;
-  out.push(S.rect(0, H, L.W, 40, { fill: S.lin(ctx, [[0, P.horizon, 0.0], [1, '#e08a58', 0.9]]) }));
+  out.push(S.rect(0, H, L.W, 40, { fill: S.lin(ctx, [[0, P.horizon, 0.0], [1, P.far2, 0.9]]) }));
   out.push(mesa(ctx, 150, H + 44, 330, 88, 4, 0.5), mesa(ctx, 420, H + 38, 190, 54, 3, 0.58), mesa(ctx, 520, H + 38, 140, 38, 2, 0.62));
   const layers = [
     { base: 396, amp: 34, span: 230, col: P.dunes[0], ripples: 3, haze: 0.5 },
@@ -64,7 +64,7 @@ function landscape(ctx) {
     { base: 566, amp: 30, span: 420, col: P.dunes[4], ripples: 4, haze: 0.0 },
   ];
   layers.forEach((l, i) => out.push(duneLayer(ctx, 11 + i * 5, l)));
-  out.push(S.rect(0, 470, L.W, 130, { fill: S.lin(ctx, [[0, '#1a0a1c', 0], [1, '#1a0a1c', 0.55]]) }));   // foreground depth
+  out.push(S.rect(0, 470, L.W, 130, { fill: S.lin(ctx, [[0, P.dark, 0], [1, P.dark, 0.55]]) }));   // foreground depth
   return out.join('\n');
 }
 module.exports = { landscape };

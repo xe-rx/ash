@@ -20,3 +20,19 @@ const P = {
 P.shade = c => mix(c, P.shadow, 0.55);
 P.lit = c => mix(c, '#ffd9a0', 0.38);
 module.exports = { P, mix, lum, contrast };
+
+// Re-light the land palette from a colour-script moment (see moments.js). Rising: sun in the east (left of
+// the picture); setting: sun in the west (right). Night and day count as setting for geometry.
+P.apply = function (m, rising, L) {
+  L.SUN.x = rising ? 150 : 640;
+  P.horizon = m.hor; P.haze = m.hor; P.shadow = m.shade; P.sunc = m.sun;
+  P.far2 = m.farTwo; P.far1 = m.farOne; P.tint = m.tint;
+  P.dunes = [m.duneFar, mix(m.duneFar, m.duneMid, 0.5), m.duneMid, mix(m.duneMid, m.duneNear, 0.5), m.duneNear];
+  const litAmt = 0.22 + m.lit * 1.6;                          // moonlit/blue light at night, warm by day
+  P.shade = c => mix(c, m.shade, 0.55);
+  P.lit = c => mix(c, m.tint, litAmt);
+  P.rimCol = mix(m.tint, '#ffffff', 0.35); P.rimOp = Math.min(0.9, 0.22 + m.lit * 4);
+  P.fig = c => mix(mix(c, m.shade, m.sink * 0.9), m.tint, Math.min(0.5, m.lit * 1.6));
+  P.glint = mix(m.tint, '#ffffff', 0.45);
+  P.dark = mix(m.shade, '#000000', 0.5);
+};
