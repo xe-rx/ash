@@ -17,11 +17,14 @@ function figure(ctx, o) {
   out.push(S.poly([T(-5, -69), T(5, -69), T(4, -75), T(-4, -75)], { fill: P.shade('#c98c60') }));   // neck
   const hc = T(0, -84), hr = 15 * u;
   if (o.kind === 'father') {
-    out.push(S.poly([T(-15, -86), T(15, -86), T(25, -63), T(-25, -63)], { fill: '#f3ead8' }));   // ghutra drape
-    out.push(S.poly([T(0, -86), T(15, -86), T(25, -63), T(0, -63)], { fill: '#8a7f78', opacity: 0.55 }));
-    out.push(S.circ(hc[0], hc[1], hr, { fill: '#f3ead8' }));
-    out.push(S.poly([[hc[0], hc[1] - hr], [hc[0] + hr, hc[1]], [hc[0], hc[1] + hr]], { fill: '#8a7f78', opacity: 0.5 }));
-    out.push(`<ellipse cx="${S.f(hc[0])}" cy="${S.f(hc[1] - 3 * u)}" rx="${S.f(hr * 1.02)}" ry="${S.f(3.4 * u)}" fill="none" stroke="#1d1715" stroke-width="${S.f(2 * u)}"/>`);
+    out.push(S.poly([T(-31, -62), T(-14, -69), T(14, -69), T(31, -62), T(27, -38), T(0, -34), T(-27, -38)], { fill: '#6a4426' }));   // bisht cloak: defined shoulders
+    out.push(S.poly([T(0, -69), T(14, -69), T(31, -62), T(27, -38), T(0, -34)], { fill: P.shadow, opacity: 0.3 }));
+    out.push(S.line(T(-27, -38), T(0, -34), { stroke: P.saffron, stroke_width: 1.6 * u }), S.line(T(0, -34), T(27, -38), { stroke: P.saffron, stroke_width: 1.6 * u }));
+    out.push(S.poly([T(-4, -34), T(4, -34), T(10, -4), T(-10, -4)], { fill: '#fff1dc', opacity: 0.5 }));   // thobe fold below the cloak
+    out.push(S.poly([T(-16, -90), T(16, -90), T(28, -64), T(-28, -64)], { fill: '#f7efe0' }), S.circ(hc[0], hc[1], hr, { fill: '#f7efe0' }));   // ghutra: round crown over a drape
+    out.push(S.poly([T(0, -99), T(15, -90), T(28, -64), T(0, -64)], { fill: '#9a8a78', opacity: 0.5 }));
+    out.push(S.line(T(-5, -88), T(-12, -64), { stroke: P.shadow, stroke_width: 0.9 * u, opacity: 0.35 }));
+    out.push(S.line(T(-14, -91), T(14, -91), { stroke: '#1d1715', stroke_width: 3 * u }), S.line(T(-14, -86), T(14, -86), { stroke: '#1d1715', stroke_width: 1.6 * u }));   // agal
   } else if (o.kind === 'mother') {
     out.push(S.poly([T(-14, -90), T(14, -90), T(30, -60), T(0, -52), T(-30, -60)], { fill: o.hijab }));
     out.push(S.circ(hc[0], hc[1], hr * 1.08, { fill: o.hijab }));
@@ -81,7 +84,7 @@ function rug(ctx) {
 
 function family(ctx) {
   const figs = [
-    { kind: 'father', x: 290, y: 556, h: 134, robe: '#e9dcc4' },
+    { kind: 'father', x: 290, y: 556, h: 134, robe: '#dcc294' },
     { kind: 'mother', x: 524, y: 556, h: 124, robe: '#34408e', hijab: '#2a3478' },
     { kind: 'boy', x: 366, y: 566, h: 84, robe: '#3a58b8' },
     { kind: 'girl', x: 446, y: 568, h: 90, robe: '#f0a53a' },

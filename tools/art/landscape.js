@@ -36,7 +36,7 @@ function duneLayer(ctx, seed, o) {
     const v = toSun ? [p.vx, vy] : [q.vx, valleyY(i + 1)];
     const foot = [p.px + (toSun ? 0.12 : -0.12) * o.span, Math.max(vy, v[1]) + 4];
     const face = [top, v, foot];
-    out.push(S.poly(face, { fill: S.lin(ctx, [[0, P.lit(o.col)], [0.6, o.col], [1, base]], { x1: 0, y1: 0, x2: toSun ? 0.3 : 0.7, y2: 1 }) }));
+    out.push(S.poly(face, { fill: S.lin(ctx, [[0, mix(P.lit(o.col), '#fff0c0', o.rich ? 0.35 : 0)], [0.45, o.rich ? mix(o.col, '#ff9a48', 0.25) : o.col], [1, o.rich ? mix(o.col, P.shadow, 0.3) : base]], { x1: 0, y1: 0, x2: toSun ? 0.3 : 0.7, y2: 1 }) }));
     const n = o.ripples;
     for (let k = 1; k <= n; k++) {
       const t = k / (n + 1), a = [top[0] + (v[0] - top[0]) * t, top[1] + (v[1] - top[1]) * t], b = [top[0] + (foot[0] - top[0]) * t, top[1] + (foot[1] - top[1]) * t];
@@ -55,11 +55,11 @@ function duneLayer(ctx, seed, o) {
 function landscape(ctx) {
   const out = [], H = L.HORIZON;
   out.push(S.rect(0, H, L.W, 40, { fill: S.lin(ctx, [[0, P.horizon, 0.0], [1, '#e08a58', 0.9]]) }));
-  out.push(mesa(ctx, 130, H + 40, 260, 54, 3, 0.55), mesa(ctx, 360, H + 36, 150, 34, 2, 0.6), mesa(ctx, 520, H + 38, 210, 40, 3, 0.62));
+  out.push(mesa(ctx, 150, H + 44, 330, 88, 4, 0.5), mesa(ctx, 420, H + 38, 190, 54, 3, 0.58), mesa(ctx, 520, H + 38, 140, 38, 2, 0.62));
   const layers = [
     { base: 396, amp: 34, span: 230, col: P.dunes[0], ripples: 3, haze: 0.5 },
-    { base: 424, amp: 46, span: 260, col: P.dunes[1], ripples: 5, haze: 0.38 },
-    { base: 462, amp: 62, span: 330, col: P.dunes[2], ripples: 7, haze: 0.26 },
+    { base: 424, amp: 46, span: 260, col: P.dunes[1], ripples: 6, haze: 0.3, rich: 1 },
+    { base: 462, amp: 62, span: 330, col: P.dunes[2], ripples: 8, haze: 0.2, rich: 1 },
     { base: 510, amp: 50, span: 300, col: P.dunes[3], ripples: 6, haze: 0.14 },
     { base: 566, amp: 30, span: 420, col: P.dunes[4], ripples: 4, haze: 0.0 },
   ];

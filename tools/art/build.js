@@ -30,6 +30,14 @@ for (const [id, P] of [['A-mashrabiya', A], ['B-tent', B]]) {
   emit(id + '-layer-panel', panel);                                // baked, alpha: panel art without text
   emit(id + '-layer-text', ctx => text(b.x0, b.x1));               // live: clock, tag, rows
 }
+// Scene C: tent framing (B) with the mashrabiya lattice (A) as the right panel; the opening wash is its own layer.
+{
+  const { tentFrame } = require('./tent'), bb = A.bounds(), art = ctx => landscape(ctx) + '\n' + family(ctx);
+  const tent = ctx => tentFrame(ctx, L.PANEL_X);
+  emit('C-tent-lattice', ctx => sky(ctx) + '\n' + art(ctx) + '\n' + tent(ctx) + '\n' + A.panelA(ctx) + '\n' + A.washA(ctx) + '\n' + text(bb.x0, bb.x1));
+  emit('C-tent-lattice-layer-sky', sky); emit('C-tent-lattice-layer-landscape', art); emit('C-tent-lattice-layer-tent', tent);
+  emit('C-tent-lattice-layer-lattice', A.panelA); emit('C-tent-lattice-layer-wash', A.washA); emit('C-tent-lattice-layer-text', ctx => text(bb.x0, bb.x1));
+}
 console.log('contrast', JSON.stringify(report(), (k, v) => typeof v === 'number' ? Math.round(v * 100) / 100 : v));
 sizes.forEach(s => console.log(String(s[1]).padStart(8), s[0]));
 fs.rmSync(tmp, { recursive: true, force: true });

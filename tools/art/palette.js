@@ -13,7 +13,7 @@ const P = {
   cream: '#fff1dc', wool: '#efe4cf', ground: '#1d1715', madder: '#a8322a', saffron: '#f0a53a', indigo: '#2c3a8a',
   skyTop: '#1b2b78', skyMid: '#5a3a80', skyLow: '#c4584a', horizon: '#f6a845',
   sun: '#f6a845', sunCore: '#ffe2a8', haze: '#f2a05a',
-  dunes: ['#e08a58', '#c4684a', '#a24233', '#822f2c', '#5a2024'],   // far to near
+  dunes: ['#e08a58', '#d86a42', '#b24632', '#822f2c', '#5a2024'],   // far to near
   shadow: '#2a1030', passed: '#a99d8a',
   wood: ['#4a2a14', '#7a4c24', '#a8702f'], woodLight: '#d9a362',
 };
