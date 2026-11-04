@@ -53,8 +53,10 @@ test('the day horizon is bright and the sky has nine gradient stops', function (
 
 test('sunrise and sunset palettes differ, and noon and midnight agree', function () {
   assert.notStrictEqual(pal(-2, true).skyStops[8], pal(-2, false).skyStops[8]);
-  assert.strictEqual(JSON.stringify(pal(90, true)), JSON.stringify(pal(90, false)));
-  assert.strictEqual(JSON.stringify(pal(-90, true)), JSON.stringify(pal(-90, false)));
+  function same(alt) { var x = pal(alt, true), y = pal(alt, false); delete x.litLeft; delete y.litLeft; return JSON.stringify(x) === JSON.stringify(y); } // only the lit side of the land differs
+  assert.ok(same(90) && same(-90));
+  assert.strictEqual(pal(60, true).litLeft, true);
+  assert.strictEqual(pal(60, false).litLeft, false);
 });
 
 test('colours change smoothly: one degree never moves the horizon colour far (the single ink flip at dawn and dusk is the largest step)', function () {

@@ -1,16 +1,19 @@
 import QtQuick 2.1
 
-// A family of four on one cloth: father and mother behind, two children in front. Faceless.
+// A family of four on one rug: father and mother behind, two children in front. Faceless.
 // Everything is sized by f (no item scaling, so edges stay crisp).
 Item {
     id: family
     property var pal
     property real f: 1.2
 
-    Rectangle { x: -180 * f; y: -26 * f; width: 360 * f; height: 54 * f; radius: 4 * f; color: family.pal.clothBorder }
-    Rectangle { x: -172 * f; y: -19 * f; width: 344 * f; height: 40 * f; radius: 2 * f; color: family.pal.cloth }
-    Rectangle { x: -164 * f; y: -13 * f; width: 328 * f; height: 28 * f; color: family.pal.clothStripe }
-    Rectangle { x: -160 * f; y: -9 * f; width: 320 * f; height: 20 * f; color: family.pal.cloth }
+    // the rug: goat-hair ground, a cream edge, a woven border (assets/rug.png, tiled) top and bottom, dimmed at night
+    Rectangle { x: -180 * f; y: -26 * f; width: 360 * f; height: 54 * f; color: family.pal.cloth
+        border.width: 3; border.color: family.pal.clothBorder }
+    Image { x: -180 * f + 3; y: -26 * f + 5; width: 360 * f - 6; height: 16; source: "../assets/rug.png"; fillMode: Image.Tile }
+    Image { x: -180 * f + 3; y: 28 * f - 21; width: 360 * f - 6; height: 16; source: "../assets/rug.png"; fillMode: Image.Tile }
+    Rectangle { x: -180 * f + 3; y: -26 * f + 3; width: 360 * f - 6; height: 54 * f - 6; color: family.pal.cloth
+        opacity: family.pal.weaveDim; visible: family.pal.weaveDim > 0 }
 
     Person { u: 1.08 * f; x: -104 * f; y: -2 * f; robe: family.pal.father; skin: family.pal.skin; hasCap: true; cap: family.pal.father }
     Person { u: 0.98 * f; x: 104 * f; y: -2 * f; robe: family.pal.mother; skin: family.pal.skin; hasScarf: true; scarf: family.pal.hijab }

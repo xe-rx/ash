@@ -1,18 +1,15 @@
 import QtQuick 2.1
 
-// The ground: a far plain on the horizon with two low swells, a mid dune and a near dune built
-// from big circles and a slightly tilted pill. Flat fills only.
+// The ground in three low-poly layers (far plain, mid, near), each a body with faceted ridges: crisp 45 degree
+// faces, the sun's side lit, the other in shade (colours: core/script.js via palette.js).
 Item {
     id: dunes
     property var pal
 
-    Rectangle { x: -16; y: 380; width: 1056; height: 240; color: dunes.pal.duneFar }
-    Rectangle { x: -330; y: 371; width: 900; height: 900; radius: 450; color: dunes.pal.duneFar }
-    Rectangle { x: 640; y: 375; width: 700; height: 700; radius: 350; color: dunes.pal.duneFar }
-
-    Rectangle { x: -520; y: 428; width: 1000; height: 1000; radius: 500; color: dunes.pal.duneMid }
-    Rectangle { x: 520; y: 452; width: 1100; height: 1100; radius: 550; color: dunes.pal.duneMid }
-
-    Rectangle { x: -240; y: 524; width: 1500; height: 300; radius: 150; rotation: -3.2; antialiasing: true; color: dunes.pal.duneNear }
-    Rectangle { x: -420; y: 560; width: 760; height: 760; radius: 380; color: dunes.pal.duneNear }
+    Ridge { base: 392; peaks: [[190, 366, 200], [520, 370, 210], [760, 372, 180]]
+        body: dunes.pal.duneFar; lit: dunes.pal.duneFarLit; shade: dunes.pal.duneFarShade; litLeft: dunes.pal.litLeft }
+    Ridge { base: 440; peaks: [[120, 406, 230], [470, 416, 250], [760, 424, 190]]
+        body: dunes.pal.duneMid; lit: dunes.pal.duneMidLit; shade: dunes.pal.duneMidShade; litLeft: dunes.pal.litLeft }
+    Ridge { base: 530; peaks: [[70, 500, 260], [420, 510, 230], [760, 506, 300]]
+        body: dunes.pal.duneNear; lit: dunes.pal.duneNearLit; shade: dunes.pal.duneNearShade; litLeft: dunes.pal.litLeft }
 }
