@@ -1,20 +1,16 @@
 .pragma library
 .import "clock.js" as Clock
-// The prayer table is a woven band (qata) on the right edge: pattern bands, the Hijri date, five rows (name
-// left, time right) and a fringe. Times sit in fixed digit cells so the columns line up although the digits
-// are proportional.
-
-// UNIT is the one pick of the weave: every row, band and gap of the table is a multiple of it.
-var UNIT = 8;
-var QATA = { x: 720, y: 0, w: 304, h: 600 };           // the woven band, full height on the right edge
-// vertical sections, top to bottom (in px): pattern band 24, stripe 8, date 64, stripe 8, five rows of 88, stripe 8, band 24, fringe 24
-var BAND_H = 3 * UNIT, STRIPE_H = UNIT, DATE_H = 8 * UNIT, ROW_H = 11 * UNIT, FRINGE_H = 3 * UNIT;
-var DATE_Y = BAND_H + STRIPE_H;                        // 32
-var ROWS_Y = DATE_Y + DATE_H + STRIPE_H;               // 104
-var END_Y = ROWS_Y + 5 * ROW_H;                        // 544: where the closing stripe starts
-var PAD = 3 * UNIT;                                    // text inset from the band's edges
-var NAME_X = QATA.x + PAD, TIME_RIGHT = QATA.x + QATA.w - PAD;
-var NAME_PX = 3 * UNIT, TIME_PX = 4 * UNIT;
+// The prayer table sits in the dark field of the baked lattice panel (assets/lattice.png, art scene C): a date
+// strip on top, five evenly spaced rows below it. The numbers are measured on that art; the rows and text are live.
+// Times sit in fixed digit cells so the columns line up although the digits are proportional.
+var QATA = { x: 704, y: 0, w: 320, h: 600 };           // the lattice panel on the right edge (wash and image)
+var FIELD = { x: 718, w: 292 };                        // the dark field inside the lattice frame
+var DATE_Y = 36, DATE_H = 60;                          // the date strip
+var ROWS_Y = 124, ROW_H = 68;                          // five rows; thin rules between them are baked
+var END_Y = ROWS_Y + 5 * ROW_H;                        // 464
+var PAD = 24;                                          // text inset from the field's edges
+var NAME_X = FIELD.x + PAD, TIME_RIGHT = FIELD.x + FIELD.w - PAD;
+var NAME_PX = 26, TIME_PX = 30;
 
 // widest digit advance at TIME_PX: every digit gets a cell this wide, ink centred in it
 function digitCell() { return Clock.glyphMetrics("4", TIME_PX)[0]; }
@@ -43,5 +39,5 @@ function tableLayout(scene) {
     p = scene.prayers[i];
     rows.push({ y: rowTop(i), name: p.name, isNext: p.isNext, isPast: i < nextAt, glyphs: timeGlyphs(p.timeText) });
   }
-  return { qata: QATA, rows: rows, header: { x: NAME_X, y: DATE_Y, w: QATA.w - 2 * PAD, h: DATE_H } };
+  return { qata: QATA, rows: rows, header: { x: FIELD.x, y: DATE_Y, w: FIELD.w, h: DATE_H } };
 }

@@ -6,12 +6,12 @@
 // bearings at 140 px of Poppins SemiBold (what Font.Medium resolves to), read in Qt 5.11 with
 // QFontMetricsF; they scale linearly with the size (tests/qt/font_metrics.py checks the sizes in use).
 
-var CLOCK_CX = 365;
-var CLOCK_PX = 120, CLOCK_GAP_EM = 0.08;
-var CLOCK_INK_TOP = 192;                 // y of the top of the digits (a multiple of the 8 px unit)
+var CLOCK_CX = 360;
+var CLOCK_PX = 108, CLOCK_GAP_EM = 0.08;
+var CLOCK_INK_TOP = 176;                 // y of the top of the digits, clear of the tent valance
 var INK_TOP_EM = 0.30, INK_BOTTOM_EM = 1.07; // digit ink relative to the Text item's top, per px
 var COLON_RAISE_EM = 0.057;              // Poppins' colon sits low; raised to the digits' middle
-var COUNTDOWN_PX = 24, COUNTDOWN_Y = 304, COUNTDOWN_H = 40, COUNTDOWN_EM_PER_CHAR = 0.55; // the tag + text line; width bound, measured 0.50
+var COUNTDOWN_PX = 24, COUNTDOWN_Y = 288, COUNTDOWN_H = 40, COUNTDOWN_EM_PER_CHAR = 0.55; // the tag + text line; width bound, measured 0.50
 var TAG_PAD = 12;                        // tag padding left and right
 var BASE_PX = 140;
 var GLYPH_METRICS = {

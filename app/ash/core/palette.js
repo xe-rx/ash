@@ -54,39 +54,23 @@ function stopsOf(top, mid, hor, ink) {
 function paletteAt(altDeg, rising) {
   var alt = typeof altDeg === "number" && isFinite(altDeg) ? clamp(altDeg, -90, 90) : -90;
   var s = Script.momentAt(alt, rising);
-  var ground = mix(GROUND, "#0d0908", s.dim), cream = mix(CREAM, ground, s.dim * 0.3);
+  var ground = GROUND, cream = mix(CREAM, ground, s.dim * 0.3);
   var sky = stopsOf(s.top, s.mid, s.hor, cream);
   var land = [s.duneFar, s.duneMid, s.duneNear];
-  // Figures take the light of the moment (tint), then sink into its shade (warm at dusk, cool at night).
-  var dim = function (hex) { return mix(mix(hex, s.tint, s.lit), s.shade, s.sink); };
   // The halos only warm the sky: their colour is chosen so that, laid over the sky behind the clock, the
   // luminance stays the same, and the cream text keeps its contrast on top of them.
   var glow = tintKeepingLuminance(mix(s.sun, s.hor, 0.2), sky[5], 0.26);
   var halo = tintKeepingLuminance(mix(s.sun, s.hor, 0.3), sky[5], 0.4);
   var madder = mix(MADDER, ground, s.dim * 0.5), woolDim = mix(WOOL, ground, s.dim * 0.5);
-  // Faceted land: every layer has a face lit from the sun's side and one in shade (ridges are built in view/Ridge.qml).
-  var faces = {}, names = ["farTwo", "farOne", "duneFar", "duneMid", "duneNear"], k;
-  for (k = 0; k < 5; k++) {
-    var c = [s.farTwo, s.farOne, s.duneFar, s.duneMid, s.duneNear][k];
-    faces[names[k] + "Lit"] = mix(c, mix(s.sun, s.tint, 0.4), 0.2 * (1 - s.sink * 0.5));
-    faces[names[k] + "Mid"] = mix(faces[names[k] + "Lit"], c, 0.5);
-    faces[names[k] + "Shade"] = mix(c, mix(s.shade, "#0e0810", 0.4), 0.38);
-  }
   var faded = ensureContrast(mix(cream, ground, 0.55), [ground], true);
-  var out = {
-    litLeft: rising,
+  return {
     skyStops: sky, farTwo: s.farTwo, farOne: s.farOne, duneFar: land[0], duneMid: land[1], duneNear: land[2], land: land,
     sun: s.sun, sunCore: mix(s.sun, "#fff3d6", 0.14), halo: halo, glow: glow,
     moon: alt < -3, stars: alt < -9, moonAlpha: clamp((-alt - 3) / 6, 0, 1), starAlpha: clamp((-alt - 8) / 6, 0, 1),
     moonColor: "#e9e6d8", starColor: "#cfd3f0",
-    inkSky: cream,
+    inkSky: cream, night: clamp(s.dim / 0.45, 0, 1),
     ground: ground, ink: cream, inkFaded: faded, weaveDim: s.dim * 0.9,
     rowFill: madder, rowInk: ensureContrast(cream, [madder], true),
-    tagFill: woolDim, tagInk: ensureContrast(ground, [woolDim], false),
-    cloth: ground, clothBorder: dim(WOOL), clothStripe: dim(MADDER),
-    father: dim("#f3ead8"), mother: dim("#c0392f"), hijab: dim("#d0503c"), girl: dim("#f0a53a"),
-    boy: dim("#3a58b8"), skin: dim("#c98c60"), skinDark: dim("#8e5a3c"), hair: dim("#2a1a16")
+    tagFill: woolDim, tagInk: ensureContrast(ground, [woolDim], false)
   };
-  for (k in faces) { out[k] = faces[k]; }
-  return out;
 }

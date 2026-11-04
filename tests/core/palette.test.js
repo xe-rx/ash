@@ -53,10 +53,8 @@ test('the day horizon is bright and the sky has nine gradient stops', function (
 
 test('sunrise and sunset palettes differ, and noon and midnight agree', function () {
   assert.notStrictEqual(pal(-2, true).skyStops[8], pal(-2, false).skyStops[8]);
-  function same(alt) { var x = pal(alt, true), y = pal(alt, false); delete x.litLeft; delete y.litLeft; return JSON.stringify(x) === JSON.stringify(y); } // only the lit side of the land differs
-  assert.ok(same(90) && same(-90));
-  assert.strictEqual(pal(60, true).litLeft, true);
-  assert.strictEqual(pal(60, false).litLeft, false);
+  assert.strictEqual(JSON.stringify(pal(90, true)), JSON.stringify(pal(90, false)));
+  assert.strictEqual(JSON.stringify(pal(-90, true)), JSON.stringify(pal(-90, false)));
 });
 
 test('colours change smoothly: one degree never moves the horizon colour far (the single ink flip at dawn and dusk is the largest step)', function () {
@@ -120,7 +118,7 @@ test('the sky gets lighter from the top band to the horizon at every altitude, s
 
 test('the table is a dimmed weave at night: cream stays readable, the ground is darker, the pattern dims', function () {
   var day = pal(60, true), night = pal(-60, true);
-  assert.ok(C.luminance(night.ground) < C.luminance(day.ground));
+  assert.strictEqual(night.ground, day.ground); // the ground is baked into the lattice art: one colour
   assert.ok(C.luminance(night.ink) < C.luminance(day.ink));
   assert.strictEqual(day.weaveDim, 0);
   assert.ok(night.weaveDim > 0.3);
@@ -144,19 +142,6 @@ test('the sun disc is never pale in the middle: the core is only a slight lift o
   eachAlt(-4, 90, 1, function (p, alt) {
     assert.ok(C.distance(p.sun, p.sunCore) < 0.05, 'core ' + p.sunCore + ' vs disc ' + p.sun + ' at ' + alt);
   });
-});
-
-test('family: the mother keeps her distance from the dunes at night, and nobody goes grey at dusk', function () {
-  var lowest = 9;
-  eachAlt(-90, -12, 3, function (p, alt) {
-    var d = Math.min(C.distance(p.mother, p.duneMid), C.distance(p.mother, p.duneNear));
-    lowest = Math.min(lowest, d);
-    assert.ok(d >= 0.06, 'mother ' + p.mother + ' vs dunes ' + p.duneMid + '/' + p.duneNear + ' = ' + d.toFixed(3) + ' at ' + alt);
-  });
-  console.log('# mother to dune distance at night, lowest ' + lowest.toFixed(3));
-  var dusk = pal(-3, false); // Maghrib light: the father keeps a warm tone
-  var lab = C.toLab(dusk.father);
-  assert.ok(lab[1] > 0 && lab[2] > 0.01, 'father ' + dusk.father + ' is not warm at dusk');
 });
 
 test('no band moves more than 0.02 OKLab in a 0.05 degree step, any of the nine, rising and setting ', function () {
@@ -186,4 +171,18 @@ test('cream ink is the same hue all day and has 4.5:1 on the whole sky behind th
   });
   console.log('# worst clock ink contrast on the sky ' + worst.toFixed(2));
   assert.ok(worst >= 4.5);
+});
+
+test('night factor: 1 in deep night, 0 by day, 0..1 and continuous in between (it cross-fades the night tent and lattice)', function () {
+  [true, false].forEach(function (rising) {
+    assert.strictEqual(pal(-90, rising).night, 1);
+    assert.strictEqual(pal(30, rising).night, 0);
+    var prev = pal(-90, rising).night;
+    for (var alt = -89.5; alt <= 40; alt += 0.5) {
+      var n = pal(alt, rising).night;
+      assert.ok(n >= 0 && n <= 1 && Math.abs(n - prev) < 0.1, 'night ' + n + ' at ' + alt);
+      assert.ok(n <= prev + 1e-9, 'night factor grows as the sun climbs at ' + alt);
+      prev = n;
+    }
+  });
 });

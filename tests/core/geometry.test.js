@@ -18,7 +18,7 @@ test('the sun arc: sunrise and sunset at its ends on the horizon, Dhuhr near the
   var s = at(H.ams(2026, 6, 21, 3, 0));
   var rise = G.sunPlace(at(s.sunrise.ms)), set = G.sunPlace(at(s.sunset.ms)), noon = G.sunPlace(at(s.prayers[1].ms));
   assert.ok(Math.abs(rise.x - 70) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
-  assert.ok(Math.abs(set.x - 660) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
+  assert.ok(Math.abs(set.x - 650) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
   assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 65) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
 });
 
@@ -75,7 +75,6 @@ test('the clock and countdown lie inside the arc, centred on it', function () {
 test('the qata is a full-height band on the right edge, clear of the sky arc, the clock and the family', function () {
   var Q = Table.QATA;
   assert.ok(Q.x + Q.w === G.W && Q.y === 0 && Q.h === G.H, 'full height, flush right');
-  assert.ok(!overlap(Q, G.familyBox()), 'qata hits the family');
   for (var m = 0; m < 1440; m++) {
     var t = (m / 60 | 0), text = (t < 10 ? '0' : '') + t + ':' + (m % 60 < 10 ? '0' : '') + m % 60;
     assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < Q.x - 40, text);
@@ -101,13 +100,13 @@ test('table layout: five rows, one next row, passed rows before it, times in ali
   }
 });
 
-test('one grid: every row, band and gap of the qata is a multiple of one unit, and the sections add up to the screen height', function () {
-  var U = Table.UNIT, L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
-  [Table.BAND_H, Table.STRIPE_H, Table.DATE_H, Table.ROW_H, Table.FRINGE_H, Table.DATE_Y, Table.ROWS_Y, Table.END_Y, Table.PAD, Table.NAME_PX, Table.TIME_PX, Table.QATA.w, Table.QATA.x]
-    .forEach(function (v) { assert.strictEqual(v % U, 0, v + ' is not a multiple of ' + U); });
-  L.rows.forEach(function (r) { assert.strictEqual(r.y % U, 0); });
-  assert.strictEqual(Table.END_Y + Table.STRIPE_H + Table.BAND_H + Table.FRINGE_H, G.H);
-  assert.strictEqual(Clock.CLOCK_INK_TOP % U, 0); assert.strictEqual(Clock.COUNTDOWN_Y % U, 0); assert.strictEqual(Clock.COUNTDOWN_H % U, 0);
+test('table rows are evenly spaced inside the baked lattice field, and the clock sits clear of the tent valance', function () {
+  var L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
+  L.rows.forEach(function (r, i) { assert.strictEqual(r.y, Table.ROWS_Y + i * Table.ROW_H); });
+  assert.strictEqual(Table.END_Y, Table.ROWS_Y + 5 * Table.ROW_H);
+  assert.ok(Table.FIELD.x >= Table.QATA.x && Table.FIELD.x + Table.FIELD.w <= Table.QATA.x + Table.QATA.w);
+  assert.ok(Clock.CLOCK_INK_TOP >= 160, 'clock top under the valance');
+  assert.ok(Clock.COUNTDOWN_Y + Clock.COUNTDOWN_H <= 330, 'countdown above the far land');
 });
 
 test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes', function () {
