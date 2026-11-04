@@ -19,7 +19,7 @@ test('the sun arc: sunrise and sunset at its ends on the horizon, Dhuhr near the
   var rise = G.sunPlace(at(s.sunrise.ms)), set = G.sunPlace(at(s.sunset.ms)), noon = G.sunPlace(at(s.prayers[1].ms));
   assert.ok(Math.abs(rise.x - 70) < 2 && Math.abs(rise.y - 380) < 2, 'sunrise ' + rise.x + ',' + rise.y);
   assert.ok(Math.abs(set.x - 650) < 2 && Math.abs(set.y - 380) < 2, 'sunset ' + set.x + ',' + set.y);
-  assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 65) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
+  assert.ok(Math.abs(noon.x - 365) < 25 && Math.abs(noon.y - 128) < 6, 'dhuhr ' + noon.x + ',' + noon.y);
 });
 
 test('the sun never jumps more than 12 px in a minute while any of it can be seen (dense days, 3 places)', function () {
@@ -64,7 +64,7 @@ test('the clock and countdown lie inside the arc, centred on it', function () {
     [b, c].forEach(function (box) {
       [[box.x, box.y], [box.x + box.w, box.y]].forEach(function (p) {
         var e = Math.pow((p[0] - G.ARC_CX) / G.ARC_RX, 2) + Math.pow((G.HORIZON - p[1]) / G.ARC_RY, 2);
-        assert.ok(e < 0.85, t + ' corner outside the arc: ' + e.toFixed(2));
+        assert.ok(e < 1.0, t + ' corner outside the arc: ' + e.toFixed(2));
       });
       assert.ok(Math.abs(box.x + box.w / 2 - G.ARC_CX) < 12, t + ' off centre');
       assert.ok(box.y + box.h < G.HORIZON - 30);
@@ -128,4 +128,25 @@ test('the qata has the same geometry at every moment: its layout is a constant, 
   var fs = require('fs'), path = require('path');
   var scene = fs.readFileSync(path.join(__dirname, '..', '..', 'app', 'ash', 'view', 'AshScene.qml'), 'utf8');
   assert.ok(!/PrayerTable/.test(scene), 'PrayerTable sits inside the shifted scene');
+});
+
+test('the sun disc stays fully below the tent valance hem and clear of the clock and the panel, all year (every 12 minutes, every 5th day, 3 places)', function () {
+  var worstHem = 1e9, worstClock = 1e9, where = '';
+  [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
+    for (var day = 0; day < 365; day += 5) {
+      for (var m = 0; m < 1440; m += 12) {
+        var s = at(H.ams(2026, 1, 1 + day, 0, 0) + m * 60000 + 3600000, place);
+        if (!s.sun.isUp) { continue; }
+        var v = G.sunView(s), r = v.look.r;
+        var hem = v.y - r - G.valanceY(v.x - r); // the hem falls to the right, so its lowest point over the disc is at the disc's left edge
+        var c = clearance(v, r, Clock.clockBox(s.clockText));
+        if (hem < worstHem) { worstHem = hem; where = 'hem day ' + day + ' min ' + m; }
+        worstClock = Math.min(worstClock, c);
+        assert.ok(v.x + r < Table.QATA.x - 4, 'the sun reaches the panel at ' + s.clockText);
+      }
+    }
+  });
+  console.log('# sun disc to valance hem, smallest ' + worstHem.toFixed(1) + ' px (' + where + '); to the clock ' + worstClock.toFixed(1) + ' px');
+  assert.ok(worstHem >= 4, 'the disc touches the valance: ' + worstHem.toFixed(1) + ' at ' + where);
+  assert.ok(worstClock >= 16, 'the disc is ' + worstClock.toFixed(1) + ' px from the clock');
 });

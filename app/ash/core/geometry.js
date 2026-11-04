@@ -7,14 +7,19 @@
 
 var W = 1024, H = 600;
 var HORIZON = 380;
-var ARC_CX = 360, ARC_RX = 290, ARC_RY = 315;
+var ARC_CX = 360, ARC_RX = 290, ARC_RY = 252;
+var ARC_FLAT = 0.7;          // < 1 flattens the top of the arc: the sun runs along under the valance, above the clock
 var SUNRISE_DEG = -50 / 60;  // altitude of the sun's centre at sunrise and sunset (as in sun.js)
+
+// The tent valance's lower hem (tips of the fringe), measured on assets/tent.png: about y 100 at the left edge falling
+// to about y 78 at the right, a straight line with a few px to spare. The sun's disc stays below it.
+function valanceY(x) { return 106 - 0.04 * x; }
 
 function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
 
 function arcPoint(p) {
   var s = Math.sin(Math.PI * p);
-  return { x: ARC_CX - ARC_RX * Math.cos(Math.PI * p), y: HORIZON - ARC_RY * s };
+  return { x: ARC_CX - ARC_RX * Math.cos(Math.PI * p), y: HORIZON - ARC_RY * Math.pow(s, ARC_FLAT) };
 }
 
 // px below the horizon of the sun's centre, for `below` degrees under its sunrise altitude: it

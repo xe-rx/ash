@@ -13,7 +13,7 @@ function lerp(a, b, t) { return a + (b - a) * t; }
 
 function sunLook(altDeg) {
   var alt = typeof altDeg === "number" && isFinite(altDeg) ? clamp(altDeg, -90, 90) : -90;
-  var high = smooth(clamp(alt / 22, 0, 1));              // 0 at the horizon, 1 high up
+  var high = smooth(clamp(alt / 12, 0, 1));              // 0 at the horizon, 1 from 12 degrees up (the disc must fit under the tent valance)
   var glow = alt >= 0 ? 1 : clamp((alt - GLOW_END_DEG) / -GLOW_END_DEG, 0, 1);
   var boost = 1 + 0.7 * smooth(clamp(-alt / 4, 0, 1)); // twilight glow reads a little stronger
   var r = lerp(46, 30, high);

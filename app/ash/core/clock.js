@@ -7,8 +7,8 @@
 // QFontMetricsF; they scale linearly with the size (tests/qt/font_metrics.py checks the sizes in use).
 
 var CLOCK_CX = 360;
-var CLOCK_PX = 108, CLOCK_GAP_EM = 0.08;
-var CLOCK_INK_TOP = 176;                 // y of the top of the digits, clear of the tent valance
+var CLOCK_PX = 100, CLOCK_GAP_EM = 0.08;
+var CLOCK_INK_TOP = 200;                 // y of the top of the digits, clear of the tent valance
 var INK_TOP_EM = 0.30, INK_BOTTOM_EM = 1.07; // digit ink relative to the Text item's top, per px
 var COLON_RAISE_EM = 0.057;              // Poppins' colon sits low; raised to the digits' middle
 var COUNTDOWN_PX = 24, COUNTDOWN_Y = 288, COUNTDOWN_H = 40, COUNTDOWN_EM_PER_CHAR = 0.55; // the tag + text line; width bound, measured 0.50
