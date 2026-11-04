@@ -18,7 +18,7 @@ test('stops rise in order inside the sky rectangle (top edge -16, horizon 380); 
   assert.ok(Grad.SKY_TOP + s[7] * Grad.SKY_H >= K.COUNTDOWN_Y + K.COUNTDOWN_H, 'stop 7 is above the end of the countdown');
 });
 
-test('the gradient has exactly the band colour at every stop, and the end bands beyond', function () {
+test('the gradient has exactly the stop colour at every stop, and the end stops beyond', function () {
   var p = pal(20, true);
   for (var i = 0; i < 9; i++) {
     assert.strictEqual(Grad.skyColorAt(p.skyStops, Grad.SKY_TOP + Grad.STOPS[i] * Grad.SKY_H), p.skyStops[i]);

@@ -5,7 +5,7 @@
 // Times sit in fixed digit cells so the columns line up although the digits are proportional.
 var QATA = { x: 704, y: 0, w: 320, h: 600 };           // the lattice panel on the right edge (wash and image)
 var FIELD = { x: 718, w: 292 };                        // the dark field inside the lattice frame
-var DATE_Y = 36, DATE_H = 60;                          // the date strip
+var DATE_Y = 36, DATE_H = 58;                          // the date strip
 var ROWS_Y = 124, ROW_H = 68;                          // five rows; thin rules between them are baked
 var END_Y = ROWS_Y + 5 * ROW_H;                        // 464
 var PAD = 24;                                          // text inset from the field's edges

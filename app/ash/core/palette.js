@@ -11,6 +11,7 @@
 var SAFE = 4.62; // margin over 4.5:1, for hex rounding
 
 var CREAM = "#fff1dc", WOOL = "#efe4cf", GROUND = "#1d1715", MADDER = "#a8322a";
+var NIGHT_FIELD = "#181a33"; // the dark field of the baked night lattice (measured 24,26,51): ink must read on it too
 var TEXT_CONTRAST = 5.6; // the sky behind the clock is darkened until cream reads at this (margin for halos and hex rounding)
 var clamp = C.clamp, mix = C.mix, smooth = C.smooth;
 
@@ -62,7 +63,7 @@ function paletteAt(altDeg, rising) {
   var glow = tintKeepingLuminance(mix(s.sun, s.hor, 0.2), sky[5], 0.26);
   var halo = tintKeepingLuminance(mix(s.sun, s.hor, 0.3), sky[5], 0.4);
   var madder = mix(MADDER, ground, s.dim * 0.5), woolDim = mix(WOOL, ground, s.dim * 0.5);
-  var faded = ensureContrast(mix(cream, ground, 0.55), [ground], true);
+  var faded = ensureContrast(mix(cream, ground, 0.55), [ground, NIGHT_FIELD], true);
   return {
     skyStops: sky, farTwo: s.farTwo, farOne: s.farOne, duneFar: land[0], duneMid: land[1], duneNear: land[2], land: land,
     sun: s.sun, sunCore: mix(s.sun, "#fff3d6", 0.14), halo: halo, glow: glow,

@@ -75,7 +75,7 @@ test('moon and stars only at night, and the palette is defined for odd input', f
   assert.strictEqual(p.skyStops.length, 9);
 });
 
-test('sky bands stay colourful from sunrise to sunset: no grey midpoints between blue and orange (the pale neutral day haze is intended, chroma >= 0.005)', function () {
+test('sky stops stay colourful from sunrise to sunset: no grey midpoints between blue and orange (the pale neutral day haze is intended, chroma >= 0.005)', function () {
   [true, false].forEach(function (rising) {
     for (var alt = -3; alt <= 90; alt += 1) {
       pal(alt, rising).skyStops.forEach(function (c, i) {

@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-04 05:40 · Branch: frontend-engineer/sadu-redesign · Status: done
+Updated: 2026-11-04 05:42 · Branch: frontend-engineer/sadu-redesign · Status: done
 
 ## Task
 Sadu redesign, now on baked art (PO decision): landAt core + Landscape/Tent/lattice view, art from branch frontend-engineer/baked-art.
@@ -10,6 +10,7 @@ Sadu redesign, now on baked art (PO decision): landAt core + Landscape/Tent/latt
 - Items: 96 allocated, 81-82 visible (was 420/384).
 
 - Valance fix: geometry.js valanceY(x) (hem measured on tent.png), ARC_RY 252 with ARC_FLAT 0.7 (noon apex y 128), sun disc r reaches 30 at 12 degrees (sunlook.js), clock 100 px at ink top 200. Year-sampled test in tests/core/geometry.test.js: disc >= 4 px under the hem, >= 16 px from the clock, clear of the panel (worst 4.8 / 17.8 px). Renders ~/ash-data/screens-baked/.
+- Review fixes: tools/art/moments.js loads core/script.js (no copy); tests/core/art-moments.test.js (file set, layout tie to tools/art/layout.js, night field 24,26,51 contrast); NIGHT_FIELD in palette.js; DATE_H 58; stale docs fixed; AGENTS.md lists the bake. Rebake is byte-identical.
 
 ## Next steps
 1. The art lives on main (assets/land, tent*, lattice*); it is not committed on this branch.

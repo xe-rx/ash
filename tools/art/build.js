@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-// Bakes the Ash prototype scenes: SVG (geometric primitives only) -> PNG via rsvg-convert, with Poppins found
+// PROTOTYPE / DEV ONLY (not part of the app bake; use tools/art/bake.js). Bakes the Ash prototype scenes: SVG (geometric primitives only) -> PNG via rsvg-convert, with Poppins found
 // through a temporary FONTCONFIG_FILE (nothing installed globally). Usage: node tools/art/build.js [outdir]
 const fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const S = require('./svg'), L = require('./layout');
