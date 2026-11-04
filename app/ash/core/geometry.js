@@ -43,6 +43,3 @@ function shiftAt(nowMs) {
   return { x: s[0], y: s[1] };
 }
 
-// The family sits on the dunes below the sky; its box (from Family.qml's sizes) is kept clear.
-var FAMILY = { x: 496, y: 556, f: 1.2 };
-function familyBox() { return { x: FAMILY.x - 218, y: FAMILY.y - 136, w: 436, h: 180 }; }

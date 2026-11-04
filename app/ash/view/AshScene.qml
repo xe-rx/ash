@@ -1,7 +1,7 @@
 import QtQuick 2.1
-import "../core/geometry.js" as Geo
 
-// The picture itself, back to front: sky, sun and its glow, far silhouettes, dunes, family, prayer table, readouts.
+// The moving picture, back to front: sky, sun and its glow, the baked landscape, the clock and countdown.
+// (The tent frame and the lattice table are drawn by AshView, not shifted for burn-in.)
 Item {
     id: stage
     property var scene
@@ -11,8 +11,6 @@ Item {
 
     Sky { pal: stage.pal }
     Sun { pal: stage.pal; view: stage.sun }
-    Silhouettes { pal: stage.pal }
-    Dunes { pal: stage.pal }
-    Family { pal: stage.pal; x: Geo.FAMILY.x; y: Geo.FAMILY.y }
+    Landscape { land3: stage.scene.land }
     Readouts { pal: stage.pal; scene: stage.scene; face: stage.face }
 }

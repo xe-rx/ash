@@ -44,11 +44,14 @@ Item {
         }
     }
 
-    // the woven band is not burn-in shifted: it has the same geometry at every moment
+    // the tent frame and the lattice table are not burn-in shifted: same geometry at every moment
     Loader {
         active: view.shown !== null && view.pal !== null
         x: 0; y: 0; width: 1024; height: 600
-        sourceComponent: Component { PrayerTable { pal: view.pal; scene: view.shown; face: view.face } }
+        sourceComponent: Component { Item {
+            Tent { night: view.pal.night }
+            PrayerTable { pal: view.pal; scene: view.shown; face: view.face }
+        } }
     }
 
     Rectangle { anchors.fill: parent; color: "#05070f"; visible: !view.ticked }   // before the first tick
