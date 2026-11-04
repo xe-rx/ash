@@ -26,3 +26,6 @@ FIRST VIEWPORT: Large cream clock left; countdown with the prayer name as a wove
 SIGNATURE: The weave as one grid: every row, band and gap is a multiple of one pick unit. Red means "now" only. Night is an authored dimmed weave.
 
 RISK: Pattern bands cost items; they ship as one small deterministic PNG strip. Contrast of faded rows must still meet 4.5:1 (large text 3:1).
+
+## PO steer 2026-11-04
+"move away from this simple shape design, still use exclusively geometric shapes, but make it more impressive, detailed and modern". Applies to the whole screen including landscape and family (composition kept, rendering richer): faceted dunes with lit and shadow faces, strata mesas, star field, multi-part geometric figures, patterned rug, eight-point star motifs in the band, precise thin lines. Item budget raised to about 400; fixed-colour geometric detail may be baked into deterministic PNGs.
