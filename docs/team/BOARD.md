@@ -12,6 +12,7 @@ Round: 3 (cel-shaded infographic; device work on hold) · PO: the user · Tech l
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
+- [ ] **PO verdict on the v3 cel stills** (review page https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR, files `~/ash-data/screens-cel/v3/`): approve per frame or name the spot; dune bands at dawn/sunset bolder or not; noon mesas darker or not.
 - [ ] PO compares a few dates with their mosque (`config/ash.json`).
 - [ ] Optional: a Claude desktop session with computer use, reachable over Remote Control, to watch the live window.
 
@@ -33,7 +34,7 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 PO request 2026-10-31: "Can you do some research on higher quality styles and atmosphere creation and see whether you can improve it. If not this just means its a human task!"
 PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
 
-- [ ] **Cel-shaded infographic** (PO 2026-11-11): revert to the simple infographic with flat cel shading and one hue per moment. Prototype stills in `~/ash-data/proto-cel/`; handoff in `docs/product/CEL-STYLE-HANDOFF.md`. Open: PO says "shadows are off" (which ones not yet known); keep the original family design. Next: stills approved, then app integration (replaces tent and lattice).
+- [ ] **Cel-shaded infographic** (PO 2026-11-11): stills v3 done and merged as tooling (PR 0014, `tools/art/cel/`, `node tools/art/cel/render.js`); waiting on the PO's verdict. Then **app integration** (one builder, Fable 5.1 xhigh): re-author the 14 `script.js` stops to the cel palette (key/amb per stop), rebake `assets/land/*` from `tools/art/cel` with the family and mesas in the layers (alpha, sky stays live), replace `Tent.qml` + lattice `PrayerTable.qml` with a live tinted card (`palette.js` card/ink per moment, ≥ 4.5:1), delete tent/lattice PNGs and the Sadu `tools/art` modules, rewrite `bake.js`, swap the valance/lattice tests (`geometry.test.js`, `art-moments.test.js`, `palette.test.js`) for card-contrast and arc-clearance tests, move `cel.test.js` under `tests/`, and fold in PR 0014's review nits (clock-on-sky contrast check, geometry test on output, lit-side test, `require.main` guard, fontconfig path, documented shade cap). Offscreen screenshots at 1024x600 before done.
 - [ ] Review follow-ups (PR 0013): comment on the relaxed ellipse test; tie `valanceY` to tent.png by a test; hem margin 4.8 px
 
 ### On hold until the PO can reach the Toon
@@ -45,11 +46,11 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| Cel stills v3: one shading rule, family restored, tinted card, mesas kept (tools/art/cel, renders to ~/ash-data/screens-cel/v3) | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-stills | .worktrees/frontend-engineer-cel-stills | dispatched 2026-11-12 |
 
 ## In review
 
 ## Done
+- PR 0014 cel-shaded stills v3 (tools/art/cel: one shading rule, October family, tinted card, mesas), 2026-11-12
 - PR 0011 Hijri at Maghrib; PR 0012 baked geometric art; PR 0013 Sadu redesign with scene C (tent + lattice), 2026-11-04
 - PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README; PR 0008 WSLg display; PR 0009 atmosphere redesign; PR 0010 art direction experiment
 - PR 0001 Qt toolchain and checks; PR 0002 calculation core; PR 0003 scene and local run; PR 0004 scene follow-ups

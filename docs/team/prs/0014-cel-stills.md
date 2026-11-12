@@ -1,6 +1,6 @@
 # PR 0014: Cel-shaded infographic stills v3 (tools/art/cel)
 
-Branch: `frontend-engineer/cel-stills` · Author: frontend-engineer (Fable 5.1, xhigh) · Status: open
+Branch: `frontend-engineer/cel-stills` · Author: frontend-engineer (Fable 5.1, xhigh) · Status: merged
 
 ## Summary
 New SVG art generator `tools/art/cel/` (node, no dependencies, 11 files, largest 78 lines) rendering the four cel-shaded
@@ -36,4 +36,7 @@ Nits, none blocking, folded into the integration task:
 ### security-reviewer: not required (no input handling, network, secrets or dependencies)
 
 ## Resolution
-Waiting on the PO's verdict on the stills and the code review.
+Trial merge in a throwaway worktree: check-file-length ok, check-pii ok, node core 109/109, cel 7/7, ash-rules 42/43
+(the one failure was the scratch setup's symlinked node_modules breaking `git check-ignore`; 43/43 on main). No
+blocking findings; nits 1-6 carried to the app-integration task. Merged `1e4128f`. The stills themselves still await the
+PO's verdict (review page above); the merge ships tooling only, nothing in the app.
