@@ -50,6 +50,8 @@ function lampLight(doc, P, m, fig, part, inner) {
 // One figure: each part under the shading rule; the head or hood casts onto the body (the crown shape moved
 // away from the light, in the body's SHADE colour, clipped to the body) before the head is drawn.
 function figure(doc, P, m, fig) {
+  // The shade band is a fraction of the figure's height (k.fig), capped at 8 px so the adults' bands stay as thin as
+  // the children's: a wider band reads as a second colour on the robe, not as shading.
   const k = Math.min(8, m.k.fig * HEIGHT * fig.u), h = m.h.fig, parts = PARTS[fig.name];
   const cols = part => P.cols(COLOURS[fig.name][PART_COLOUR[part]]);
   const paint = part => lampLight(doc, P, m, fig, part, cel(doc, partShape(fig, part), m.L, k, h, cols(part)));

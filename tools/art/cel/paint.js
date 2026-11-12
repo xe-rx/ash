@@ -36,12 +36,12 @@ function edgeBand(doc, shape, L, h, colour, inner) {
 }
 
 // Colour grading for a moment: B (base, carrying the moment's hue), L (lit), S (shade toward the ambient),
-// WARM and WARM2 (the lantern). `cols(local)` gives the three colours the rule needs.
+// WARM and WARM2 (the lantern, scaled by how far it is lit). `cols(local)` gives the three colours the rule needs.
 function painter(m) {
-  const B = c => mix(c, m.key, m.tint);
+  const B = c => mix(c, m.key, m.tint), on = m.lamp ? m.lamp.on : 0;
   const L = c => mix(B(c), m.sunlight || m.key, m.lit);
   const S = c => mix(B(c), m.amb, m.shade);
-  const WARM = c => mix(B(c), '#ff9e4a', 0.38), WARM2 = c => mix(B(c), '#ffbe6a', 0.6);
+  const WARM = c => mix(B(c), '#ff9e4a', 0.38 * on), WARM2 = c => mix(B(c), '#ffbe6a', 0.6 * on);
   return { B, L, S, WARM, WARM2, cols: c => ({ base: B(c), lit: L(c), shade: S(c) }) };
 }
 
