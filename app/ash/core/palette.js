@@ -1,19 +1,17 @@
 .pragma library
 .import "colour.js" as C
 .import "script.js" as Script
-// paletteAt(altitudeDeg, rising): every colour of the scene as hex strings, a pure function of the
-// sun's altitude and whether it is rising or setting. The Bedouin dye family: indigo, madder, saffron,
-// ochre, goat-hair black and undyed cream. The colours of every moment of the day are authored in
-// core/script.js (the colour script) and mixed in OKLab by altitude; this file assembles them. The
-// clock and the table use cream ink everywhere, so the sky behind the clock is held dark enough for
-// it (checked in tests); at night the cream and the whole table are dimmed, an authored weave.
+// paletteAt(altitudeDeg, rising): every live colour of the cel picture (ADR 0004) as hex strings, a pure
+// function of the sun's altitude and whether it is rising or setting. The colours of every moment are
+// authored in core/script.js and mixed in OKLab by altitude; this file assembles what the QML draws live:
+// the sky, the sun, the moon, the clock and the times card (the land is baked from the same script).
+// Inks are pulled until they read at 4.5:1 on what they really sit on (checked in tests): the clock ink on
+// the sky, which is held dark enough behind the clock; the card inks on the card and the accent pill.
 
 var SAFE = 4.62; // margin over 4.5:1, for hex rounding
-
-var CREAM = "#fff1dc", WOOL = "#efe4cf", GROUND = "#1d1715", MADDER = "#a8322a";
-var NIGHT_FIELD = "#181a33"; // the dark field of the baked night lattice (measured 24,26,51): ink must read on it too
-var TEXT_CONTRAST = 5.6; // the sky behind the clock is darkened until cream reads at this (margin for halos and hex rounding)
-var clamp = C.clamp, mix = C.mix, smooth = C.smooth;
+var TEXT_CONTRAST = 5.6; // the sky behind the clock is darkened until its ink reads at this (margin for rings and hex rounding)
+var SAND = ["#efc28a", "#d08a56"]; // the far and the near sand before grading: tools/art/cel/moments.js LOC.sand[0] and [3]
+var clamp = C.clamp, mix = C.mix;
 
 // A tint (the hue and chroma of `hex`) that leaves the luminance of `under` unchanged when laid over
 // it at alpha a the way the renderer does (a plain blend of the sRGB values): bisection on lightness.
@@ -37,17 +35,36 @@ function ensureContrast(hex, bgs, toward) { // lightness walks toward white or b
   return ok(C.fromLab(lab)) ? C.fromLab(lab) : (toward ? "#ffffff" : "#000000");
 }
 
+// The ink for a fill: the candidate that reads best on it, pulled toward whichever of white and black reads
+// better on the fill until it reads (on a mid tone, where the card's ink flips, only one of the two does).
+function inkOn(candidates, fill) {
+  var best = candidates[0], i;
+  for (i = 1; i < candidates.length; i++) { if (C.contrast(candidates[i], fill) > C.contrast(best, fill)) { best = candidates[i]; } }
+  return ensureContrast(best, [fill], C.contrast("#ffffff", fill) >= C.contrast("#000000", fill));
+}
+
+// The lightest colour of hex's hue, no lighter than hex, on which ink reads at TEXT_CONTRAST: a bisection on
+// OKLab lightness, so every darkened band lands on the same ceiling and the gradient stays monotonic.
+function heldDark(hex, ink) {
+  var lab = C.toLab(hex), lo = 0, hi = lab[0], i;
+  if (C.contrast(ink, hex) >= TEXT_CONTRAST) { return hex; }
+  for (i = 0; i < 24; i++) {
+    lab[0] = (lo + hi) / 2;
+    if (C.contrast(ink, C.fromLab(lab)) >= TEXT_CONTRAST) { lo = lab[0]; } else { hi = lab[0]; }
+  }
+  lab[0] = lo;
+  return C.fromLab(lab);
+}
+
 // Nine gradient stops from the zenith to the horizon (stop positions in core/skygrad.js). Stops 0..6
 // run from the top to the middle colour, stop 7 goes a third of the way to the horizon, stop 8 is the
-// horizon. Stops 0..7 lie behind or above the clock and the countdown: they are darkened (in OKLab
-// lightness) until the cream ink reads on them.
+// horizon. Stops 0..7 lie behind or above the clock and the countdown: they are held dark enough for
+// the clock ink to read on them.
 function stopsOf(top, mid, hor, ink) {
-  var out = [], i, lab, n;
+  var out = [], i;
   for (i = 0; i < 9; i++) {
     out.push(i < 7 ? mix(top, mid, i / 6) : (i === 7 ? mix(mid, hor, 0.3) : hor));
-    lab = C.toLab(out[i]); n = 0;
-    while (i < 8 && n++ < 80 && C.contrast(ink, C.fromLab(lab)) < TEXT_CONTRAST) { lab[0] -= 0.01; }
-    if (i < 8) { out[i] = C.fromLab(lab); }
+    if (i < 8) { out[i] = heldDark(out[i], ink); }
   }
   return out;
 }
@@ -55,23 +72,21 @@ function stopsOf(top, mid, hor, ink) {
 function paletteAt(altDeg, rising) {
   var alt = typeof altDeg === "number" && isFinite(altDeg) ? clamp(altDeg, -90, 90) : -90;
   var s = Script.momentAt(alt, rising);
-  var ground = GROUND, cream = mix(CREAM, ground, s.dim * 0.3);
-  var sky = stopsOf(s.top, s.mid, s.hor, cream);
-  var land = [s.duneFar, s.duneMid, s.duneNear];
-  // The halos only warm the sky: their colour is chosen so that, laid over the sky behind the clock, the
-  // luminance stays the same, and the cream text keeps its contrast on top of them.
-  var glow = tintKeepingLuminance(mix(s.sun, s.hor, 0.2), sky[5], 0.26);
-  var halo = tintKeepingLuminance(mix(s.sun, s.hor, 0.3), sky[5], 0.4);
-  var madder = mix(MADDER, ground, s.dim * 0.5), woolDim = mix(WOOL, ground, s.dim * 0.5);
-  var faded = ensureContrast(mix(cream, ground, 0.55), [ground, NIGHT_FIELD], true);
+  var sky = stopsOf(s.top, s.mid, s.hor, s.ink);
+  var cardInk = inkOn([s.cardInk], s.card);
+  // The sun's rings only tint the sky: laid over the sky behind the clock their colour keeps its luminance,
+  // so the clock ink keeps its contrast on top of them (glow: the outer two rings, halo: the inner two).
+  var glow = tintKeepingLuminance(s.glow, sky[5], 0.2), halo = tintKeepingLuminance(s.glow, sky[5], 0.42);
+  function graded(c) { return mix(c, s.key, s.tint); } // the land's base grading (tools/art/cel/paint.js B)
   return {
-    skyStops: sky, farTwo: s.farTwo, farOne: s.farOne, duneFar: land[0], duneMid: land[1], duneNear: land[2], land: land,
-    sun: s.sun, sunCore: mix(s.sun, "#fff3d6", 0.14), halo: halo, glow: glow,
+    skyStops: sky,
+    sun: s.glow, sunCore: mix(s.glow, "#ffffff", 0.5), glow: glow, halo: halo,
     moon: alt < -3, stars: alt < -9, moonAlpha: clamp((-alt - 3) / 6, 0, 1), starAlpha: clamp((-alt - 8) / 6, 0, 1),
-    moonColor: "#e9e6d8", starColor: "#cfd3f0",
-    inkSky: cream, night: clamp(s.dim / 0.45, 0, 1),
-    ground: ground, ink: cream, inkFaded: faded, weaveDim: s.dim * 0.9,
-    rowFill: madder, rowInk: ensureContrast(cream, [madder], true),
-    tagFill: woolDim, tagInk: ensureContrast(ground, [woolDim], false)
+    moonColor: "#f4f2e4", starColor: "#cfd3f0",
+    inkSky: s.ink, clockShadow: s.inkShadow, night: clamp(s.dim / 0.45, 0, 1),
+    card: s.card, cardShadow: mix(s.mid, s.amb, 0.5), cardInk: cardInk,
+    cardInkFaded: inkOn([mix(cardInk, s.card, 0.42)], s.card),
+    accent: s.accent, accentInk: inkOn(["#ffffff", cardInk, "#1a1a1a"], s.accent),
+    sandEdge: [graded(SAND[0]), graded(SAND[1])]
   };
 }

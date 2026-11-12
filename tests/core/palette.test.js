@@ -14,9 +14,8 @@ function behind(p, y0, y1) { // the sky colour a text between y0 and y1 really s
 
 var PAIRS = [ // [text colours, backgrounds] that really sit together
   [['inkSky'], function (p) { return behind(p, K.CLOCK_INK_TOP, K.COUNTDOWN_Y + K.COUNTDOWN_H); }],
-  [['ink', 'inkFaded'], function (p) { return [p.ground]; }],
-  [['rowInk'], function (p) { return [p.rowFill]; }],
-  [['tagInk'], function (p) { return [p.tagFill]; }]
+  [['cardInk', 'cardInkFaded'], function (p) { return [p.card]; }],
+  [['accentInk'], function (p) { return [p.accent]; }]
 ];
 
 test('every text colour has at least 4.5:1 against its real background, altitude -90..90, rising and setting', function () {

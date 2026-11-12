@@ -1,9 +1,9 @@
 import QtQuick 2.1
 
-// The sun: five stepped, flat halos of falling opacity (the two largest are very faint and warm the
-// sky around a low sun), the disc and a lighter core. Lives under
-// the dunes, so the horizon cuts it; in twilight only the halos rise above the dunes (a glow).
-// Sizes and opacities come from core/sunlook.js by altitude.
+// The sun: four stepped, flat rings of falling opacity (the outer two in pal.glow, the inner two in pal.halo,
+// tints that leave the sky's luminance alone), the disc and a lighter core. Lives under the land, so the
+// horizon cuts it; in twilight only the rings rise above the land (a glow). Sizes and opacities come from
+// core/sunlook.js by altitude; the largest ring is drawn first.
 Item {
     id: sun
     property var pal
@@ -11,12 +11,12 @@ Item {
     property var look: view.look
 
     Repeater {
-        model: 5
+        model: 4
         Rectangle {
             visible: sun.look.glowVisible
-            x: sun.view.x - sun.look.haloR[4 - index]; y: sun.view.y - sun.look.haloR[4 - index]
-            width: 2 * sun.look.haloR[4 - index]; height: width; radius: width / 2
-            color: index < 2 ? sun.pal.glow : sun.pal.halo; opacity: sun.look.haloAlpha[4 - index]; antialiasing: true
+            x: sun.view.x - sun.look.haloR[3 - index]; y: sun.view.y - sun.look.haloR[3 - index]
+            width: 2 * sun.look.haloR[3 - index]; height: width; radius: width / 2
+            color: index < 2 ? sun.pal.glow : sun.pal.halo; opacity: sun.look.haloAlpha[3 - index]; antialiasing: true
         }
     }
     Rectangle {
