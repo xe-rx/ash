@@ -1,46 +1,56 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-12 05:10 · Branch: frontend-engineer/cel-app · Status: in-progress (fix pass: 1 of 3 done)
+Updated: 2026-11-12 17:41 · Branch: frontend-engineer/cel-app · Status: done (fix pass), ready for review
 
 ## Task
-Fix pass on the cel infographic integration (stages 1-3 done, see git log), from the tech lead's view of the four
-frames and the sheet against the approved stills: (1) sky gradient seam at y 355, (2) night comes too late (June
-23:10 = -7.5 deg reads as dusk), (3) low-sun warm glow missing. Spec: the tech lead's dispatch of 2026-11-12 (fix
-pass). Done when: bake clean, core tests green, all checks green, four frames + sheet re-rendered into
-`~/ash-data/screens-cel-app/` and viewed (no seam, June 23:10 night on the ground with afterglow sky, warm glow at
-dawn/sunset, dawn/noon/sunset otherwise unchanged, sheet continuous), pinned stills byte-identical.
+Fix pass on the cel infographic integration (stages 1-3, commits fd76ca0..aed6872, ADR 0004) from the tech lead's view
+of the four frames and the sheet against the approved stills: (1) sky gradient seam at y 355, (2) June 23:10 (-7.5)
+reads as dusk not night, (3) the stills' warm low-sun glow missing. Done when: bake clean, core tests and all checks
+green, four frames + sheet re-rendered into ~/ash-data/screens-cel-app/ and viewed, pinned stills byte-identical.
 
 ## Done
-- Fix 1 (e4e6812): `skygrad.js` STOP_Y [0,50,100,150,200,250,300,344,432], MID_Y 300, HOR_Y 432 (the still's
-  curve, tools/art/cel/sky.js); `palette.js` imports skygrad.js and reads the stop colours off that curve with
-  sRGB mixes (Grad.blend), except stop 7 (mid->hor 1/3) which is an OKLab mix: the sRGB chord greys at +2 rising
-  (#686668, chroma .004, the 'colourful' test). Stops 0..7 held dark as before, stop 8 = hor. `skygrad.test.js`
-  rewritten: positions, fidelity to the still on every undarkened row (31,775 rows, <= 0.008 units), no flat band
-  above y 432, moon cut-out within 1 unit. Evidence: `node --test tests/core/*.test.js` 123 pass / 0 fail; the
-  13:50 frame viewed: smooth blend into the dune line, no edge.
-- Stages 1-3 (fd76ca0, 93b288a, 57fa2d4, aed6872): see those commits and ADR 0004; previous handoff text is in
-  git history (aed6872) if needed.
+- Fix 1 (e4e6812): skygrad.js STOP_Y [0,50,100,150,200,250,300,344,432], MID_Y 300, HOR_Y 432 (the still's curve,
+  tools/art/cel/sky.js); palette.js reads the stop colours off that curve with sRGB mixes (Grad.blend), except stop 7
+  (mid->hor 1/3) in OKLab because the sRGB chord greys at +2 rising (#686668, chroma .004). Stops 0..7 held dark for
+  the clock ink as before, stop 8 = hor. skygrad.test.js: positions, every undarkened row = the still within 2 units
+  (31,775 rows, worst 0.008), no flat band above y 432, moon cut-out within 1 unit.
+- Fix 2 (1b78689): script.js set-4 = cool violet shade (key #5a4a98, tint .6, lit .1), lamp .5, dark card; set-10,
+  set-20, rise-12, rise-20 land = NIGHT_LIGHT/NIGHT_BANDS (shared with NIGHT), lamp 1 (rise-12: .65, the most the
+  0.02-per-0.1-degree smoothness guard allows 5 degrees from the pinned dawn; dim .35 for the night-factor guard).
+  Skies untouched (afterglow to -12, night sky by -20). tools/art/cel/light.js: moonlight by -12 (setting: two-degree
+  swing from -10 so set-4 and set-10 share one shading and the June 23:10 cross-fade shows one set of bands; rising:
+  -7..-12); the light-continuity guard widened .12 -> .5 per half degree (a jump is > 1). Five layers rebaked;
+  rise-7/day/set0/night PNGs byte-identical (git diff empty). New script test for the rule.
+- Fix 3 (4f95072): an altitude rule (warm < +8, neutral > +15) fails the halo guard at 2.90: 1 Jan 13:24, alt 10.4,
+  the winter sun is low at the top of the arc over the clock. So the gate is geometric, per ring: palette.js
+  ringWarmth(sunX, haloR) = 1 when the ring is 40 px clear of the widest text (TEXT_HALF_W 160 about CLOCK_CX, checked
+  against clock.js), 0 where it touches; ringColour mixes the neutral tint toward pal.sun by it. Near the arc's ends the
+  inner three rings go warm; the outermost (r 150) touches the text even there and stays neutral. Sun.qml imports
+  palette.js and paints ring k with ringColour at its warmth. halo-contrast.test.js composites the gated colours and
+  now asserts 5.5 (worst 5.5012, unchanged).
+- Evidence (2026-11-12 17:41): node --test tests/core/*.test.js 125 pass / 0 fail; node tools/art/bake.js clean (675,152 bytes);
+  check-qml 11 files 0 errors; check-file-length, check-ash-rules, check-pii ok; scripts/test.sh all 12 files OK.
+  Screenshots ~/ash-data/screens-cel-app/ash-2026-06-21-{04-31,13-50,21-40,23-10}.png, sheet.png + 16 frames, viewed:
+  no seam in any sky; 04:31 a soft peach glow at the far-left horizon, dawn otherwise as approved; 13:50 as before with
+  the sky blending into the dune line; 21:40 gold stepped rings round the setting sun (outermost neutral), clear of the
+  countdown; 23:10 night on the ground (indigo-violet dunes, family and rug in cool shade, lantern lit with its pool,
+  dark card) under a plum/orange afterglow; the sheet continuous, warm glow at every sunrise/sunset end, neutral rings
+  near the clock (dec morning 10:43), night land from Isha on.
 
 ## Next steps
-1. Fix 2: re-author `script.js` set-4 (cool-shade land, lamp .5, dark card), set-10/set-20 and rise-12/rise-20
-   (land = NIGHT light and bands, lamp 1); keep skies (afterglow to -12, night by -20) and the pinned stops
-   (rise-7, day, set0, night) untouched; adjust script tests only where the authoring legitimately moves them;
-   `node tools/art/bake.js`; check `git status` shows only the changed layers (pinned PNGs byte-identical).
-2. Fix 3: low-sun warm rings: below +8 deg ring colours = the still's mixes toward glow (tools/art/cel/sky.js
-   `sun`: mix(skyAt(y), glow, t) for t .10/.2/.34/.5), above +15 the current luminance-neutral tints, smooth
-   blend 8..15. Guard: halo-contrast >= 5.5 (reduce outer two rings' alpha near the horizon if it fails only at
-   the arc ends; if unsatisfiable keep neutral rings and say so).
-3. Verification: bake clean, tests, check-qml/file-length/ash-rules/pii, scripts/test.sh; re-render the four frames
-   and the sheet into ~/ash-data/screens-cel-app/ and view them; final handoff.
+1. Tech lead: PR record + review; PO verdict on the four frames and the sheet; then a device install (ADR 0001).
 
 ## Open questions / blockers
-- At -7.5 (June 23:10) the moon and stars are not up yet (moon from -8, stars from -9, by instruction "as now"); the
-  frame will show the night land and the lit lantern without stars. Flag to the tech lead.
+- At -7.5 (June 23:10) the moon and stars are not up (moon from -8, stars from -9, kept "as now" by instruction); the
+  frame shows the night land and lit lantern without them. If the PO wants them: palette.js moon/stars thresholds.
+- Fix 3 deviates from the dispatch's letter (altitude 8..15) for its intent: the gate is by the sun's x per ring.
+- The -10 land shares set-4's horizon-side shading, not the moon's (so the 23:10 cross-fade has one set of bands).
 
 ## Gotchas learned
-- load-core objects live in another vm realm: compare arrays via JSON.stringify, not deepStrictEqual.
-- `scripts/check-file-length.sh` only checks tracked files: run it after `git add`.
-- The land bake reads `hor` (mesa haze): any `hor` change needs `node tools/art/bake.js`.
-- Two sky rules bracket in-between horizons: no hue 105..185 at chroma >= .015 and never chroma < .005; the sRGB
-  chord between a blue mid and a gold horizon crosses grey, so the one stop between them is mixed in OKLab.
-- Qt and the still's SVG both interpolate gradients in sRGB: in-between stops must be sRGB mixes to match the still.
-- The still's SVG text y is a baseline; a Poppins Text item's baseline is 1.05 em below its top.
+- Qt and the still's SVG interpolate gradients in sRGB: in-between stops must be sRGB mixes to match the still; but the
+  sRGB chord between a blue mid and a gold horizon crosses grey, so the one stop between them is mixed in OKLab.
+- A winter noon sun is low AND over the clock: ring rules must be geometric, not by altitude.
+- A ring cross-fade between two layers with different light directions doubles the shade bands; keep the swing of
+  tools/art/cel/light.js between layers that are not cross-faded at a frame the PO looks at.
+- Sharing arrays (NIGHT_LIGHT) between m() stops is safe: m() copies elements. Pinned layers stay byte-identical only if
+  the stop's own fields are untouched (the mesa haze reads hor).
+- `scripts/screenshot.sh --at` takes one moment per call (no | list). load-core objects live in another vm realm.
