@@ -1,6 +1,6 @@
 # PR 0015: Cel-shaded infographic in the app (replaces the Sadu tent scene)
 
-Branch: `frontend-engineer/cel-app` · Author: frontend-engineer (Fable 5.1, xhigh; three instances on one worktree) · Status: open
+Branch: `frontend-engineer/cel-app` · Author: frontend-engineer (Fable 5.1, xhigh; three instances on one worktree) · Status: merged
 
 ## Summary
 The PO-approved cel infographic (PR 0014 stills) drawn by the app at every minute of the year. `script.js` re-authored
@@ -46,4 +46,5 @@ and countdown boxes; (5) a missing land name would fail silently in `Landscape.q
 ### security-reviewer: not required (no input handling, network, secrets or dependencies)
 
 ## Resolution
-Pending the code review.
+No blocking findings; nits 1, 3 (record the reason), 4 carried to the backlog. Merged `35df723`; 125/125 on main after
+the merge. PO to judge the live frames on the review page.

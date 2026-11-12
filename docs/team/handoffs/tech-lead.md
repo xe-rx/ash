@@ -1,40 +1,43 @@
 # Handoff: tech-lead
-Updated: 2026-11-12 · Branch: main · Status: round 3, stills v3 merged as tooling, waiting on the PO's verdict
+Updated: 2026-11-12 · Branch: main · Status: round 3 closed, cel infographic in the app; waiting on the PO's verdict on the live frames
 
 ## Task
 Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 
 ## Done
-- Round 3 (2026-11-12): diagnosed the rejected cel sheet myself (dune crescents, clip-circle figure splits, forward
-  casts, noon patches) and found that both cel sheets had changed the family (father's white ghutra, girl's bun) against
-  the approved October figures (`d230545` Person/Family.qml). PO confirmed all four shadows wrong, chose: restore the
-  family exactly, tint the card per moment, keep the mesas. Dispatched the design builder on Fable 5.1 xhigh (PO's
-  standing instruction). PR 0014 merged `1e4128f`: `tools/art/cel/` renders the four stills to `~/ash-data/screens-cel/v3/`
-  under one offset-copy shading rule; code-reviewer APPROVE WITH NITS (nits listed in the PR record, carried to
-  integration). Review page for the PO: https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR (private artifact).
-- Round 2, batch 2 (2026-11-04): PRs 0011-0013 (Hijri at Maghrib, baked art, Sadu scene C). Earlier: PRs 0001-0010.
+- Round 3 (2026-11-12): the PO's cel-shaded infographic replaces the Sadu tent scene. PR 0014 (`1e4128f`): stills
+  generator `tools/art/cel/` under one offset-copy shading rule, October family restored, card tinted, mesas kept.
+  PR 0015 (`35df723`, ADR 0004): app integration by three frontend-engineer instances on one worktree (stages 1-3 and a
+  fix pass after my own look at the frames: sky seam, night land from −6..−12°, warm low-sun rings under the halo guard).
+  Both code-reviewed (approve with nits; follow-ups on the board). 125/125 node tests, 12/12 shell suites, QML check
+  clean, bake deterministic, assets 720 KB. Live frames and 16-moment sheet in `~/ash-data/screens-cel-app/`; review
+  page for the PO: https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR (private; the session that published it can
+  republish by file path, another by url).
+- Round 2 and earlier: PRs 0001-0013, kickoff, proposal approved 2026-10-31.
 
 ## Next steps
-1. PO verdict on the v3 stills (per frame; dune band strength; noon mesas). Tweaks: new worktree on `tools/art/cel`,
-   `k.dune` / `mesa.shade` in `moments.js`, rerender, republish the review page (same file path in that session, or by url).
-2. On approval: app integration, one builder (frontend-engineer, Fable 5.1 xhigh); scope on the board under the
-   cel-shaded infographic item. Acceptance: offscreen 1024x600 screenshots at the 4 moments match the stills; all tests
-   green; tent/lattice gone; card contrast tests; `node tools/art/bake.js` rebakes from `tools/art/cel`.
-3. PO compares times with their mosque. Device work on hold until Toon access.
+1. PO verdict on the live frames (and the three open taste points on the board: moon/stars before −8°, outermost ring
+   neutral, clock top 208 px). Tweaks: one builder, fresh worktree, `script.js` / `palette.js` / `skygrad.js`, rebake,
+   screenshots, review, merge.
+2. PR 0015 review follow-ups (board), small; can ride with the next tweak.
+3. PO compares times with their mosque. Device work stays on hold until Toon access; first device check: cost of the
+   full-screen alpha PNGs and the per-minute cross-fade (now 720 KB of art).
 
 ## Open questions / blockers
-- PO verdict on the stills (above).
+- PO verdict on the live frames.
 - Optional: a Claude desktop session with computer use over Remote Control to watch the live window.
 
 ## Gotchas learned
-- Trial merges: don't symlink node_modules into the scratch worktree; `tests/test_ash_rules.sh` runs
-  `git check-ignore node_modules/x`, which fails "beyond a symbolic link". Copy or `npm ci` instead.
-- Builders can Read PNGs: require them to look at their own renders and write what they saw in the handoff.
-- The approved family is the rounded pill version at `d230545`, not the faceted one at `85ebfe7^`.
-- Impeccable (v4.5.2) runs its decision page on 127.0.0.1; question logs are gitignored. QML primitives look flat;
-  baked SVG via rsvg-convert is the way. `worktree.sh merge` needs `--discard-data` when only .qmlc/.jsc caches remain.
-- `/tmp/.X11-unix` is empty here; run-local.sh finds `/wslg/.X11-unix/X0`. Offscreen needs
-  `QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software` and `grabToImage`. Toolchain: `~/ash-data/toolchain/qt511`.
+- Builders run out of context, not turns, when told to read the whole repo: brief them to read the handoff and only the
+  files they change. Three instances on one worktree worked; the handoff is the contract.
+- No watcher agents (PO, 2026-11-12): they cost more than they earn. Builders checkpoint and stop on their own.
+- The PO's 5-hour usage limit cuts agents mid-run; their commits survive, resume them with SendMessage.
+- Trial merges: copy node_modules into the scratch worktree, never symlink (`git check-ignore` fails beyond a symlink).
+- `scripts/screenshot.sh --at` takes one moment per call. Qt interpolates gradients in sRGB; the stills' SVG too.
+- A winter noon sun is low AND over the clock: any sun-ring rule must be geometric, not by altitude.
+- Builders can Read PNGs: require them to look at their renders and write what they saw.
+- The approved family is the rounded pill version at `d230545`. Toolchain `~/ash-data/toolchain/qt511`; offscreen needs
+  `QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software`. run-local.sh finds `/wslg/.X11-unix/X0`.
 
 ## Suggested skills
 - tech-lead, test-driven-development, impeccable (design rounds)

@@ -13,6 +13,7 @@ Round: 3 (cel-shaded infographic; device work on hold) · PO: the user · Tech l
 
 ## Waiting on the PO
 - [x] PO said "continue" on the v3 stills 2026-11-12 (dune bands and noon mesas unchanged unless the PO says otherwise). Was: **PO verdict on the v3 cel stills** (review page https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR, files `~/ash-data/screens-cel/v3/`): approve per frame or name the spot; dune bands at dawn/sunset bolder or not; noon mesas darker or not.
+- [ ] **PO verdict on the live app frames** (review page https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR, files `~/ash-data/screens-cel-app/`).
 - [ ] PO compares a few dates with their mosque (`config/ash.json`).
 - [ ] Optional: a Claude desktop session with computer use, reachable over Remote Control, to watch the live window.
 
@@ -34,8 +35,9 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 PO request 2026-10-31: "Can you do some research on higher quality styles and atmosphere creation and see whether you can improve it. If not this just means its a human task!"
 PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
 
-- [ ] **Cel-shaded infographic** (PO 2026-11-11): stills v3 done and merged as tooling (PR 0014, `tools/art/cel/`, `node tools/art/cel/render.js`); waiting on the PO's verdict. Then **app integration** (one builder, Fable 5.1 xhigh): re-author the 14 `script.js` stops to the cel palette (key/amb per stop), rebake `assets/land/*` from `tools/art/cel` with the family and mesas in the layers (alpha, sky stays live), replace `Tent.qml` + lattice `PrayerTable.qml` with a live tinted card (`palette.js` card/ink per moment, ≥ 4.5:1), delete tent/lattice PNGs and the Sadu `tools/art` modules, rewrite `bake.js`, swap the valance/lattice tests (`geometry.test.js`, `art-moments.test.js`, `palette.test.js`) for card-contrast and arc-clearance tests, move `cel.test.js` under `tests/`, and fold in PR 0014's review nits (clock-on-sky contrast check, geometry test on output, lit-side test, `require.main` guard, fontconfig path, documented shade cap). Offscreen screenshots at 1024x600 before done.
-- [ ] Review follow-ups (PR 0013): comment on the relaxed ellipse test; tie `valanceY` to tent.png by a test; hem margin 4.8 px
+- [x] **Cel-shaded infographic**: stills (PR 0014) and app integration (PR 0015, ADR 0004) merged 2026-11-12. Waiting on the PO's verdict on the live frames.
+- [ ] PR 0015 review follow-ups: delete the unread `pal.night` or give it a consumer; record why the light-continuity guard widened to 0.5 per half-degree (the 5° gap between the pinned stills and the new rise-12/set-4 stops); assert `ringWarmth`'s TEXT_HALF_W 160 against the clock and countdown boxes over the year; extend the no-green horizon test below 8° if a rule can be found.
+- [ ] Open to the PO: moon and stars before −8°/−9° so June 23:10 shows them; outermost sun ring stays neutral (it always reaches the clock text); clock top at 208 px for disc clearance.
 
 ### On hold until the PO can reach the Toon
 - [ ] Measure the Toon's cost of full-screen alpha PNGs and the per-minute cross-fade (1.5 MB of art)
@@ -46,11 +48,11 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| App integration of the cel infographic: script.js re-authored, land rebaked from tools/art/cel, live tinted card replaces tent+lattice, tests, ADR 0004 | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-app | .worktrees/frontend-engineer-cel-app | stages 1-3 committed (aed6872: palette, card, clock shadow, sun/moon, tests 120/120, ADR 0004, assets 699 KB); instance 3 on the fix pass the tech lead asked for after viewing the frames: sky gradient seam at y 355, night land from -6..-10 deg (June 23:10 is -7.5 deg), warm low-sun rings under the halo-contrast guard |
 
 ## In review
 
 ## Done
+- PR 0015 cel-shaded infographic in the app: script re-authored, land rebaked from tools/art/cel, live tinted card, clock shadow, sun/moon, tests, ADR 0004; tent and lattice removed, 2026-11-12
 - PR 0014 cel-shaded stills v3 (tools/art/cel: one shading rule, October family, tinted card, mesas), 2026-11-12
 - PR 0011 Hijri at Maghrib; PR 0012 baked geometric art; PR 0013 Sadu redesign with scene C (tent + lattice), 2026-11-04
 - PR 0005 clock spacing, polar message, marker and glyph tests; PR 0006 toolchain follow-ups; PR 0007 README; PR 0008 WSLg display; PR 0009 atmosphere redesign; PR 0010 art direction experiment
