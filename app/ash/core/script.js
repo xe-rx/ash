@@ -23,9 +23,12 @@ function m(sky, light, glow, clock, card, bands, lamp, dim) {
     kDune: bands[0], kMesa: bands[1], kRug: bands[2], hBand: bands[3], haze: bands[4], lamp: lamp, dim: dim };
 }
 
-// Night: moonlit indigo, a warm lantern on the rug, the card a dark navy with light ink.
-var NIGHT = m(["#0b1230", "#18244e", "#2e3f74"], ["#22307a", "#090c2e", "#9fb4ff", 0.78, 0.18, 0.5], "#9fb4ff",
-  ["#eef1ff", "#050817"], ["#1d2856", "#e8ecff", "#e9a23b"], [16, 12, 7, 4, 0.16], 1, 0.45);
+// Night: moonlit indigo, a warm lantern on the rug, the card a dark navy with light ink. The land goes into
+// moonlight before the sky does: every stop from -10 down (setting) and -12 down (rising) has this land, and
+// only the sky carries the afterglow (June 23:10 is -7.5 and reads as night on the ground, as the approved still).
+var NIGHT_LIGHT = ["#22307a", "#090c2e", "#9fb4ff", 0.78, 0.18, 0.5], NIGHT_BANDS = [16, 12, 7, 4, 0.16];
+var NIGHT = m(["#0b1230", "#18244e", "#2e3f74"], NIGHT_LIGHT, "#9fb4ff",
+  ["#eef1ff", "#050817"], ["#1d2856", "#e8ecff", "#e9a23b"], NIGHT_BANDS, 1, 0.45);
 // Noon: pale gold light, violet shade, blue sky, cream card.
 var DAY = m(["#2a78b4", "#5aa6d2", "#bfe4e4"], ["#fff1cc", "#8a7ea8", "#fff8e0", 0.12, 0.3, 0.3], "#fff4d6",
   ["#ffffff", "#1f5a8c"], ["#fcf1dd", "#1f2a3a", "#e9a23b"], [10, 8, 5, 4, 0.12], 0, 0);
@@ -33,11 +36,12 @@ var DAY = m(["#2a78b4", "#5aa6d2", "#bfe4e4"], ["#fff1cc", "#8a7ea8", "#fff8e0",
 // ascending altitude (degrees): [altitude, moment]
 var RISING = [
   [-90, NIGHT],
-  [-20, m(["#0e1538", "#1e2b5a", "#3a4a84"], ["#2a3a86", "#0b0f34", "#a8bcff", 0.74, 0.18, 0.5], "#b0a8d8",
-    ["#eef1ff", "#080c22"], ["#202c5e", "#e8ecff", "#e9a23b"], [18, 13, 8, 4, 0.16], 1, 0.4)],
-  // first light: violet, the lantern fading, the card still dark
-  [-12, m(["#161c4a", "#3a3878", "#8a6090"], ["#7a6aa8", "#1e1c4e", "#d8c0e0", 0.55, 0.18, 0.46], "#e0b0c0",
-    ["#f6f2ff", "#1c1848"], ["#2c2a60", "#ece8ff", "#e08a5a"], [22, 16, 9, 4.5, 0.16], 0.5, 0.25)],
+  [-20, m(["#0e1538", "#1e2b5a", "#3a4a84"], NIGHT_LIGHT, "#b0a8d8",
+    ["#eef1ff", "#080c22"], ["#202c5e", "#e8ecff", "#e9a23b"], NIGHT_BANDS, 1, 0.45)],
+  // first light: a violet horizon over the moonlit land, the card still dark, the lantern fading toward the unlit
+  // dawn (0.65 is as bright as the smoothness guard allows five degrees from the pinned dawn)
+  [-12, m(["#161c4a", "#3a3878", "#8a6090"], NIGHT_LIGHT, "#e0b0c0",
+    ["#f6f2ff", "#1c1848"], ["#2c2a60", "#ece8ff", "#e08a5a"], NIGHT_BANDS, 0.65, 0.35)],
   // dawn (the approved still): peach light, violet shade
   [-7, m(["#26335f", "#6a5a8a", "#f0a890"], ["#f6c4ae", "#5a3f86", "#ffd9b8", 0.3, 0.22, 0.4], "#ffd0a8",
     ["#fff7ee", "#3a3a6a"], ["#fae4d4", "#2a2440", "#d9745e"], [26, 18, 10, 5, 0.16], 0, 0.1)],
@@ -53,14 +57,15 @@ var RISING = [
 ];
 var SETTING = [
   [-90, NIGHT],
-  [-20, m(["#0e1438", "#1e2858", "#3c4682"], ["#2a3686", "#0b0e34", "#a8b8ff", 0.74, 0.18, 0.5], "#b0a8d4",
-    ["#eef1ff", "#080c22"], ["#202a5c", "#e8ecff", "#e9a23b"], [18, 13, 8, 4, 0.16], 1, 0.4)],
-  // dusk: plum over indigo, the lantern lit, the card gone dark
-  [-10, m(["#161a4a", "#3e2a68", "#9c5a7c"], ["#7a5290", "#1a1444", "#d8a8c0", 0.56, 0.16, 0.46], "#e0a0a8",
-    ["#f6f0ff", "#1a1040"], ["#2c2458", "#ece8ff", "#e08a5a"], [22, 16, 9, 4.5, 0.16], 0.5, 0.25)],
-  // afterglow
-  [-4, m(["#2e2a68", "#7c4068", "#ea8a5c"], ["#f0906c", "#3e2052", "#ffb890", 0.4, 0.22, 0.5], "#ffb878",
-    ["#fff2e6", "#3a2052"], ["#f8d2bc", "#2e1a2a", "#e06a48"], [24, 16, 9, 5, 0.16], 0, 0.08)],
+  [-20, m(["#0e1438", "#1e2858", "#3c4682"], NIGHT_LIGHT, "#b0a8d4",
+    ["#eef1ff", "#080c22"], ["#202a5c", "#e8ecff", "#e9a23b"], NIGHT_BANDS, 1, 0.45)],
+  // dusk: a plum afterglow over the moonlit land, the lantern lit, the card dark
+  [-10, m(["#161a4a", "#3e2a68", "#9c5a7c"], NIGHT_LIGHT, "#e0a0a8",
+    ["#f6f0ff", "#1a1040"], ["#2c2458", "#ece8ff", "#e08a5a"], NIGHT_BANDS, 1, 0.45)],
+  // afterglow: an orange horizon, but no sun on the land any more: cool violet shade, the lantern half lit, the
+  // card gone dark
+  [-4, m(["#2e2a68", "#7c4068", "#ea8a5c"], ["#5a4a98", "#160f3c", "#c8b8e8", 0.6, 0.1, 0.5], "#ffb878",
+    ["#fff2e6", "#3a2052"], ["#3a2a58", "#ece6f6", "#e07a52"], [24, 16, 9, 5, 0.16], 0.5, 0.2)],
   // sunset (the approved still): orange light, plum shade
   [0, m(["#3e3474", "#a24e6e", "#f6a15a"], ["#ff9e64", "#5a2856", "#ffc27a", 0.34, 0.3, 0.5], "#ffd27a",
     ["#fff4e6", "#5a2856"], ["#fcd8be", "#2e1a2a", "#e8653f"], [26, 18, 10, 5, 0.16], 0, 0)],

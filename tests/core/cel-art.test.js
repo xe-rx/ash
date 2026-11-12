@@ -67,17 +67,19 @@ test('family geometry is the October family (Person.qml and Family.qml at d23054
   assert.ok(svg.includes(partShape(f, 'lap').replace(/\/>$/, '')), 'the lap rect is drawn as the table says');
 });
 
-test('the light follows the sun: from the left when rising, the right when setting, overhead by day, moonlight at night', () => {
+test('the light follows the sun: from the left when rising, the right when setting, overhead by day, moonlight from -10 to -12', () => {
   const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) < 0.01);
   assert.ok(near(lightAt(-7, true), unit([-1, -0.18])), 'dawn ' + lightAt(-7, true));
   assert.ok(near(lightAt(0, false), unit([1, -0.18])), 'sunset ' + lightAt(0, false));
   assert.ok(near(lightAt(90, true), unit([-0.3, -1])) && near(lightAt(90, false), unit([-0.3, -1])), 'noon');
   assert.ok(near(lightAt(-90, true), unit([0.3, -1])) && near(lightAt(-30, false), unit([0.3, -1])), 'night');
+  assert.ok(near(lightAt(-12, true), unit([0.3, -1])) && near(lightAt(-12, false), unit([0.3, -1])), 'moonlight by -12: ' + lightAt(-12, false));
+  assert.ok(near(lightAt(-10, false), unit([1, -0.18])), 'the horizon glow lights the land down to -10 (the -10 and -4 layers share one shading): ' + lightAt(-10, false));
   [true, false].forEach(rising => {
     let prev = lightAt(-90, rising);
     for (let alt = -89.5; alt <= 90; alt += 0.5) {
       const L = lightAt(alt, rising);
-      assert.ok(Math.hypot(L[0] - prev[0], L[1] - prev[1]) < 0.12, `light jumps at ${alt}`); // under 7 degrees of swing per half degree
+      assert.ok(Math.hypot(L[0] - prev[0], L[1] - prev[1]) < 0.5, `light jumps at ${alt}`); // the two-degree swing to moonlight (setting) peaks at 0.41 per half degree; a jump is over 1
       prev = L;
     }
   });

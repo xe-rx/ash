@@ -73,3 +73,32 @@ test('one hue per moment: the dawn stop is violet/peach, the night stop indigo, 
   assert.ok(hue(S.MOMENTS.day.mid) > 220 && hue(S.MOMENTS.day.mid) < 260, 'day sky ' + hue(S.MOMENTS.day.mid));
   assert.ok(S.MOMENTS.night.lamp === 1 && S.MOMENTS['rise-20'].lamp > 0 && S.MOMENTS['rise-1'].lamp === 0, 'the lantern burns at night only');
 });
+
+// The fix pass of 2026-11-12: the land goes into moonlight before the sky does (June 23:10 is -7.5 and must read
+// as night on the ground). Setting: cool shade by -6, the night land by -10, the lantern half lit at -4 and lit from
+// -10; the sky keeps its afterglow at -12 and is the night sky by -20. Rising, below the pinned dawn: the night land
+// by -12 (the lantern as bright as the smoothness guard allows against the dawn's unlit one).
+var LAND = ['key', 'amb', 'sunlight', 'tint', 'lit', 'shade', 'kDune', 'kMesa', 'kRug', 'hBand'];
+function landIsNight(m, where) {
+  LAND.forEach(function (k) {
+    if (typeof m[k] === 'number') { assert.ok(Math.abs(m[k] - S.NIGHT[k]) <= 0.02 * Math.max(1, S.NIGHT[k]), k + ' ' + m[k] + ' is not the night\'s ' + S.NIGHT[k] + ' at ' + where); }
+    else { assert.ok(C.distance(m[k], S.NIGHT[k]) <= 0.02, k + ' ' + m[k] + ' is not the night\'s ' + S.NIGHT[k] + ' at ' + where); }
+  });
+}
+test('the land goes into moonlight early: cool shade by -6 setting, the night land by -10 (by -12 rising), the lantern lit, the sky keeping its afterglow until -12', function () {
+  function hue(hex) { var l = C.toLab(hex), h = Math.atan2(l[2], l[1]) * 180 / Math.PI; return h < 0 ? h + 360 : h; }
+  var dusk = S.momentAt(-6, false);
+  assert.ok(hue(dusk.key) > 250 && hue(dusk.key) < 320 && C.toLab(dusk.key)[0] < 0.5 && dusk.tint >= 0.6, 'at -6 setting the key is a cool shade: ' + dusk.key + ' tint ' + dusk.tint);
+  assert.ok(dusk.lit <= 0.15, 'no sunlit bands at -6: lit ' + dusk.lit);
+  assert.ok(S.momentAt(-4, false).lamp >= 0.5, 'lantern at -4: ' + S.momentAt(-4, false).lamp);
+  for (var alt = -10; alt >= -90; alt -= 1) {
+    landIsNight(S.momentAt(alt, false), alt + ' setting');
+    assert.strictEqual(S.momentAt(alt, false).lamp, 1, 'lantern lit at ' + alt + ' setting');
+    if (alt <= -12) { landIsNight(S.momentAt(alt, true), alt + ' rising'); }
+  }
+  assert.ok(S.momentAt(-12, true).lamp >= 0.6, 'lantern at -12 rising: ' + S.momentAt(-12, true).lamp);
+  var glow = S.momentAt(-12, false).hor, h = hue(glow);
+  assert.ok((h >= 300 || h <= 60) && C.chroma(glow) >= 0.05, 'afterglow horizon at -12 setting: ' + glow + ' hue ' + h.toFixed(0));
+  assert.ok(C.distance(S.momentAt(-20, false).hor, S.NIGHT.hor) <= 0.06 && C.distance(S.momentAt(-20, true).hor, S.NIGHT.hor) <= 0.06, 'the night sky by -20');
+  assert.ok(C.distance(S.momentAt(-7.5, false).key, S.NIGHT.key) <= 0.12, 'June 23:10 (-7.5 setting) is lit like the night: key ' + S.momentAt(-7.5, false).key);
+});
