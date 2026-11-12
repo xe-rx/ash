@@ -1,5 +1,5 @@
 # Handoff: tech-lead
-Updated: 2026-11-04 · Branch: main · Status: waiting on PO feedback on the new scene
+Updated: 2026-11-12 · Branch: main · Status: cel-style prototype handed to a new design session
 
 ## Task
 Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
@@ -9,7 +9,7 @@ Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 - Earlier: PRs 0001-0010, kickoff, proposal approved 2026-10-31.
 
 ## Next steps
-1. PO feedback on the live scene; polish from it (board lists candidates and review follow-ups).
+1. Cel-shaded infographic: read `docs/product/CEL-STYLE-HANDOFF.md`; ask the PO which shadows are off; keep the original family; stills before app work.
 2. PO compares times with their mosque.
 3. Device work on hold until Toon access; first device check: cost of the full-screen PNGs.
 

@@ -31,9 +31,8 @@ PO change 2026-10-31: "can't get into toon yet, for now, focus on running it loc
 PO request 2026-10-31: "Can you do some research on higher quality styles and atmosphere creation and see whether you can improve it. If not this just means its a human task!"
 PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, work on the entire atmosphere, colours and a prettier sun, I dont mind the family and landscape. Also, the ugly big circle graph outline with all the prayers at their sun position is unecessary. Clean table on the right, and just show off the sun with a cleaner indicator."
 
-- [ ] PO looks at the new scene live (`scripts/run-local.sh --at "2026-06-21 21:00" --speed 30`) and gives feedback
+- [ ] **Cel-shaded infographic** (PO 2026-11-11): revert to the simple infographic with flat cel shading and one hue per moment. Prototype stills in `~/ash-data/proto-cel/`; handoff in `docs/product/CEL-STYLE-HANDOFF.md`. Open: PO says "shadows are off" (which ones not yet known); keep the original family design. Next: stills approved, then app integration (replaces tent and lattice).
 - [ ] Review follow-ups (PR 0013): comment on the relaxed ellipse test; tie `valanceY` to tent.png by a test; hem margin 4.8 px
-- [ ] Art polish candidates: figures still a little blocky, family sinks at set0/set-4, dunes hard-edged
 
 ### On hold until the PO can reach the Toon
 - [ ] Measure the Toon's cost of full-screen alpha PNGs and the per-minute cross-fade (1.5 MB of art)
