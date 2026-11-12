@@ -1,16 +1,18 @@
 .pragma library
 .import "geometry.js" as Geo
 .import "colour.js" as C
-// The sky: a smooth vertical gradient through the nine stops of the palette (skyStops). Stops 0..7 lie above
-// and behind the clock and the countdown and are held dark enough for the clock ink (palette.js); stop 8 is
-// the horizon colour, which runs on down to the bottom of the sky rectangle: the baked land is transparent
-// above its silhouette, so the sky must reach well under the horizon line. The rectangle runs from SKY_TOP
-// (16 px past the top edge, for the burn-in shift) to 16 px past the bottom edge. Qt's Gradient mixes
-// linearly in sRGB between stops; skyColorAt does the same, so tests and the moon's cut-out see the colour
-// the screen shows.
+// The sky: a smooth vertical gradient through the nine stops of the palette (skyStops), on the curve of the
+// cel stills (tools/art/cel/sky.js): the zenith colour at y 0, the middle colour at MID_Y (0.5 H), the horizon
+// colour at HOR_Y (0.72 H) and flat below, so the sky runs on under the dune line (the baked land is transparent
+// above its silhouette, down to y 424). Stops 0..7 (y <= 344) lie above and behind the clock and the countdown
+// and are held dark enough for the clock ink (palette.js); stop 8 is the horizon colour, never darkened. The
+// rectangle runs from SKY_TOP (16 px past the top edge, for the burn-in shift) to 16 px past the bottom edge.
+// Qt's Gradient mixes linearly in sRGB between stops, as the still's SVG gradient does; skyColorAt does the
+// same, so tests and the moon's cut-out see the colour the screen shows.
 
 var SKY_TOP = -16, SKY_H = Geo.H + 16 - SKY_TOP;   // y -16 .. 616
-var STOP_Y = [12, 65, 112, 150, 190, 247, 296, 344, 370];
+var MID_Y = Geo.H * 0.5, HOR_Y = Geo.H * 0.72;     // 300, 432: where the still's gradient bends
+var STOP_Y = [0, 50, 100, 150, 200, 250, 300, 344, 432];
 var STOPS = (function () {
   var out = [];
   for (var i = 0; i < 9; i++) { out.push((STOP_Y[i] - SKY_TOP) / SKY_H); }

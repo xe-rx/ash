@@ -1,6 +1,7 @@
 .pragma library
 .import "colour.js" as C
 .import "script.js" as Script
+.import "skygrad.js" as Grad
 // paletteAt(altitudeDeg, rising): every live colour of the cel picture (ADR 0004) as hex strings, a pure
 // function of the sun's altitude and whether it is rising or setting. The colours of every moment are
 // authored in core/script.js and mixed in OKLab by altitude; this file assembles what the QML draws live:
@@ -56,14 +57,19 @@ function heldDark(hex, ink) {
   return C.fromLab(lab);
 }
 
-// Nine gradient stops from the zenith to the horizon (stop positions in core/skygrad.js). Stops 0..6
-// run from the top to the middle colour, stop 7 goes a third of the way to the horizon, stop 8 is the
-// horizon. Stops 0..7 lie behind or above the clock and the countdown: they are held dark enough for
-// the clock ink to read on them.
+// The nine gradient stops of the still's sky (tools/art/cel/sky.js), read off its curve at the positions in
+// core/skygrad.js: the zenith colour at y 0, the middle colour at MID_Y, the horizon colour at HOR_Y, mixed
+// linearly in sRGB like the still's SVG gradient. Stop 7, the one stop between the middle and the horizon
+// colour, is mixed in OKLab instead: between a blue mid and a gold horizon (alt +2 rising) the sRGB chord
+// crosses grey, and the stop keeps the gradient off it (within 0.02 units of the still wherever it shows
+// undarkened). Stops 0..7 lie behind or above the clock and the countdown: they are held dark enough for
+// the clock ink to read on them; stop 8, the horizon, is left as authored.
 function stopsOf(top, mid, hor, ink) {
-  var out = [], i;
+  var out = [], i, y, t;
   for (i = 0; i < 9; i++) {
-    out.push(i < 7 ? mix(top, mid, i / 6) : (i === 7 ? mix(mid, hor, 0.3) : hor));
+    y = Grad.STOP_Y[i];
+    if (y <= Grad.MID_Y) { out.push(Grad.blend(top, mid, y / Grad.MID_Y)); }
+    else { t = Math.min(1, (y - Grad.MID_Y) / (Grad.HOR_Y - Grad.MID_Y)); out.push(t < 1 ? mix(mid, hor, t) : hor); }
     if (i < 8) { out[i] = heldDark(out[i], ink); }
   }
   return out;
