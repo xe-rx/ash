@@ -72,16 +72,16 @@ test('the clock and countdown lie inside the arc, centred on it', function () {
   });
 });
 
-test('the qata is a full-height band on the right edge, clear of the sky arc, the clock and the family', function () {
-  var Q = Table.QATA;
-  assert.ok(Q.x + Q.w === G.W && Q.y === 0 && Q.h === G.H, 'full height, flush right');
+test('the times card: 724..1000 x 28..372 at the right, clear of the clock at every minute and of the sun at the arc\'s ends', function () {
+  var c = Table.CARD;
+  assert.deepStrictEqual([c.x, c.y, c.x + c.w, c.y + c.h], [724, 28, 1000, 372]);
+  assert.ok(c.x + c.w <= G.W - 20 && c.y >= 20, 'room for the burn-in shift and the shadow');
   for (var m = 0; m < 1440; m++) {
     var t = (m / 60 | 0), text = (t < 10 ? '0' : '') + t + ':' + (m % 60 < 10 ? '0' : '') + m % 60;
-    assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < Q.x - 40, text);
+    assert.ok(Clock.clockBox(text).x + Clock.clockBox(text).w < c.x - 40, text);
   }
-  var end = G.arcPoint(1);
-  assert.ok(end.x + 46 < Q.x, 'the sun at sunset reaches the qata');
-  assert.ok(G.arcPoint(0).x - 46 >= 22, 'the sun just after sunrise is clipped by the left screen edge (and the burn-in shift)');
+  assert.ok(G.arcPoint(1).x + 40 < c.x - 4, 'the sun at sunset reaches the card');
+  assert.ok(G.arcPoint(0).x - 40 >= 22, 'the sun just after sunrise is clipped by the left screen edge (and the burn-in shift)');
 });
 
 test('table layout: five rows, one next row, passed rows before it, times in aligned cells', function () {
@@ -100,13 +100,17 @@ test('table layout: five rows, one next row, passed rows before it, times in ali
   }
 });
 
-test('table rows are evenly spaced inside the baked lattice field, and the clock sits clear of the tent valance', function () {
-  var L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0)));
-  L.rows.forEach(function (r, i) { assert.strictEqual(r.y, Table.ROWS_Y + i * Table.ROW_H); });
-  assert.strictEqual(Table.END_Y, Table.ROWS_Y + 5 * Table.ROW_H);
-  assert.ok(Table.FIELD.x >= Table.QATA.x && Table.FIELD.x + Table.FIELD.w <= Table.QATA.x + Table.QATA.w);
-  assert.ok(Clock.CLOCK_INK_TOP >= 160, 'clock top under the valance');
-  assert.ok(Clock.COUNTDOWN_Y + Clock.COUNTDOWN_H <= 330, 'countdown above the far land');
+test('card rows: baselines 128 + 52 i, pill and text inside the card, the date above the first row; clock and countdown near the stills', function () {
+  var L = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0))), c = Table.CARD, P = Table.PILL;
+  L.rows.forEach(function (r, i) {
+    assert.strictEqual(r.baseline, 128 + 52 * i);
+    assert.ok(r.pillY >= c.y && r.pillY + P.h <= c.y + c.h && P.x >= c.x && P.x + P.w <= c.x + c.w, 'pill inside the card, row ' + i);
+    assert.ok(r.nameY > r.pillY && r.timeY > r.pillY && r.baseline + 0.3 * Table.TIME_PX <= r.pillY + P.h, 'text inside its pill, row ' + i);
+    assert.ok(r.glyphs[r.glyphs.length - 1].inkRight <= c.x + c.w - 20 && Table.NAME_X >= P.x + 12, 'text inside the card, row ' + i);
+  });
+  assert.ok(L.date.y >= c.y && L.date.y + 1.3 * Table.DATE_PX <= L.rows[0].pillY, 'the date above the first pill');
+  assert.ok(Clock.CLOCK_INK_TOP >= 196 && Clock.CLOCK_INK_TOP <= 212, 'clock top near the stills (196): ' + Clock.CLOCK_INK_TOP);
+  assert.ok(Clock.COUNTDOWN_Y + Clock.COUNTDOWN_H <= 350, 'countdown above the mesas');
 });
 
 test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes', function () {
@@ -121,32 +125,32 @@ test('burn-in shift is deterministic, within 4 px, and changes every 10 minutes'
   assert.ok(Object.keys(seen).length > 10);
 });
 
-test('the qata has the same geometry at every moment: its layout is a constant, and the view does not shift it with the burn-in shift', function () {
+test('the card has the same geometry at every moment and moves with the picture: drawn by AshScene, AshView has one Loader', function () {
   var a = Table.tableLayout(at(H.ams(2026, 6, 21, 12, 0))), b = Table.tableLayout(at(H.ams(2026, 12, 21, 0, 1)));
-  assert.strictEqual(JSON.stringify(a.qata), JSON.stringify(b.qata));
-  assert.deepStrictEqual(a.rows.map(function (r) { return r.y; }), b.rows.map(function (r) { return r.y; }));
-  var fs = require('fs'), path = require('path');
-  var scene = fs.readFileSync(path.join(__dirname, '..', '..', 'app', 'ash', 'view', 'AshScene.qml'), 'utf8');
-  assert.ok(!/PrayerTable/.test(scene), 'PrayerTable sits inside the shifted scene');
+  assert.strictEqual(JSON.stringify(a.card), JSON.stringify(b.card));
+  assert.strictEqual(JSON.stringify(a.rows.map(function (r) { return r.baseline; })), JSON.stringify(b.rows.map(function (r) { return r.baseline; })));
+  var fs = require('fs'), path = require('path'), app = path.join(__dirname, '..', '..', 'app', 'ash');
+  assert.ok(/PrayerTable/.test(fs.readFileSync(path.join(app, 'view', 'AshScene.qml'), 'utf8')), 'PrayerTable is drawn by AshScene');
+  assert.strictEqual(fs.readFileSync(path.join(app, 'AshView.qml'), 'utf8').match(/\bLoader \{/g).length, 1, 'one Loader: the whole picture shifts');
 });
 
-test('the sun disc stays fully below the tent valance hem and clear of the clock and the panel, all year (every 12 minutes, every 5th day, 3 places)', function () {
-  var worstHem = 1e9, worstClock = 1e9, where = '';
+test('the sun disc clears the card, and its innermost ring (the one in the sun colour) keeps 4 px from the clock and the countdown, all year (every 12 minutes, every 5th day, 3 places)', function () {
+  var worstRing = 1e9, where = '';
   [H.PLACES.utrecht, H.PLACES.maastricht, H.PLACES.groningen].forEach(function (place) {
     for (var day = 0; day < 365; day += 5) {
       for (var m = 0; m < 1440; m += 12) {
         var s = at(H.ams(2026, 1, 1 + day, 0, 0) + m * 60000 + 3600000, place);
         if (!s.sun.isUp) { continue; }
-        var v = G.sunView(s), r = v.look.r;
-        var hem = v.y - r - G.valanceY(v.x - r); // the hem falls to the right, so its lowest point over the disc is at the disc's left edge
-        var c = clearance(v, r, Clock.clockBox(s.clockText));
-        if (hem < worstHem) { worstHem = hem; where = 'hem day ' + day + ' min ' + m; }
-        worstClock = Math.min(worstClock, c);
-        assert.ok(v.x + r < Table.QATA.x - 4, 'the sun reaches the panel at ' + s.clockText);
+        var v = G.sunView(s), r = v.look.r, ring = v.look.haloR[0];
+        assert.ok(v.x + r < Table.CARD.x - 4, 'the sun reaches the card at ' + s.clockText);
+        assert.ok(ring > r && ring <= r + 12, 'the inner ring reaches ' + (ring - r).toFixed(1) + ' px past the disc');
+        [Clock.clockBox(s.clockText), Clock.countdownBox(s.next.countdownText)].forEach(function (box) {
+          var c = clearance(v, ring, box);
+          if (c < worstRing) { worstRing = c; where = 'day ' + day + ' min ' + m + ' ' + s.clockText; }
+        });
       }
     }
   });
-  console.log('# sun disc to valance hem, smallest ' + worstHem.toFixed(1) + ' px (' + where + '); to the clock ' + worstClock.toFixed(1) + ' px');
-  assert.ok(worstHem >= 4, 'the disc touches the valance: ' + worstHem.toFixed(1) + ' at ' + where);
-  assert.ok(worstClock >= 16, 'the disc is ' + worstClock.toFixed(1) + ' px from the clock');
+  console.log('# inner ring to the clock and countdown, smallest ' + worstRing.toFixed(1) + ' px (' + where + ')');
+  assert.ok(worstRing >= 4, 'the inner ring is ' + worstRing.toFixed(1) + ' px from the text at ' + where);
 });

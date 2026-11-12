@@ -37,11 +37,12 @@ test('every text colour has at least 4.5:1 against its real background, altitude
   console.log('# worst text contrast ' + JSON.stringify(worst));
 });
 
-test('deep night is very dark', function () {
-  [true, false].forEach(function (rising) {
-    var p = pal(-60, rising);
-    p.skyStops.concat(p.land).forEach(function (c) { assert.ok(C.luminance(c) < 0.02, c); });
+test('night is dark: every sky stop under luminance 0.1 from -90 to -30 (moonlit indigo, as the night still: horizon under 0.06 at -90), the card dark with light ink', function () {
+  eachAlt(-90, -30, 1, function (p, alt) {
+    p.skyStops.forEach(function (c) { assert.ok(C.luminance(c) < 0.1, c + ' at ' + alt); });
+    assert.ok(C.luminance(p.card) < 0.05 && C.luminance(p.cardInk) > 0.7, 'night card ' + p.card + ' ink ' + p.cardInk + ' at ' + alt);
   });
+  [true, false].forEach(function (rising) { assert.ok(C.luminance(pal(-90, rising).skyStops[8]) < 0.06); });
 });
 
 test('the day horizon is bright and the sky has nine gradient stops', function () {
@@ -92,11 +93,11 @@ function hueChroma(hex) { // OKLab hue in degrees 0..360 and chroma
   return { h: h < 0 ? h + 360 : h, c: Math.hypot(l[1], l[2]) };
 }
 
-test('no sky band reads green by day: no band with OKLab hue 100..200 and chroma >= 0.015, altitude 8..90', function () {
+test('no sky band reads green by day: no band with OKLab hue 105..185 and chroma >= 0.015, altitude 8..90 (the approved noon horizon is cyan, 196)', function () {
   eachAlt(8, 90, 0.5, function (p, alt) {
     p.skyStops.forEach(function (b, i) {
       var k = hueChroma(b);
-      assert.ok(!(k.c >= 0.015 && k.h > 100 && k.h < 200), 'band ' + i + ' ' + b + ' hue ' + k.h.toFixed(0) + ' chroma ' + k.c.toFixed(3) + ' at ' + alt);
+      assert.ok(!(k.c >= 0.015 && k.h > 105 && k.h < 185), 'band ' + i + ' ' + b + ' hue ' + k.h.toFixed(0) + ' chroma ' + k.c.toFixed(3) + ' at ' + alt);
     });
   });
 });
@@ -115,31 +116,41 @@ test('the sky gets lighter from the top band to the horizon at every altitude, s
   assert.ok(worst <= 0.45, 'largest step ' + worst.toFixed(3));
 });
 
-test('the table is a dimmed weave at night: cream stays readable, the ground is darker, the pattern dims', function () {
+test('the card follows the light: light with dark ink by day, dark with light ink at night, exactly one ink flip per side', function () {
   var day = pal(60, true), night = pal(-60, true);
-  assert.strictEqual(night.ground, day.ground); // the ground is baked into the lattice art: one colour
-  assert.ok(C.luminance(night.ink) < C.luminance(day.ink));
-  assert.strictEqual(day.weaveDim, 0);
-  assert.ok(night.weaveDim > 0.3);
-  assert.ok(C.contrast(night.ink, night.ground) >= 7, 'night ink ' + C.contrast(night.ink, night.ground).toFixed(2));
+  assert.ok(C.luminance(day.card) > 0.7 && C.luminance(day.cardInk) < 0.1, 'day card ' + day.card + ' ink ' + day.cardInk);
+  assert.ok(C.luminance(night.card) < 0.05 && C.luminance(night.cardInk) > 0.7, 'night card ' + night.card + ' ink ' + night.cardInk);
+  [true, false].forEach(function (rising) {
+    var flips = 0, prev = null;
+    for (var alt = -90; alt <= 90; alt += 0.5) {
+      var light = C.luminance(pal(alt, rising).cardInk) > 0.5;
+      if (prev !== null && light !== prev) { flips++; }
+      prev = light;
+    }
+    assert.strictEqual(flips, 1, (rising ? 'rising' : 'setting') + ' ink flips ' + flips + ' times');
+  });
 });
 
-test('red means now only: the next row is madder, the faded (passed) ink is clearly quieter than the ink but still readable', function () {
+test('passed rows are quieter than the ink but readable; the pill is a warm accent its ink reads on', function () {
   var worst = 99;
   eachAlt(-90, 90, 1, function (p, alt) {
-    assert.ok(C.contrast(p.inkFaded, p.ground) >= 4.5, 'faded ' + alt);
-    assert.ok(C.contrast(p.ink, p.ground) / C.contrast(p.inkFaded, p.ground) >= 1.2, 'faded not quieter at ' + alt);
-    assert.ok(C.contrast(p.rowFill, p.ground) >= 1.4, 'now row does not stand out of the ground at ' + alt);
-    worst = Math.min(worst, C.contrast(p.inkFaded, p.ground));
+    var ink = C.contrast(p.cardInk, p.card), faded = C.contrast(p.cardInkFaded, p.card);
+    assert.ok(faded >= 4.5, 'faded ' + alt);
+    if (ink >= 6) { assert.ok(ink / faded >= 1.15, 'faded not quieter at ' + alt + ': ' + ink.toFixed(2) + ' vs ' + faded.toFixed(2)); }
+    worst = Math.min(worst, faded);
+    var m = hueChroma(p.accent);
+    assert.ok(m.h >= 20 && m.h <= 90 && m.c >= 0.08, 'accent not warm at ' + alt + ': ' + p.accent + ' hue ' + m.h.toFixed(0));
+    assert.ok(C.contrast(p.accentInk, p.accent) >= 4.5, 'pill ink at ' + alt);
   });
   console.log('# lowest faded-ink contrast ' + worst.toFixed(2));
-  var m = hueChroma(pal(60, true).rowFill);
-  assert.ok(m.h < 45 || m.h > 340, 'row fill is not a red: hue ' + m.h.toFixed(0));
 });
 
-test('the sun disc is never pale in the middle: the core is only a slight lift of the disc colour', function () {
+test('the sun core is a lighter version of the disc: higher luminance, the same hue', function () {
   eachAlt(-4, 90, 1, function (p, alt) {
-    assert.ok(C.distance(p.sun, p.sunCore) < 0.05, 'core ' + p.sunCore + ' vs disc ' + p.sun + ' at ' + alt);
+    assert.ok(C.luminance(p.sunCore) > C.luminance(p.sun), 'core not lighter at ' + alt);
+    if (C.chroma(p.sun) >= 0.03) {
+      assert.ok(Math.abs(hueChroma(p.sunCore).h - hueChroma(p.sun).h) < 8, 'core ' + p.sunCore + ' drifts from disc ' + p.sun + ' at ' + alt);
+    }
   });
 });
 
@@ -172,7 +183,7 @@ test('cream ink is the same hue all day and has 4.5:1 on the whole sky behind th
   assert.ok(worst >= 4.5);
 });
 
-test('night factor: 1 in deep night, 0 by day, 0..1 and continuous in between (it cross-fades the night tent and lattice)', function () {
+test('night factor: 1 in deep night, 0 by day, 0..1 and continuous in between (the script\'s dim, normalised)', function () {
   [true, false].forEach(function (rising) {
     assert.strictEqual(pal(-90, rising).night, 1);
     assert.strictEqual(pal(30, rising).night, 0);

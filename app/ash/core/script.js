@@ -46,7 +46,8 @@ var RISING = [
     ["#fffaf0", "#3a4878"], ["#fbebd0", "#2a2838", "#e2884a"], [26, 18, 10, 5, 0.16], 0, 0)],
   [4, m(["#2a62a2", "#6e9cc4", "#f6cc90"], ["#ffe2b4", "#7a5c88", "#fff4d0", 0.22, 0.3, 0.36], "#fff0b0",
     ["#ffffff", "#2a5282"], ["#fcefd8", "#24283a", "#e9a23b"], [20, 14, 8, 4.5, 0.15], 0, 0)],
-  [18, m(["#2a72b0", "#5ea2cc", "#cde2dc"], ["#fff4d6", "#8a7aa4", "#fff8e0", 0.14, 0.3, 0.32], "#fff4d2",
+  // mid-morning: a hazy near-white horizon, so the way from gold to the noon cyan never passes through green
+  [18, m(["#2a72b0", "#5ea2cc", "#d8e6ea"], ["#fff4d6", "#8a7aa4", "#fff8e0", 0.14, 0.3, 0.32], "#fff4d2",
     ["#ffffff", "#22588a"], ["#fcf1dc", "#202a3a", "#e9a23b"], [14, 10, 6, 4, 0.13], 0, 0)],
   [90, DAY]
 ];
@@ -66,7 +67,8 @@ var SETTING = [
   // golden hour
   [6, m(["#3a4c90", "#9a6a8c", "#f8b56c"], ["#ffc890", "#6a3a6c", "#ffe0a8", 0.26, 0.3, 0.42], "#ffd890",
     ["#fff8ec", "#4a3a70"], ["#fce4cc", "#2a2034", "#e8783f"], [20, 14, 8, 4.5, 0.16], 0, 0)],
-  [18, m(["#2e6eae", "#6c9ec8", "#e4d6bc"], ["#ffe8c2", "#8a6e9c", "#fff6dc", 0.16, 0.3, 0.34], "#fff2c8",
+  // mid-afternoon: the same hazy near-white horizon (no green between the noon cyan and the golden hour)
+  [18, m(["#2e6eae", "#6c9ec8", "#d8e6ea"], ["#ffe8c2", "#8a6e9c", "#fff6dc", 0.16, 0.3, 0.34], "#fff2c8",
     ["#ffffff", "#24567e"], ["#fcefda", "#22283a", "#e9a23b"], [14, 10, 6, 4, 0.14], 0, 0)],
   [40, DAY],
   [90, DAY]

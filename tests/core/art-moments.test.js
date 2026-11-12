@@ -6,9 +6,18 @@ var assert = require('node:assert');
 var fs = require('fs');
 var path = require('path');
 var load = require('./load-core').load;
-var S = load('script.js');
+var S = load('script.js'), Table = load('table.js'), P = load('palette.js');
 var ROOT = path.join(__dirname, '..', '..');
 var M = require(path.join(ROOT, 'tools', 'art', 'cel', 'moments.js'));
+var UI = require(path.join(ROOT, 'tools', 'art', 'cel', 'ui.js'));
+
+test('the live card and the land margins use the stills\' numbers: table.js CARD and rows as ui.js, palette SAND as LOC.sand', function () {
+  var c = Table.CARD, u = UI.CARD;
+  assert.deepStrictEqual([c.x, c.y, c.w, c.h, c.r], [u.x, u.y, u.w, u.h, u.rx]);
+  assert.deepStrictEqual([Table.ROW_BASE, Table.ROW_STEP, Table.NAME_X, Table.TIME_RIGHT, Table.DATE_BASE], [128, 52, 760, 963, 72]);
+  assert.deepStrictEqual([Table.PILL.x, Table.PILL.dy, Table.PILL.w, Table.PILL.h, Table.PILL.r], [744, -33, 236, 46, 12]);
+  assert.strictEqual(JSON.stringify(P.SAND), JSON.stringify([M.LOC.sand[0], M.LOC.sand[3]]));
+});
 
 test('the art bake uses exactly the colour script stops (same objects, no hand copy), with their altitudes', function () {
   assert.strictEqual(M.STOPS.length, 14);
