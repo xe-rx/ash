@@ -1,5 +1,5 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-12 02:50 · Branch: frontend-engineer/cel-stills · Status: in-progress
+Updated: 2026-11-12 02:51 · Branch: frontend-engineer/cel-stills · Status: done
 
 ## Task
 Cel-shaded infographic stills v3 (dawn, noon, sunset, night) as repo code in `tools/art/cel/`, PNGs outside the
@@ -21,6 +21,10 @@ Done when the PO approves the stills; app integration is the next task.
 - Contrast log (all ≥ 4.5): dawn 5.02/12.01/4.51/5.48, noon 5.18/12.94/4.67/8.04, sunset 5.22/12.11/4.67/5.27,
   night 6.64/11.99/5.07/8.04 (date line / row / past row / next-prayer row). Next-prayer rows use near-black
   `#1a1a1a` on the accent (white never reaches 4.5 on orange).
+- `~/ash-data/screens-cel/v3/compare-october.png`: June Maghrib reference crop over the new sunset crop, same
+  512x260 window; positions and proportions line up, only shading, grading and the rug differ.
+- Checks: cel tests 7/7, core tests 109/109, check-file-length ok (largest file 78 lines), check-ash-rules ok,
+  check-pii ok. Stills stay outside the repo.
 
 ## How to render
 `node tools/art/cel/render.js [outdir]` (default `$PROJECT_DATA/screens-cel/v3`, PROJECT_DATA `~/ash-data`).
