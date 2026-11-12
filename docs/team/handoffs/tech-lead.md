@@ -28,6 +28,8 @@ Run the team for Ash: kickoff, then rounds from docs/team/BOARD.md.
 - Optional: a Claude desktop session with computer use over Remote Control to watch the live window.
 
 ## Gotchas learned
+- Remote: `origin` = `git@github.com:xe-rx/ash.git` (SSH, `gh` logged in as xe-rx), added 2026-11-12 at the PO's request so
+  they can pull on their laptop. Pushing still needs the PO's go-ahead each time (AGENTS.md); run check-pii first.
 - Builders run out of context, not turns, when told to read the whole repo: brief them to read the handoff and only the
   files they change. Three instances on one worktree worked; the handoff is the contract.
 - No watcher agents (PO, 2026-11-12): they cost more than they earn. Builders checkpoint and stop on their own.
