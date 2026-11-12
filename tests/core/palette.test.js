@@ -196,3 +196,28 @@ test('night factor: 1 in deep night, 0 by day, 0..1 and continuous in between (t
     }
   });
 });
+
+test('the rings are warm (the sun\'s colour) only where they cannot reach the clock or the countdown: near the arc\'s ends the inner three, never the outermost; over the text the luminance-neutral tints; smooth along the arc', function () {
+  var Look = load('sunlook.js'), horizon = JSON.parse(JSON.stringify(Look.sunLook(0).haloR)), p = pal(0, true), q = pal(-6, false);
+  assert.ok(K.clockBox('00:00').w / 2 <= P.TEXT_HALF_W && K.countdownBox('Maghrib in 23 h 59 min').w / 2 <= P.TEXT_HALF_W, 'TEXT_HALF_W covers the widest texts');
+  [G.arcPoint(0).x, G.arcPoint(1).x].forEach(function (endX) {
+    var w = JSON.parse(JSON.stringify(P.ringWarmth(endX, horizon)));
+    assert.ok(w[0] === 1 && w[1] === 1 && w[2] > 0.5 && w[3] === 0, 'warmth at the arc end x ' + endX + ': ' + JSON.stringify(w));
+    assert.strictEqual(P.ringColour(q, 1, w[1]), q.sun, 'the second ring is the sun\'s colour at the arc end');
+    assert.strictEqual(P.ringColour(q, 3, w[3]), q.glow, 'the outermost ring stays the neutral tint');
+  });
+  var top = JSON.parse(JSON.stringify(P.ringWarmth(G.arcPoint(0.5).x, horizon)));
+  assert.strictEqual(JSON.stringify(top), '[0,0,0,0]', 'no warmth over the clock');
+  assert.strictEqual(P.ringColour(p, 2, 0), p.glow); assert.strictEqual(P.ringColour(p, 1, 0), p.halo); assert.strictEqual(P.ringColour(p, 0, 0), p.sun);
+  var prev = JSON.parse(JSON.stringify(P.ringWarmth(G.arcPoint(0).x, horizon)));
+  for (var x = G.arcPoint(0).x + 2; x <= G.arcPoint(1).x; x += 2) {
+    var w = JSON.parse(JSON.stringify(P.ringWarmth(x, horizon)));
+    for (var k = 0; k < 4; k++) {
+      assert.ok(Math.abs(w[k] - prev[k]) <= 0.1, 'ring ' + k + ' warmth jumps at x ' + x);
+      if (w[k] > 0) { assert.ok(Math.abs(x - K.CLOCK_CX) - horizon[k] >= P.TEXT_HALF_W, 'ring ' + k + ' warm while over the text at x ' + x); }
+    }
+    prev = w;
+  }
+  var c = P.ringColour(q, 2, 0.5);
+  assert.ok(C.distance(c, q.glow) > 0.01 && C.distance(c, q.sun) > 0.01, 'half warmth is a mix');
+});

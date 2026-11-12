@@ -2,6 +2,7 @@
 .import "colour.js" as C
 .import "script.js" as Script
 .import "skygrad.js" as Grad
+.import "clock.js" as K
 // paletteAt(altitudeDeg, rising): every live colour of the cel picture (ADR 0004) as hex strings, a pure
 // function of the sun's altitude and whether it is rising or setting. The colours of every moment are
 // authored in core/script.js and mixed in OKLab by altitude; this file assembles what the QML draws live:
@@ -12,6 +13,7 @@
 var SAFE = 4.62; // margin over 4.5:1, for hex rounding
 var TEXT_CONTRAST = 5.6; // the sky behind the clock is darkened until its ink reads at this (margin for rings and hex rounding)
 var SAND = ["#efc28a", "#d08a56"]; // the far and the near sand before grading: tools/art/cel/moments.js LOC.sand[0] and [3]
+var TEXT_HALF_W = 160, WARM_FADE = 40; // half the widest clock or countdown text about K.CLOCK_CX (checked in tests); px of clearance over which a ring warms up
 var clamp = C.clamp, mix = C.mix;
 
 // A tint (the hue and chroma of `hex`) that leaves the luminance of `under` unchanged when laid over
@@ -80,8 +82,9 @@ function paletteAt(altDeg, rising) {
   var s = Script.momentAt(alt, rising);
   var sky = stopsOf(s.top, s.mid, s.hor, s.ink);
   var cardInk = inkOn([s.cardInk], s.card);
-  // The sun's rings only tint the sky: laid over the sky behind the clock their colour keeps its luminance,
-  // so the clock ink keeps its contrast on top of them (glow: the outer two rings, halo: the inner two).
+  // The sun's rings (glow: the outer two, halo: the third; the innermost is the sun's colour) tint the sky: laid
+  // over the sky behind the clock their colour keeps its luminance, so the clock ink keeps its contrast on top of
+  // them. Where a ring cannot reach the text it carries the sun's own colour instead (ringWarmth, ringColour).
   var glow = tintKeepingLuminance(s.glow, sky[5], 0.2), halo = tintKeepingLuminance(s.glow, sky[5], 0.42);
   function graded(c) { return mix(c, s.key, s.tint); } // the land's base grading (tools/art/cel/paint.js B)
   return {
@@ -95,4 +98,19 @@ function paletteAt(altDeg, rising) {
     accent: s.accent, accentInk: inkOn(["#ffffff", cardInk, "#1a1a1a"], s.accent),
     sandEdge: [graded(SAND[0]), graded(SAND[1])]
   };
+}
+
+// The rings' warmth, one value per ring (innermost first, radii haloR from sunlook.js): a ring carries the sun's
+// own colour (laid over the sky at its alpha it is then the still's warm mix toward glow, tools/art/cel/sky.js)
+// only where it cannot reach the clock or the countdown, that is near the ends of the arc with the sun low: 1
+// when WARM_FADE px clear of the widest text, 0 where it touches it. A high sun always sits over the text and
+// keeps the neutral tints; the outermost ring (r 150 at the horizon) touches the text even at the arc's ends.
+function ringWarmth(sunX, haloR) {
+  var out = [], k;
+  for (k = 0; k < haloR.length; k++) { out.push(C.smooth(clamp((Math.abs(sunX - K.CLOCK_CX) - TEXT_HALF_W - haloR[k]) / WARM_FADE, 0, 1))); }
+  return out;
+}
+function ringColour(pal, k, warmth) { // ring k of the palette at a warmth 0..1, as Sun.qml paints it
+  var neutral = k === 0 ? pal.sun : (k >= 2 ? pal.glow : pal.halo);
+  return warmth >= 1 ? pal.sun : (warmth <= 0 ? neutral : mix(neutral, pal.sun, warmth));
 }
