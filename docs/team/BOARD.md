@@ -1,6 +1,6 @@
 # Team board: Ash
 
-Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead: main session
+Round: 3 (cel-shaded infographic; device work on hold) · PO: the user · Tech lead: main session
 
 ## Roster
 | Role | Kind | Status |
@@ -17,6 +17,8 @@ Round: 2 (perfecting locally; device work on hold) · PO: the user · Tech lead:
 
 PO 2026-11-04: QML primitives "will always look flat and simple"; approved baking geometric SVG art to PNG and prototyping a lattice panel and a tent view.
 Decided 2026-11-04: gradient sky; Hijri rolls over at Maghrib; UI redesign in the Sadu (woven tent) direction, chosen on the Impeccable decision page (contract in `.impeccable/surfaces/`).
+
+PO 2026-11-12 (cel sheet): all four shadow kinds are off (dune crescents, figure split, forward casts, noon patches); restore the October family exactly (d230545 Person/Family.qml); tint the times card into each moment; keep the mesas, shaded like everything else.
 
 Device access is on hold (PO, 2026-10-31).
 
@@ -43,6 +45,7 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| Cel stills v3: one shading rule, family restored, tinted card, mesas kept (tools/art/cel, renders to ~/ash-data/screens-cel/v3) | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-stills | .worktrees/frontend-engineer-cel-stills | dispatched 2026-11-12 |
 
 ## In review
 
