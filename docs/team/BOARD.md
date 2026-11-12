@@ -46,7 +46,7 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| App integration of the cel infographic: script.js re-authored, land rebaked from tools/art/cel, live tinted card replaces tent+lattice, tests, ADR 0004 | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-app | .worktrees/frontend-engineer-cel-app | dispatched 2026-11-12 (PO: "continue" on the v3 stills) |
+| App integration of the cel infographic: script.js re-authored, land rebaked from tools/art/cel, live tinted card replaces tent+lattice, tests, ADR 0004 | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-app | .worktrees/frontend-engineer-cel-app | stage 1 done fd76ca0 (script, cel bake source, 14 land layers 673 KB); instance 2 on stage 2 (palette, card, readouts, sun/moon), then stage 3 (tests, ADR 0004, docs) |
 
 ## In review
 
