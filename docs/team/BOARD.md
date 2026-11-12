@@ -46,7 +46,7 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
-| App integration of the cel infographic: script.js re-authored, land rebaked from tools/art/cel, live tinted card replaces tent+lattice, tests, ADR 0004 | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-app | .worktrees/frontend-engineer-cel-app | stage 1 done fd76ca0 (script, cel bake source, 14 land layers 673 KB); instance 2 on stage 2 (palette, card, readouts, sun/moon), then stage 3 (tests, ADR 0004, docs) |
+| App integration of the cel infographic: script.js re-authored, land rebaked from tools/art/cel, live tinted card replaces tent+lattice, tests, ADR 0004 | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-app | .worktrees/frontend-engineer-cel-app | stages 1-3 committed (aed6872: palette, card, clock shadow, sun/moon, tests 120/120, ADR 0004, assets 699 KB); instance 3 on the fix pass the tech lead asked for after viewing the frames: sky gradient seam at y 355, night land from -6..-10 deg (June 23:10 is -7.5 deg), warm low-sun rings under the halo-contrast guard |
 
 ## In review
 
