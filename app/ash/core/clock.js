@@ -1,5 +1,6 @@
 .pragma library
-// The clock and the countdown, placed in the open sky under the sun's arc, centred on it.
+// The clock and the countdown, placed in the open sky under the sun's arc, centred on it, each glyph
+// over a hard shadow SHADOW px right and down (the cel stills, tools/art/cel/ui.js).
 // Poppins digits are proportional and Qt 5.11 cannot switch on tabular figures, so each character
 // is placed by its ink: every visible gap is the same (a "1" gets no extra air) and the colon stays
 // at the centre, so it never moves between minutes. Metrics are the advance and the left/right ink
@@ -7,12 +8,12 @@
 // QFontMetricsF; they scale linearly with the size (tests/qt/font_metrics.py checks the sizes in use).
 
 var CLOCK_CX = 360;
-var CLOCK_PX = 100, CLOCK_GAP_EM = 0.08;
-var CLOCK_INK_TOP = 200;                 // y of the top of the digits, clear of the tent valance
+var CLOCK_PX = 112, CLOCK_GAP_EM = 0.08;
+var CLOCK_INK_TOP = 208;                 // y of the top of the digits (the stills: 196; lower so the sun's disc keeps clear of them)
 var INK_TOP_EM = 0.30, INK_BOTTOM_EM = 1.07; // digit ink relative to the Text item's top, per px
 var COLON_RAISE_EM = 0.057;              // Poppins' colon sits low; raised to the digits' middle
-var COUNTDOWN_PX = 24, COUNTDOWN_Y = 288, COUNTDOWN_H = 40, COUNTDOWN_EM_PER_CHAR = 0.55; // the tag + text line; width bound, measured 0.50
-var TAG_PAD = 12;                        // tag padding left and right
+var SHADOW = 3;                          // the shadow's offset, right and down
+var COUNTDOWN_PX = 26, COUNTDOWN_Y = 304, COUNTDOWN_H = 36, COUNTDOWN_EM_PER_CHAR = 0.55; // one text line; width bound, measured 0.50
 var BASE_PX = 140;
 var GLYPH_METRICS = {
   "0": [90.4, 7, 6.4], "1": [50.7, 5, 11.7], "2": [80.4, 6, 4.4], "3": [83.9, 6, 7.9], "4": [92.5, 6, 4.5],
@@ -64,6 +65,6 @@ function clockBox(text) {
   return { x: g[0].inkLeft, y: CLOCK_INK_TOP, w: g[g.length - 1].inkRight - g[0].inkLeft, h: (INK_BOTTOM_EM - INK_TOP_EM) * CLOCK_PX };
 }
 function countdownBox(text) {
-  var w = text.length * COUNTDOWN_EM_PER_CHAR * COUNTDOWN_PX + 2 * TAG_PAD;
+  var w = text.length * COUNTDOWN_EM_PER_CHAR * COUNTDOWN_PX;
   return { x: CLOCK_CX - w / 2, y: COUNTDOWN_Y, w: w, h: COUNTDOWN_H };
 }

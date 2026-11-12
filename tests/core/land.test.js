@@ -27,7 +27,7 @@ test('landAt uses the same blend as stopAt: t equals the mix weight of the colou
       // a colour mixed by stopAt must equal the mix of the two named moments at t
       var a = S.MOMENTS[l.a], b = S.MOMENTS[l.b];
       assert.strictEqual(m.top, C.mix(a.top, b.top, l.t), 'top at ' + alt);
-      assert.ok(Math.abs(m.sink - (a.sink + (b.sink - a.sink) * l.t)) < 1e-9, 'sink at ' + alt);
+      assert.ok(Math.abs(m.tint - (a.tint + (b.tint - a.tint) * l.t)) < 1e-9, 'tint at ' + alt);
     }
   });
 });

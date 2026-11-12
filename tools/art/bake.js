@@ -1,36 +1,33 @@
 #!/usr/bin/env node
 'use strict';
-// Bakes the app art assets (deterministic): one landscape layer per colour-script stop, plus the static tent and lattice.
-// Build needs system python3 + PIL and rsvg-convert (build-time only, not shipped).
-// Usage: node tools/art/bake.js [assetsDir] [workDir]   (defaults: app/ash/assets, ~/ash-data/proto-baked/bake)
+// Bakes the app's land layers (deterministic): one PNG with alpha per colour-script stop, from tools/art/cel
+// (mesas, dunes, ground, rug, family, lantern; the sky, sun, clock and card are live QML). The light direction
+// of each stop follows its altitude (tools/art/cel/light.js). Build needs rsvg-convert and python3 with PIL
+// (build-time only, not shipped). Usage: node tools/art/bake.js [assetsDir] [workDir]
+// (defaults: app/ash/assets, $PROJECT_DATA/bake with PROJECT_DATA ~/ash-data)
 const fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
-const S = require('./svg'), L = require('./layout'), { P } = require('./palette');
-const { landscape } = require('./landscape'), { family } = require('./family'), { tentFrame } = require('./tent');
-const A = require('./panelA'), { STOPS } = require('./moments');
+const { STOPS } = require('./cel/moments');
+const { lightAt } = require('./cel/light');
+const { buildLand } = require('./cel/scene');
 
+const W = 1024, H = 600;
+const dataDir = process.env.PROJECT_DATA || path.join(os.homedir(), 'ash-data');
 const assets = path.resolve(process.argv[2] || path.join(__dirname, '../../app/ash/assets'));
-const work = process.argv[3] || path.join(os.homedir(), 'ash-data', 'proto-baked', 'bake');
+const work = path.resolve(process.argv[3] || path.join(dataDir, 'bake'));
 fs.mkdirSync(path.join(assets, 'land'), { recursive: true }); fs.mkdirSync(work, { recursive: true });
 
-function render(name, build, dest, night) {
-  const ctx = S.mkCtx(), doc = S.document(ctx, build(ctx), L.W, L.H), svg = night ? P.moonlit(doc) : doc;
+function bake(name, svg, dest) {
   const svgPath = path.join(work, name + '.svg'), raw = path.join(work, name + '.raw.png');
   fs.writeFileSync(svgPath, svg);
-  cp.execFileSync('rsvg-convert', ['-w', L.W, '-h', L.H, '-o', raw, svgPath]);
+  cp.execFileSync('rsvg-convert', ['-w', String(W), '-h', String(H), '-o', raw, svgPath]);
   cp.execFileSync('python3', [path.join(__dirname, 'quantize.py'), raw, dest]);
   return fs.statSync(dest).size;
 }
+
 let total = 0;
-const report = [];
-for (const [name, m, rising] of STOPS) {
-  P.apply(m, rising, L);
-  const n = render('land-' + name, ctx => landscape(ctx) + '\n' + family(ctx), path.join(assets, 'land', name + '.png'));
-  report.push([name, n]); total += n;
+for (const [name, stop, rising, alt] of STOPS) {
+  const n = bake('land-' + name, buildLand(stop, lightAt(alt, rising)).svg, path.join(assets, 'land', name + '.png'));
+  console.log(String(n).padStart(8), name, `(alt ${alt}, ${rising ? 'rising' : 'setting'})`);
+  total += n;
 }
-for (const [name, fn] of [['tent', ctx => tentFrame(ctx, L.PANEL_X)], ['lattice', A.panelA]]) {
-  for (const night of [false, true]) {
-    const id = name + (night ? '-night' : ''), n = render(id, fn, path.join(assets, id + '.png'), night); report.push([id, n]); total += n;
-  }
-}
-report.forEach(r => console.log(String(r[1]).padStart(8), r[0]));
 console.log(String(total).padStart(8), 'TOTAL');

@@ -15,7 +15,7 @@ scripts/check-qml.sh [path...]  # parse-check tracked .qml on Qt 5.11 (QtQuick i
 scripts/check-ash-rules.sh      # ADR 0003: no network APIs in app/, no real config tracked, no private coordinates
 scripts/run-offline.sh CMD...   # run CMD with no network (unshare -rn); for the dynamic offline test
 npm ci && node --test tests/core/*.test.js   # core tests in Node (package.json arrives with the core; scripts/test.sh fails if node_modules is missing)
-node tools/art/bake.js         # rebakes app/ash/assets/land/*, tent*, lattice* from tools/art + core/script.js (needs rsvg-convert and python3 with PIL); rerun when script.js or the art changes, tests/core/art-moments.test.js checks the file set
+node tools/art/bake.js         # rebakes the 14 cel land layers app/ash/assets/land/*.png from tools/art/cel + core/script.js (needs rsvg-convert and python3 with PIL); rerun when script.js or the art changes, tests/core/art-moments.test.js checks the file set
 node tools/gen-stars.js         # rebakes app/ash/assets/stars.png (deterministic)
 # stack commands (format, lint, test, screenshot, package): added by round 1, see docs/CODING_RULES.md
 ```

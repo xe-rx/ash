@@ -1,52 +1,56 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-12 02:51 · Branch: frontend-engineer/cel-stills · Status: done
+Updated: 2026-11-12 17:41 · Branch: frontend-engineer/cel-app · Status: done (fix pass), ready for review
 
 ## Task
-Cel-shaded infographic stills v3 (dawn, noon, sunset, night) as repo code in `tools/art/cel/`, PNGs outside the
-repo in `~/ash-data/screens-cel/v3/`, per the PO decisions of 2026-11-12 (one shading rule, October family
-restored, card tinted per moment, mesas kept). Spec: the dispatch message and `docs/product/CEL-STYLE-HANDOFF.md`.
-Done when the PO approves the stills; app integration is the next task.
+Fix pass on the cel infographic integration (stages 1-3, commits fd76ca0..aed6872, ADR 0004) from the tech lead's view
+of the four frames and the sheet against the approved stills: (1) sky gradient seam at y 355, (2) June 23:10 (-7.5)
+reads as dusk not night, (3) the stills' warm low-sun glow missing. Done when: bake clean, core tests and all checks
+green, four frames + sheet re-rendered into ~/ash-data/screens-cel-app/ and viewed, pinned stills byte-identical.
 
 ## Done
-- `tools/art/cel/` (commit: see `git log main..HEAD`): `render.js` CLI, `scene.js` composition, `paint.js` (doc +
-  clips, `cel()` rule, `edgeBand()` for the lantern, `painter()`), `colour.js` (mix, WCAG contrast,
-  `ensureContrast`), `moments.js` (table: sky, key/amb, L, k, h, sun/moon, card), `sky.js`, `land.js` (dunes +
-  mesas), `ground.js` (sand, rug, lantern pool, contact ellipses, lantern), `people.js` (October figures),
-  `ui.js` (clock, card with contrast report), `cel.test.js` (7 tests: contrast, rule structure, family geometry,
-  no opacity/blur/extra gradients, no slipface polygons, sunset disc clear of the card, card contrast ≥ 4.5).
-- Rendered and viewed every PNG + zoom.png: no dune crescents, no circle splits on figures, no trapezoids;
-  father cream robe + skin head + cream cap, girl hooded like the mother; sunset disc at (645,365) sets behind
-  the mesa, clear of the card; noon reads flat (thin lit crests only); night indigo sand, cool crest bands,
-  warm lantern band on the figures' lower-inner edges and a two-step pool on the rug.
-- Contrast log (all ≥ 4.5): dawn 5.02/12.01/4.51/5.48, noon 5.18/12.94/4.67/8.04, sunset 5.22/12.11/4.67/5.27,
-  night 6.64/11.99/5.07/8.04 (date line / row / past row / next-prayer row). Next-prayer rows use near-black
-  `#1a1a1a` on the accent (white never reaches 4.5 on orange).
-- `~/ash-data/screens-cel/v3/compare-october.png`: June Maghrib reference crop over the new sunset crop, same
-  512x260 window; positions and proportions line up, only shading, grading and the rug differ.
-- Checks: cel tests 7/7, core tests 109/109, check-file-length ok (largest file 78 lines), check-ash-rules ok,
-  check-pii ok. Stills stay outside the repo.
-
-## How to render
-`node tools/art/cel/render.js [outdir]` (default `$PROJECT_DATA/screens-cel/v3`, PROJECT_DATA `~/ash-data`).
-Writes dawn/noon/sunset/night `.svg`+`.png`, `sheet.png` (2x2), `zoom.png` (family crops), prints the contrast
-ratios, exits 1 if any is under 4.5. Fontconfig is written to `~/ash-data/screens-cel/fonts.conf`.
-Tests: `node --test tools/art/cel/cel.test.js`.
+- Fix 1 (e4e6812): skygrad.js STOP_Y [0,50,100,150,200,250,300,344,432], MID_Y 300, HOR_Y 432 (the still's curve,
+  tools/art/cel/sky.js); palette.js reads the stop colours off that curve with sRGB mixes (Grad.blend), except stop 7
+  (mid->hor 1/3) in OKLab because the sRGB chord greys at +2 rising (#686668, chroma .004). Stops 0..7 held dark for
+  the clock ink as before, stop 8 = hor. skygrad.test.js: positions, every undarkened row = the still within 2 units
+  (31,775 rows, worst 0.008), no flat band above y 432, moon cut-out within 1 unit.
+- Fix 2 (1b78689): script.js set-4 = cool violet shade (key #5a4a98, tint .6, lit .1), lamp .5, dark card; set-10,
+  set-20, rise-12, rise-20 land = NIGHT_LIGHT/NIGHT_BANDS (shared with NIGHT), lamp 1 (rise-12: .65, the most the
+  0.02-per-0.1-degree smoothness guard allows 5 degrees from the pinned dawn; dim .35 for the night-factor guard).
+  Skies untouched (afterglow to -12, night sky by -20). tools/art/cel/light.js: moonlight by -12 (setting: two-degree
+  swing from -10 so set-4 and set-10 share one shading and the June 23:10 cross-fade shows one set of bands; rising:
+  -7..-12); the light-continuity guard widened .12 -> .5 per half degree (a jump is > 1). Five layers rebaked;
+  rise-7/day/set0/night PNGs byte-identical (git diff empty). New script test for the rule.
+- Fix 3 (4f95072): an altitude rule (warm < +8, neutral > +15) fails the halo guard at 2.90: 1 Jan 13:24, alt 10.4,
+  the winter sun is low at the top of the arc over the clock. So the gate is geometric, per ring: palette.js
+  ringWarmth(sunX, haloR) = 1 when the ring is 40 px clear of the widest text (TEXT_HALF_W 160 about CLOCK_CX, checked
+  against clock.js), 0 where it touches; ringColour mixes the neutral tint toward pal.sun by it. Near the arc's ends the
+  inner three rings go warm; the outermost (r 150) touches the text even there and stays neutral. Sun.qml imports
+  palette.js and paints ring k with ringColour at its warmth. halo-contrast.test.js composites the gated colours and
+  now asserts 5.5 (worst 5.5012, unchanged).
+- Evidence (2026-11-12 17:41): node --test tests/core/*.test.js 125 pass / 0 fail; node tools/art/bake.js clean (675,152 bytes);
+  check-qml 11 files 0 errors; check-file-length, check-ash-rules, check-pii ok; scripts/test.sh all 12 files OK.
+  Screenshots ~/ash-data/screens-cel-app/ash-2026-06-21-{04-31,13-50,21-40,23-10}.png, sheet.png + 16 frames, viewed:
+  no seam in any sky; 04:31 a soft peach glow at the far-left horizon, dawn otherwise as approved; 13:50 as before with
+  the sky blending into the dune line; 21:40 gold stepped rings round the setting sun (outermost neutral), clear of the
+  countdown; 23:10 night on the ground (indigo-violet dunes, family and rug in cool shade, lantern lit with its pool,
+  dark card) under a plum/orange afterglow; the sheet continuous, warm glow at every sunrise/sunset end, neutral rings
+  near the clock (dec morning 10:43), night land from Isha on.
 
 ## Next steps
-1. Tech lead shows the PO `~/ash-data/screens-cel/v3/{dawn,noon,sunset,night}.png` and `zoom.png`, one at a time.
-2. On approval: app integration (bake per-moment layers with the family, swap tent/lattice for the tinted card),
-   and move `cel.test.js` under `tests/` (it sits next to the source because `tests/` was off limits this task).
+1. Tech lead: PR record + review; PO verdict on the four frames and the sheet; then a device install (ADR 0001).
 
 ## Open questions / blockers
-- Dune bands at dawn/sunset are subtle by construction (band thickness ≈ k × slope; dunes are gentle). If the
-  PO wants them bolder, raise `k.dune` (26 → ~40) in `moments.js`; nothing else changes.
-- Noon mesas read as pale blocks hazed into the sky; if they still look "floating", lower `mesa.shade` at noon.
+- At -7.5 (June 23:10) the moon and stars are not up (moon from -8, stars from -9, kept "as now" by instruction); the
+  frame shows the night land and lit lantern without them. If the PO wants them: palette.js moon/stars thresholds.
+- Fix 3 deviates from the dispatch's letter (altitude 8..15) for its intent: the gate is by the sun's x per ring.
+- The -10 land shares set-4's horizon-side shading, not the moon's (so the 23:10 cross-fade has one set of bands).
 
 ## Gotchas learned
-- `scripts/check-file-length.sh` only checks tracked files: run it after `git add`.
-- Clip paths need shapes with their own `transform`; a `<g>` inside `<clipPath>` is invalid, so `shift()` adds
-  the transform to the element. Dune paths run 60 px past the frame so shifted copies still cover the edges.
-- `ensureContrast` toward white can never fix white-on-orange: pick the better of white/ink/near-black first.
-
-## Suggested skills
-- impeccable (not installed here); used the accessibility checklist for the contrast rule.
+- Qt and the still's SVG interpolate gradients in sRGB: in-between stops must be sRGB mixes to match the still; but the
+  sRGB chord between a blue mid and a gold horizon crosses grey, so the one stop between them is mixed in OKLab.
+- A winter noon sun is low AND over the clock: ring rules must be geometric, not by altitude.
+- A ring cross-fade between two layers with different light directions doubles the shade bands; keep the swing of
+  tools/art/cel/light.js between layers that are not cross-faded at a frame the PO looks at.
+- Sharing arrays (NIGHT_LIGHT) between m() stops is safe: m() copies elements. Pinned layers stay byte-identical only if
+  the stop's own fields are untouched (the mesa haze reads hor).
+- `scripts/screenshot.sh --at` takes one moment per call (no | list). load-core objects live in another vm realm.

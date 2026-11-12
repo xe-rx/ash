@@ -1,4 +1,8 @@
-# Design handoff: flat cel-shaded infographic (in progress)
+# Design handoff: flat cel-shaded infographic (built)
+
+Status 2026-11-12: built. The approved stills (PR 0014) are in the app on `frontend-engineer/cel-app` (script, bake,
+palette, sky, sun, clock, card; the tent and lattice are gone); the decision is `docs/adr/0004-cel-shaded-infographic.md`.
+What follows is the design brief as written before the build.
 
 Written 2026-11-12 by the tech lead (Claude Code, main session) for the next design session. Read this first, then
 `AGENTS.md`, `CLAUDE.md`, `docs/team/BOARD.md` and `docs/product/BRIEF.md`.

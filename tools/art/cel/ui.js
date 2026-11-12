@@ -1,15 +1,15 @@
 'use strict';
 // The UI mock: clock with its hard offset shadow, the next-prayer line, and the times card tinted into the
 // moment's hue. Text inks are pulled until they read at 4.5:1; the ratios go into the render report.
-const { mix, contrast, ensureContrast } = require('./colour');
+const { mix, contrast, luminance, ensureContrast } = require('./colour');
 const { ROWS } = require('./moments');
 
 const MIN = 4.5;
 const CARD = { x: 724, y: 28, w: 276, h: 344, rx: 22 };
 
-// Card colours for a moment: paper mixed toward the key, inks checked against it.
+// Card colours for a moment: the script's card, its inks checked against it (pulled toward white on a dark card).
 function cardColours(m) {
-  const card = mix(m.paper, m.key, m.cardTint), dark = m.moon ? '#ffffff' : '#000000';
+  const card = m.card, dark = luminance(card) < 0.18 ? '#ffffff' : '#000000';
   const ink = ensureContrast(m.cardInk, card, MIN, dark);
   const past = ensureContrast(mix(ink, card, 0.42), card, MIN, ink);
   const date = ensureContrast(mix(ink, card, 0.3), card, MIN, ink);

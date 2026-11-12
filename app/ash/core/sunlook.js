@@ -1,11 +1,12 @@
 .pragma library
-// How the sun looks at an altitude: near the horizon it is larger, deeper and wrapped in wide
-// halos; high up it is smaller and tighter. Three stepped halos plus the disc and a lighter core,
-// and two very large, very faint discs that warm the sky all around a low sun (so the sky looks lit
-// from one place); those fade out as the sun climbs, gone by 25 degrees.
-// Below the horizon only the halos show (their opacity fades to nothing by -12 degrees).
+// How the sun looks at an altitude (the cel stills, tools/art/cel/sky.js): four stepped, flat rings of
+// falling opacity around the disc, and a lighter core. At the horizon the disc is larger (r 40) and the
+// rings reach wider; from 12 degrees up it is smaller (r 32) and the rings tighter. Below the horizon only
+// the rings show, their opacity fading to nothing by -12 degrees.
 
-var GLOW_END_DEG = -12, WIDE_END_DEG = 25;
+var GLOW_END_DEG = -12;
+var RING_LOW = [1.25, 1.8, 2.6, 3.75], RING_HIGH = [1.17, 1.69, 2.44, 3.52]; // ring radius over the disc's, innermost first
+var RING_ALPHA = [0.5, 0.34, 0.2, 0.1];
 
 function clamp(x, a, b) { return x < a ? a : (x > b ? b : x); }
 function smooth(t) { return t * t * (3 - 2 * t); }
@@ -13,19 +14,17 @@ function lerp(a, b, t) { return a + (b - a) * t; }
 
 function sunLook(altDeg) {
   var alt = typeof altDeg === "number" && isFinite(altDeg) ? clamp(altDeg, -90, 90) : -90;
-  var high = smooth(clamp(alt / 12, 0, 1));              // 0 at the horizon, 1 from 12 degrees up (the disc must fit under the tent valance)
+  var high = smooth(clamp(alt / 12, 0, 1));              // 0 at the horizon, 1 from 12 degrees up
   var glow = alt >= 0 ? 1 : clamp((alt - GLOW_END_DEG) / -GLOW_END_DEG, 0, 1);
-  var boost = 1 + 0.7 * smooth(clamp(-alt / 4, 0, 1)); // twilight glow reads a little stronger
-  var r = lerp(46, 30, high);
-  var reach = [lerp(1.75, 1.4, high), lerp(2.6, 1.9, high), lerp(3.6, 2.45, high), 3.9, 5.8];
-  var low = 1 - smooth(clamp(alt / WIDE_END_DEG, 0, 1)); // 1 at the horizon, 0 from 25 degrees up
-  var alpha = [lerp(0.3, 0.22, high) * glow * boost, lerp(0.19, 0.14, high) * glow * boost, lerp(0.1, 0.08, high) * glow * boost,
-    0.16 * low * glow * boost, 0.12 * low * glow * boost];
+  var r = lerp(40, 32, high), haloR = [], haloAlpha = [], i;
+  for (i = 0; i < 4; i++) {
+    haloR.push(r * lerp(RING_LOW[i], RING_HIGH[i], high));
+    haloAlpha.push(RING_ALPHA[i] * glow);
+  }
   return {
-    r: r, coreR: r * 0.6,
-    haloR: [r * reach[0], r * reach[1], r * reach[2], r * reach[3], r * reach[4]],
-    haloAlpha: alpha,
-    discVisible: alt > -4,       // deeper than this the dunes hide it completely
+    r: r, coreR: r * 0.72,
+    haloR: haloR, haloAlpha: haloAlpha,
+    discVisible: alt > -4,       // deeper than this the land hides it completely
     glowVisible: glow > 0
   };
 }
