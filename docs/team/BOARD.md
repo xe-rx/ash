@@ -12,7 +12,7 @@ Round: 3 (cel-shaded infographic; device work on hold) · PO: the user · Tech l
 | usage-monitor | background watcher | idle |
 
 ## Waiting on the PO
-- [ ] **PO verdict on the v3 cel stills** (review page https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR, files `~/ash-data/screens-cel/v3/`): approve per frame or name the spot; dune bands at dawn/sunset bolder or not; noon mesas darker or not.
+- [x] PO said "continue" on the v3 stills 2026-11-12 (dune bands and noon mesas unchanged unless the PO says otherwise). Was: **PO verdict on the v3 cel stills** (review page https://claude.ai/artifact/N219rokPKqg5PppVBfCkBR, files `~/ash-data/screens-cel/v3/`): approve per frame or name the spot; dune bands at dawn/sunset bolder or not; noon mesas darker or not.
 - [ ] PO compares a few dates with their mosque (`config/ash.json`).
 - [ ] Optional: a Claude desktop session with computer use, reachable over Remote Control, to watch the live window.
 
@@ -46,6 +46,7 @@ PO feedback 2026-10-31, on the live window: "Good first start! Seems to work!, w
 ## In progress
 | Task | Role | Branch | Worktree | Status |
 |---|---|---|---|---|
+| App integration of the cel infographic: script.js re-authored, land rebaked from tools/art/cel, live tinted card replaces tent+lattice, tests, ADR 0004 | frontend-engineer (Fable 5.1, xhigh) | frontend-engineer/cel-app | .worktrees/frontend-engineer-cel-app | dispatched 2026-11-12 (PO: "continue" on the v3 stills) |
 
 ## In review
 
