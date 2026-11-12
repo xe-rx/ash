@@ -1,52 +1,35 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-12 02:51 · Branch: frontend-engineer/cel-stills · Status: done
+Updated: 2026-11-12 09:40 · Branch: frontend-engineer/cel-app · Status: in-progress
 
 ## Task
-Cel-shaded infographic stills v3 (dawn, noon, sunset, night) as repo code in `tools/art/cel/`, PNGs outside the
-repo in `~/ash-data/screens-cel/v3/`, per the PO decisions of 2026-11-12 (one shading rule, October family
-restored, card tinted per moment, mesas kept). Spec: the dispatch message and `docs/product/CEL-STYLE-HANDOFF.md`.
-Done when the PO approves the stills; app integration is the next task.
+Put the approved cel-shaded infographic (PR 0014 stills, `~/ash-data/screens-cel/v3/`) into the app, replacing the
+Sadu tent scene: `script.js` re-authored to the cel palette (14 stops, dawn=rise-7, noon=day, sunset=set0, night),
+`tools/art/cel` as the bake source for `assets/land/*.png` (land + family + lantern, alpha, no sky), live tinted
+card in QML, clock with hard shadow, sun rings and moon as in the stills, tests, removals, ADR 0004. Spec: the
+dispatch message (tech lead, 2026-11-12) and `docs/product/CEL-STYLE-HANDOFF.md`.
 
 ## Done
-- `tools/art/cel/` (commit: see `git log main..HEAD`): `render.js` CLI, `scene.js` composition, `paint.js` (doc +
-  clips, `cel()` rule, `edgeBand()` for the lantern, `painter()`), `colour.js` (mix, WCAG contrast,
-  `ensureContrast`), `moments.js` (table: sky, key/amb, L, k, h, sun/moon, card), `sky.js`, `land.js` (dunes +
-  mesas), `ground.js` (sand, rug, lantern pool, contact ellipses, lantern), `people.js` (October figures),
-  `ui.js` (clock, card with contrast report), `cel.test.js` (7 tests: contrast, rule structure, family geometry,
-  no opacity/blur/extra gradients, no slipface polygons, sunset disc clear of the card, card contrast ≥ 4.5).
-- Rendered and viewed every PNG + zoom.png: no dune crescents, no circle splits on figures, no trapezoids;
-  father cream robe + skin head + cream cap, girl hooded like the mother; sunset disc at (645,365) sets behind
-  the mesa, clear of the card; noon reads flat (thin lit crests only); night indigo sand, cool crest bands,
-  warm lantern band on the figures' lower-inner edges and a two-step pool on the rug.
-- Contrast log (all ≥ 4.5): dawn 5.02/12.01/4.51/5.48, noon 5.18/12.94/4.67/8.04, sunset 5.22/12.11/4.67/5.27,
-  night 6.64/11.99/5.07/8.04 (date line / row / past row / next-prayer row). Next-prayer rows use near-black
-  `#1a1a1a` on the accent (white never reaches 4.5 on orange).
-- `~/ash-data/screens-cel/v3/compare-october.png`: June Maghrib reference crop over the new sunset crop, same
-  512x260 window; positions and proportions line up, only shading, grading and the rug differ.
-- Checks: cel tests 7/7, core tests 109/109, check-file-length ok (largest file 78 lines), check-ash-rules ok,
-  check-pii ok. Stills stay outside the repo.
-
-## How to render
-`node tools/art/cel/render.js [outdir]` (default `$PROJECT_DATA/screens-cel/v3`, PROJECT_DATA `~/ash-data`).
-Writes dawn/noon/sunset/night `.svg`+`.png`, `sheet.png` (2x2), `zoom.png` (family crops), prints the contrast
-ratios, exits 1 if any is under 4.5. Fontconfig is written to `~/ash-data/screens-cel/fonts.conf`.
-Tests: `node --test tools/art/cel/cel.test.js`.
+- Read everything; baseline `node --test tests/core/*.test.js` 109/109 on the branch.
+- Plan (stage 1 in progress): moment fields `top mid hor | key amb sunlight tint lit shade | glow | ink inkShadow |
+  card cardInk accent | kDune kMesa kRug hBand haze | lamp dim`; light direction derived in `tools/art/cel/light.js`
+  (`lightAt(alt, rising)`: the sun rises at the picture's left, so rising gives L.x = -1 at the horizon, matching the
+  stills' (-1,-0.18) dawn and (1,-0.18) sunset; (-0.3,-1) overhead; moonlight (0.3,-1) below -22 deg).
+- Stills' card colours (sRGB mix, to author verbatim): dawn `#fae4d4`, noon `#fcf1dd`, sunset `#fcd8be`,
+  night `#1d2856`; card shadows mix(mid, amb, .5): `#624d88 #7292bd #7e3b62 #11183e`.
 
 ## Next steps
-1. Tech lead shows the PO `~/ash-data/screens-cel/v3/{dawn,noon,sunset,night}.png` and `zoom.png`, one at a time.
-2. On approval: app integration (bake per-moment layers with the family, swap tent/lattice for the tinted card),
-   and move `cel.test.js` under `tests/` (it sits next to the source because `tests/` was off limits this task).
+1. Stage 1: failing tests in `tests/core/script.test.js` (pinned stops, fields), then re-author `script.js`;
+   `tools/art/cel/light.js`; refactor `scene.js` to `buildLand(moment, L)`; rewrite `bake.js`; bake; screenshots.
+2. Stage 2: card (`table.js`, `PrayerTable.qml` in `AshScene.qml`), `Readouts.qml` shadow, `Sun.qml` rings, moon.
+3. Stage 3: tests (geometry, art-moments, palette, cel-art), removals (Sadu modules, Tent.qml, tent/lattice PNGs),
+   ADR 0004, AGENTS.md bake line, CEL-STYLE-HANDOFF status.
 
 ## Open questions / blockers
-- Dune bands at dawn/sunset are subtle by construction (band thickness ≈ k × slope; dunes are gentle). If the
-  PO wants them bolder, raise `k.dune` (26 → ~40) in `moments.js`; nothing else changes.
-- Noon mesas read as pale blocks hazed into the sky; if they still look "floating", lower `mesa.shade` at noon.
+- none yet
 
 ## Gotchas learned
 - `scripts/check-file-length.sh` only checks tracked files: run it after `git add`.
-- Clip paths need shapes with their own `transform`; a `<g>` inside `<clipPath>` is invalid, so `shift()` adds
-  the transform to the element. Dune paths run 60 px past the frame so shifted copies still cover the edges.
-- `ensureContrast` toward white can never fix white-on-orange: pick the better of white/ink/near-black first.
+- The sky rect must extend below the horizon (to 616): the baked land is transparent above its silhouette.
 
 ## Suggested skills
-- impeccable (not installed here); used the accessibility checklist for the contrast rule.
+- impeccable (not installed); accessibility checklist for contrast.
