@@ -1,9 +1,10 @@
 import QtQuick 2.1
 
-// The sun: four stepped, flat rings of falling opacity (the outer two in pal.glow, the inner two in pal.halo,
-// tints that leave the sky's luminance alone), the disc and a lighter core. Lives under the land, so the
-// horizon cuts it; in twilight only the rings rise above the land (a glow). Sizes and opacities come from
-// core/sunlook.js by altitude; the largest ring is drawn first.
+// The sun: four stepped, flat rings of falling opacity, the disc and a lighter core. The outer three rings can
+// reach the clock, so they are tints that leave the sky's luminance alone (pal.glow for the outer two, pal.halo
+// for the third); the innermost never reaches it (geometry tests) and carries the sun's own colour, as the
+// stills do. Lives under the land, so the horizon cuts it; in twilight only the rings rise above the land (a
+// glow). Sizes and opacities come from core/sunlook.js by altitude; the largest ring is drawn first.
 Item {
     id: sun
     property var pal
@@ -16,7 +17,8 @@ Item {
             visible: sun.look.glowVisible
             x: sun.view.x - sun.look.haloR[3 - index]; y: sun.view.y - sun.look.haloR[3 - index]
             width: 2 * sun.look.haloR[3 - index]; height: width; radius: width / 2
-            color: index < 2 ? sun.pal.glow : sun.pal.halo; opacity: sun.look.haloAlpha[3 - index]; antialiasing: true
+            color: index === 3 ? sun.pal.sun : (index < 2 ? sun.pal.glow : sun.pal.halo)
+            opacity: sun.look.haloAlpha[3 - index]; antialiasing: true
         }
     }
     Rectangle {

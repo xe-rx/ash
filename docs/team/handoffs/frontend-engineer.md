@@ -1,70 +1,56 @@
 # Handoff: frontend-engineer
-Updated: 2026-11-12 03:20 · Branch: frontend-engineer/cel-app · Status: in-progress (stage 1 done, stages 2-3 open)
+Updated: 2026-11-12 04:08 · Branch: frontend-engineer/cel-app · Status: in-progress (stages 1-2 done, stage 3 open)
 
 ## Task
 Put the approved cel-shaded infographic (PR 0014 stills, `~/ash-data/screens-cel/v3/`) into the app, replacing the
 Sadu tent scene. Spec: the tech lead's dispatch of 2026-11-12 (three stages) and `docs/product/CEL-STYLE-HANDOFF.md`.
 Done when: bake clean, core tests green, checks green, four screenshots match the stills, sheet continuous, ADR 0004.
 
-## Done (commit fd76ca0, stage 1)
-- `app/ash/core/script.js` re-authored: flat fields `top mid hor | key amb sunlight tint lit shade | glow | ink
-  inkShadow | card cardInk accent | kDune kMesa kRug hBand haze | lamp dim` (helper `m(sky, light, glow, clock,
-  card, bands, lamp, dim)`), same altitudes/names/`stopAt`/`landAt`. Pinned: rise-7 = dawn, day = noon, set0 =
-  sunset, night = night (values verbatim from the stills; card colours are the stills' sRGB mixes `#fae4d4 #fcf1dd
-  #fcd8be #1d2856`). Other stops authored as in-betweens; the card is dark (light ink) at night, -20, -12/-10 and
-  light from -7/-4 up, so the one ink flip per side sits between -12..-7 rising and -10..-4 setting. `lamp`: 1 at
-  night and -20, 0.5 at -12/-10, 0 above. The four sand/rug/robe local colours stay constant in `cel/moments.js`
-  LOC (the moment carries the light, not the things); `glow` is the disc, rings and core (core = mix to white .5).
-- `tools/art/cel/light.js` `lightAt(alt, rising)`: L.x = -1 rising / +1 setting at the horizon (the sun rises at the
-  picture's LEFT, so "side" is -1 for rising; stills (-1,-.18) dawn, (1,-.18) sunset), smoothstep to (-0.3,-1) by
-  70 deg (shared `day` layer), and below -8 smoothstep to moonlight (0.3,-1) by -22.
-- `tools/art/cel/moments.js` loads script.js via load-core: `STOPS` [name, moment, rising, alt] x14, `artMoment(stop,
-  L)` adapter (k from kDune/kMesa/kRug, k.fig .06, k.lamp 5*lamp; h = hBand x {1, .8, .6, .5}; mesa haze {haze,
-  .3 haze, 2 haze}; lamp {x 516, y 594, on}), `STILLS`/`MOMENTS` for the four frames. `scene.js`: `buildLand(stop, L)`
-  (no sky, alpha) and `buildStill(name)`. `render.js`: `require.main` guard, `render(outDir, stops)`, fontconfig under
-  outDir, `node tools/art/cel/render.js [outdir] [stop...]` also writes bare `stop-<name>.png`. `paint.js` scales the
-  lantern warmth by `lamp.on`; `ui.js` reads `m.card`; `people.js` documents the 8 px shade cap.
-- `tools/art/bake.js` rewritten (cel only; work dir `$PROJECT_DATA/bake`). Baked `app/ash/assets/land/*.png` x14:
-  673,021 bytes total (was 1,212,000); per file 44.8-50.8 KB. Still present: tent/lattice/grain/stars 337,918 bytes.
-- Removed: `tools/art/{build,landscape,figures,family,rug,sky,text,tent,panelA,panelB,sadu,palette,layout,svg,
-  moments}.js`, `tools/art/cel/cel.test.js` (moved to `tests/core/cel-art.test.js` + nits: lap rect as drawn, shade
-  side for L=(+1,..) and (-1,..), light continuity, every stop bakes without sky/gradient/opacity, lantern iff lamp).
-- Tests rewritten: `script.test.js` (fields, pinned stills, altitudes, smoothness, hue), `art-moments.test.js`
-  (STOPS = script, file set), `land.test.js` (`sink` -> `tint`).
-- Evidence: `node tools/art/bake.js` clean (sizes above); `node --test tests/core/*.test.js` 100 pass / 19 fail (all
-  19 read `paletteAt`, which crashes on the new fields: palette.test.js x14, skygrad.test.js x3, halo-contrast x1,
-  plus "the sun disc is never pale" in palette.test.js); check-file-length ok, check-ash-rules ok, check-pii ok.
-  Stills via the new pipeline: `~/ash-data/screens-cel/app-stage1/{dawn,noon,sunset,night,stop-rise-7,stop-night}.png`,
-  dawn viewed = identical to v3, contrast log identical to PR 0014. No app screenshots yet (palette.js broken).
+## Done
+- Stage 1 (fd76ca0): `core/script.js` flat fields, `tools/art/cel/*` pipeline, 14 cel land layers (673,021 bytes).
+- Stage 2 (93b288a + the moon/ring commit after it): `palette.js` reads the new fields (skyStops held dark behind the
+  clock by bisection `heldDark`, monotonic; `sun`=glow, `sunCore`=mix white .5; `glow`/`halo` ring tints keep the sky's
+  luminance; `card cardShadow cardInk cardInkFaded accent accentInk` via `inkOn` (candidate, then pulled toward
+  whichever pole reads better: the ink flips on a mid-tone card); `night`; `sandEdge` [far, near] = LOC.sand[0]/[3]
+  graded `mix(c, key, tint)`, matches the baked edges within 2 units by day). `skygrad.js` SKY_H 632 + MOON constants +
+  `moonCutAt` (gradient cut-out that includes the rings). `sunlook.js` 4 rings, r 40->32, core .72 r. `clock.js` 112 px,
+  ink top 208 (stills 196, brief 204: 204 left 12.9 px to the disc, 208 gives 16.5), SHADOW 3, countdown 26 px at y 304.
+  `table.js` card constants + baseline placement (BASELINE_EM 1.05). QML: `Sky` (moon + rings + cut-out), `Sun` (ring
+  0 in `pal.sun`, outer three neutral tints), `Readouts` (shadows under every glyph and the countdown line), `PrayerTable`
+  (card), `Landscape` (margins: sides a far->near sand gradient from y 406, bottom near sand), `AshScene` holds the card,
+  `AshView` one Loader. Deleted `Tent.qml`, `tent*.png`, `lattice*.png`: assets now 698,635 bytes (was 1,010,939).
+  Moon from -8 deg (full at -14, with the stars): the dawn still has none.
+- Evidence: check-qml 11 files 0 errors; check-file-length, check-ash-rules, check-pii ok; font_metrics.py ok at
+  112/26/24/20; node 107 pass / 12 fail, all 12 are stage 3 rewrites: geometry 31/33/35/36 (qata, valance, lattice,
+  unshifted table), palette 49 (night < .02: the approved night sky is moonlit indigo), 55 (no-green rule: the approved
+  noon horizon #bfe4e4 is hue 196 itself; in-betweens reach hue 100 chroma .036 at 12 deg rising / 25 setting), 57/58
+  (weave, madder), 59 (disc never pale), sunlook 117-119 (five halos). Card contrast >= 4.62 every .5 deg both ways,
+  halo contrast 5.53 (2.16 M samples), sun-to-clock clearance 16.5 px.
+- Screenshots `~/ash-data/screens-cel-app/ash-2026-06-21-{04-31,13-50,21-40,23-10}.png`, `sheet.png` (+ the 16 frames):
+  family, dunes, mesas, card, pill, clock with shadow, countdown as the stills. Deviations: noon sky deeper behind the
+  clock (accepted), noon sun on the arc at (369,128) (accepted); outer rings cannot lighten the sky (luminance-neutral by
+  decision), so the dawn still's peach glow at the left horizon is nearly absent and the noon/sunset outer rings read as
+  dusty tints; 04:31 is really alt -5.9 and 23:10 alt -7.5 in June (the stills were rendered at the rise-7 and NIGHT
+  stops), so the June 23:10 frame is the dusk in-between, the still's deep night shows from -20 down (dec frames).
+  Edges: no sky or black anywhere; bottom strip within 1 unit of the land by day, at night a cool strip can sit under
+  the lantern's warm pool (x 230-800); side strips differ from dune shade bands by up to 62 units in 4 px.
 
 ## Next steps
-1. Stage 2 (app cannot render until done): rewrite `palette.js` for the new fields: skyStops = `stopsOf(top, mid,
-   hor, ink)` (keep the 5.6:1 darkening; noon sky will be deeper, note + screenshot), `sun = glow`, `sunCore = mix(glow,
-   white, .5)`, `glow` ring tint via `tintKeepingLuminance` (halo-contrast test), `inkSky = ink`, `clockShadow =
-   inkShadow`, `card`, `cardShadow = mix(mid, amb, .5)`, `cardInk`/`cardInkFaded`/`accentInk` with `ensureContrast`
-   (direction by card luminance < .18), `night = dim/.45`, `sandEdge` for the Landscape margins. Drop farTwo/dune*/
-   rowFill/tag*. Then `skygrad.js` SKY_H to 632 (sky must reach y 616: the land is transparent above its silhouette;
-   keep STOP_Y), `Sky.qml` moon at (560,112) r 26 + cut (571,105) r 23 + rings 70/.10 46/.18 of `#c8d4ff`, `Sun.qml`
-   four rings (ratios 3.75/2.6/1.8/1.25 r at the horizon, 3.52/2.44/1.69/1.17 high; alphas .10/.2/.34/.5), `sunlook.js`
-   r 40->32 (drop the valance comment), `Readouts.qml` shadow Text at +3,+3 under each glyph and one countdown line
-   (suggest CLOCK_PX 112, CLOCK_INK_TOP 204, COUNTDOWN_PX 26 at y 300 to match the still; rerun t_font_metrics),
-   `table.js` card constants (CARD 724,28,276,344,r22; date baseline 72 @20px; rows baseline 128+52i, name 24px x760,
-   time 26px semibold right at 963 in digit cells; pill 744, y-33, 236x46 r12; Poppins baseline = y + 1.05 em),
-   `PrayerTable.qml` rewrite, move it into `AshScene.qml`, drop the second Loader in `AshView.qml`, delete `Tent.qml`,
-   `tent*.png`, `lattice*.png`; `Landscape.qml` margin rects (left/right x -16/1024 from y 410, bottom y 600) in
-   `pal.sandEdge`. Screenshots: `scripts/screenshot.sh --at "2026-06-21 04:31|13:50|21:40|23:10" --out
-   ~/ash-data/screens-cel-app` and `--sheet`; view every one. Note: at 13:50 the app's sun is at (369,128) on the arc,
-   not the still's (590,88): keep the arc (geometry test), report the deviation.
-2. Stage 3: `geometry.test.js` (drop valance/qata tests; card bounds 724-1000 x 28-372, disc clearance of clock and
-   card, PrayerTable inside AshScene), `palette.test.js` (card contrast every 0.5 deg both ways, keep clock-on-sky,
-   relax "disc never pale" to "core lighter, same hue"), `art-moments.test.js` card vs table constants, ADR 0004 from
-   `docs/templates/ADR.md`, AGENTS.md bake line, CEL-STYLE-HANDOFF status, `scripts/test.sh`, `check-qml.sh`.
+1. Stage 3: `geometry.test.js` (drop valance/qata; card 724-1000 x 28-372 inside AshScene; disc >= 15 px and ring 0
+   >= 4 px from the clock boxes; disc clear of the card; row step 52), `palette.test.js` (drop ground/weave/madder/land
+   tests; night: skyStops lum < .05; no-green: hue 105..185; "core lighter, same hue"), `sunlook.test.js` (4 rings,
+   ratios, alphas, fade by -12), `halo-contrast.test.js` loop k 3..0, `art-moments.test.js` CARD/ROWS vs table.js and
+   LOC.sand vs palette SAND, ADR 0004 from `docs/templates/ADR.md`, AGENTS.md bake line (no tent/lattice), CEL-STYLE-
+   HANDOFF status, `npm ci && scripts/test.sh`, full node suite green.
 
 ## Open questions / blockers
-- None for the tech lead; decisions above (constant LOC colours, derived h/haze, rising = light from the left) are
-  mine and reversible in `cel/moments.js`/`light.js`.
+- Ring tints: the brief fixes luminance-neutral tints; the stills' lightening rings are impossible with them. Ring 0
+  now carries the sun colour (never reaches text). If the PO wants the dawn glow back, the outer rings need a rule
+  that lightens only where no text can be (geometry-gated), a design change for the tech lead.
+- June 23:10 shows dusk, not the night still (sun at -7.5): accept, or move the night look up to about -8 in script.js.
 
 ## Gotchas learned
 - load-core objects live in another vm realm: compare arrays via JSON.stringify, not deepStrictEqual.
-- `day` appears twice in SETTING (40, 90): use lastIndexOf when mapping a name to its altitude.
 - `scripts/check-file-length.sh` only checks tracked files: run it after `git add`.
+- The still's SVG text y is a baseline; a Poppins Text item's baseline is 1.05 em below its top.
+- 0.01-L darkening steps leave adjacent bands non-monotonic; bisect to the contrast ceiling instead.

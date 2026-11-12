@@ -81,7 +81,7 @@ function paletteAt(altDeg, rising) {
   return {
     skyStops: sky,
     sun: s.glow, sunCore: mix(s.glow, "#ffffff", 0.5), glow: glow, halo: halo,
-    moon: alt < -3, stars: alt < -9, moonAlpha: clamp((-alt - 3) / 6, 0, 1), starAlpha: clamp((-alt - 8) / 6, 0, 1),
+    moon: alt < -8, stars: alt < -9, moonAlpha: clamp((-alt - 8) / 6, 0, 1), starAlpha: clamp((-alt - 8) / 6, 0, 1), // none at dawn (-7), as the stills
     moonColor: "#f4f2e4", starColor: "#cfd3f0",
     inkSky: s.ink, clockShadow: s.inkShadow, night: clamp(s.dim / 0.45, 0, 1),
     card: s.card, cardShadow: mix(s.mid, s.amb, 0.5), cardInk: cardInk,
